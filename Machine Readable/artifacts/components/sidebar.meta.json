@@ -124,7 +124,10 @@
     "textBlock": {
       "gap": "spacing/component/xxs",
       "title": "color/sidebar/foreground",
-      "caption": "color/sidebar/foreground"
+      "caption": "color/sidebar/foreground",
+      "titleType": "Poppins Medium 16 (font-family/sans)",
+      "captionType": "Poppins Medium 12",
+      "opacity": "100% (was 70% on caption)"
     },
     "content": {
       "paddingTop": "spacing/0",
@@ -185,10 +188,9 @@
       }
     },
     "groupLabel": {
-      "fill": "transparent",
-      "paddingLeft": "spacing/component/sm",
-      "paddingRight": "spacing/component/sm",
-      "labelFill": "color/sidebar/foreground"
+      "type": "Medium 12, sentence case",
+      "height": "24px",
+      "color": "color/sidebar/foreground"
     },
     "badge": {
       "fill": "color/brand/primary",
@@ -197,7 +199,14 @@
       "paddingRight": "spacing/component/xxs",
       "countFill": "color/brand/primary/foreground"
     },
-    "iconRule": "Icon Placeholder instances are stroke-based. Bind color on VECTOR node strokes — never on instance fill."
+    "iconRule": "Icon Placeholder instances are stroke-based. Bind color on VECTOR node strokes — never on instance fill.",
+    "watermark": {
+      "fill": "color/navy/200",
+      "opacity": "10%",
+      "position": "absolute, left 0, bottom -16px, clipped by sidebar",
+      "shape": "NOT TOKEN-BOUND — branding asset (Perron mark)",
+      "node": "Laag_1-2 in 95:15648"
+    }
   },
   "behavior": {
     "collapsible": {
@@ -326,17 +335,23 @@
     "sourceMarkdown": "Component Markdown/Sidebar.md",
     "storyFile": "src/stories/Sidebar.stories.tsx",
     "artifactStatus": "ready",
-    "lastAuditDate": "2026-05-28",
+    "lastAuditDate": "2026-10-08",
     "auditRules": "R1–R8",
     "version": "3.0",
     "openQuestions": [],
     "notes": [
       "color/sidebar/active was found in Figma and removed — renamed to color/sidebar/accent per docs.",
       "Logo fill override removed — branding slot, not token-bound.",
-      "Hover and Active share color/sidebar/accent — distinction is behavioral (Active persists), not visual."
+      "Hover and Active share color/sidebar/accent — distinction is behavioral (Active persists), not visual.",
+      "Perron Figma (7Gn5GiMiQh1SAaTp9FiwNQ) node 95:18202 is the source of truth since 2026-10-08; figmaNodeId above still points to the Agentic file (same node id)."
     ],
     "knownIssues": [],
-    "changelog": [],
+    "changelog": [
+      {
+        "date": "2026-10-08",
+        "change": "Aligned with Perron Figma 95:15648: title Medium 16 / caption Medium 12 (no opacity), group label Medium 12 sentence case h-6, menu item h-8 Regular, Sidebar relative+overflow-hidden, new SidebarWatermark slot. Tokens: sidebar/background navy/50, sidebar/accent zinc/50."
+      }
+    ],
     "darkMode": {
       "notes": "No known dark mode differences — all tokens are semantic and mode-aware.",
       "pairedSurfaceRisk": "None identified."
@@ -346,9 +361,25 @@
     "tsxFile": "src/components/ui/sidebar.tsx",
     "packageDeps": [],
     "exports": [
-      "Sidebar"
+      "Sidebar",
+      "SidebarProvider",
+      "SidebarHeader",
+      "SidebarLogo",
+      "SidebarBrand",
+      "SidebarContent",
+      "SidebarGroup",
+      "SidebarGroupLabel",
+      "SidebarMenuItem",
+      "SidebarSubItem",
+      "SidebarBadge",
+      "SidebarWatermark",
+      "SidebarFooter",
+      "SidebarToggle",
+      "useSidebar"
     ],
-    "notes": []
+    "notes": [
+      "SidebarWatermark: decorative, aria-hidden, pointer-events-none, hidden when collapsed. Pass the brand mark as children; colour via text-[var(--color-*)]."
+    ]
   },
   "storybook": {
     "file": "src/stories/Sidebar.stories.tsx",

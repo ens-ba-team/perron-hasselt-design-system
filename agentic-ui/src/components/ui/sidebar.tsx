@@ -94,7 +94,7 @@ export function Sidebar({
       aria-label="Sidebar navigation"
       data-collapsed={isCollapsed}
       className={cn(
-        "flex flex-col h-full transition-all duration-200",
+        "relative flex flex-col h-full overflow-hidden transition-all duration-200",
         // Width
         isCollapsed ? "w-14" : "w-60",
         // Type tokens
@@ -176,11 +176,11 @@ export function SidebarBrand({
 
   return (
     <div className={cn("flex flex-col gap-[var(--spacing-component-xxs)] min-w-0", className)}>
-      <span className="text-sm font-semibold truncate text-[var(--color-sidebar-foreground)]">
+      <span className="text-base font-medium leading-none truncate text-[var(--color-sidebar-foreground)]">
         {title}
       </span>
       {caption && (
-        <span className="text-xs truncate text-[var(--color-sidebar-foreground)] opacity-70">
+        <span className="text-xs font-medium leading-none truncate text-[var(--color-sidebar-foreground)]">
           {caption}
         </span>
       )}
@@ -244,8 +244,9 @@ export function SidebarGroupLabel({
   return (
     <div
       className={cn(
-        "text-xs font-medium uppercase tracking-wide",
-        "text-[var(--color-sidebar-foreground)] opacity-60",
+        "flex items-center h-6",
+        "text-xs font-medium leading-none",
+        "text-[var(--color-sidebar-foreground)]",
         "px-[var(--spacing-component-sm)]",
         className
       )}
@@ -284,8 +285,8 @@ export function SidebarMenuItem({
       className={cn(
         "flex items-center gap-[var(--spacing-component-sm)]",
         "rounded-[var(--radius-md)]",
-        "px-[var(--spacing-component-sm)] h-9",
-        "text-sm font-medium outline-none transition-colors",
+        "px-[var(--spacing-component-sm)] h-8",
+        "text-sm font-normal outline-none transition-colors",
         "text-[var(--color-sidebar-foreground)]",
         !active && !disabled && "hover:bg-[var(--color-sidebar-accent)] hover:text-[var(--color-sidebar-accent-foreground)]",
         active && "bg-[var(--color-sidebar-accent)] text-[var(--color-sidebar-accent-foreground)]",
@@ -374,6 +375,29 @@ export function SidebarBadge({
     >
       {children}
     </span>
+  )
+}
+
+// ─── Watermark (branding — NOT token-bound for shape) ─────────────────────────
+// Figma 95:15648 "Laag_1-2": brand mark, absolute bottom-left, 10% opacity, clipped by the
+// sidebar. Decorative only: aria-hidden, no pointer events. Hidden when collapsed.
+
+export function SidebarWatermark({
+  className,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  const { collapsed } = useSidebar()
+  if (collapsed) return null
+
+  return (
+    <div
+      aria-hidden="true"
+      className={cn("pointer-events-none absolute -bottom-4 left-0 opacity-10", className)}
+      {...props}
+    >
+      {children}
+    </div>
   )
 }
 

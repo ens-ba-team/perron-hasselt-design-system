@@ -6,6 +6,133 @@ Format: newest first. Each entry includes what changed, the migration path, and 
 
 > **Rule:** Every breaking change must be recorded here before it ships. A breaking change is any rename, removal, or token alias update that would cause a consumer (code, Figma instance, design spec) to break silently.
 
+> **For AI agents:** read the newest entry before changing tokens or the Perron prototype. Each Perron entry lists *Files*, *Decisions* (do not re-open without the designer) and *Open* items. If code and this file disagree, check Figma (`7Gn5GiMiQh1SAaTp9FiwNQ`) first, then ask; never "fix" a recorded decision silently.
+
+---
+
+## 2026-10-08 (Perron) — font, sidebar v2, form fields
+
+### Changed — tokens (Figma → repo)
+
+**`font-family/sans`** — `Inter` → **`Poppins`** ⚠️ visual change everywhere
+- Files: `Tokens/primitives.tokens.json`, `Tokens/tokens.tokens.json`, `agentic-ui/src/app/tokens.css`, `Tokens/output/css/variables.css`, `Tokens/output/css/tailwind-v4.css`, `agentic-ui/src/app/layout.tsx` (next/font Poppins 400/500/600/700), `agentic-ui/src/app/globals.css` (`--font-sans`, `--font-heading` → `--font-poppins`), `agentic-theme.md`.
+- Text style sizes, weights, line heights unchanged (checked all 17 styles).
+
+**`color/sidebar/accent`** — `color/navy/100` → **`color/zinc/50` (#fafafa)** ⚠️ alias update. `color/sidebar/active` follows (alias of accent). Supersedes the navy/100 entry below.
+
+### Changed — DS component `Sidebar` (`agentic-ui/src/components/ui/sidebar.tsx`), to match Figma `95:15648`
+
+| Part | Was | Now |
+|---|---|---|
+| `SidebarBrand` | title SemiBold 14, caption 12 @70% | title **Medium 16**, caption **Medium 12**, full opacity |
+| `SidebarGroupLabel` | 12 uppercase, tracking, @60% | **Medium 12**, sentence case, h-6 (24px) |
+| `SidebarMenuItem` | h-9 (36px), Medium | **h-8 (32px), Regular** |
+| `Sidebar` | — | `relative overflow-hidden` (clips the watermark) |
+| `SidebarWatermark` | — | **new**: absolute bottom-left (-16px), opacity 10%, aria-hidden, hidden when collapsed |
+- Migration: group labels no longer uppercase themselves; write them in sentence case.
+- Also updated: `sidebar.meta.json` (exports, tokens, changelog, Perron node note) and a new `Perron` story in `Sidebar.stories.tsx`. `validate-artifacts.mjs` and `drift-check.mjs` pass.
+
+### Changed — Perron prototype
+
+- Sidebar header: round `brand/primary` logo with white Perron mark + "Perron Hasselt" / "Admin System" (`COPY.app.caption`). Replaces the full wordmark (decision 4 superseded by Figma).
+- Watermark: Perron mark, `color/navy/200`, via `SidebarWatermark`.
+- New `_shared/components/brand.tsx` (`PerronMark`, SVG from Figma, `currentColor`).
+- New `_shared/components/form-fields.tsx`: `Field`, `ChoiceSelect`, `asOptions`, `staffOptions`, `NONE`. Removed the copies in `bookings/page.tsx`, `bookings/_components/booking-drawer.tsx`, `maintenance/page.tsx`, `maintenance/_components/maintenance-drawer.tsx`, `_shared/components/inline-cell.tsx`.
+
+### Decisions
+
+4. (updated) Sidebar branding = Figma Perron DS 95:15648: round logo mark + title/caption + watermark. Not the full wordmark.
+
+---
+
+## 2026-10-08 (Perron) — module split
+
+### Changed — prototype data, copy and store split per module
+
+| Was | Now |
+|---|---|
+| `_shared/mock-data.ts` (one file) | `_shared/types.ts` (entity types), `_shared/format.ts` (TODAY, STAFF, display helpers), `_shared/scenarios.ts` (cross-module seed + hard cases + public IDs), `<module>/data.ts` (choices, ID format, seed builder, module helpers) |
+| `_shared/copy.ts` (all strings) | `_shared/copy.ts` (app, nav, common, dev, `labels.*`) + `<module>/copy.ts` (`ROOMS_COPY`, `BOOKINGS_COPY` incl. `form`, `TENANTS_COPY`, `MAINTENANCE_COPY`) |
+| `_shared/store.tsx` (all state) | `<module>/store.ts` slices (`useRoomsSlice`, `useBookingsSlice`, `useTenantsSlice`, `useMaintenanceSlice`) composed in `_shared/store.tsx` (one Provider, same `usePerron()` API) |
+
+- Moved: booking helpers `contractMonths`, `contractTotal`, `myTask`, `overlapping`, `bookingId` → `bookings/data.ts`. `roomId` → `rooms/data.ts`, `tenantId` → `tenants/data.ts`, `maintenanceId` + seed → `maintenance/data.ts`.
+- Copy keys renamed: `COPY.<module>.columns` → `COPY.labels.<room|booking|tenant|maintenance>`; `COPY.bookingForm.*` → `BOOKINGS_COPY.form.*`; `bookingForm.errors.required` → `COPY.common.required`; `bookingForm.placeholders.room` → `COPY.common.selectRoom`; `bookingForm.fields.notes` → `COPY.common.notes`.
+- Seed output unchanged (verified: 41 rooms, 51 bookings, same view counts, same IDs).
+- Fix: `useRecordParam` opens a drawer only after client mount (`useSyncExternalStore`). A drawer rendered open on the server did not match the client.
+
+### Decisions (designer, 2026-10-08)
+
+6. Prototype split per module for data, copy, store and components. Exceptions kept in `_shared/`: entity types and field labels (shared vocabulary), cross-module hard cases (`scenarios.ts`), one composed Provider.
+
+### Notes for agents
+
+- Direct `?record=` links can look broken in a hidden browser pane: React 19.2 reveals streamed content with `requestAnimationFrame`, which is paused while hidden. Bring the pane to front before judging.
+
+---
+
+## 2026-10-08 (Perron)
+
+### Changed — tokens (Figma → repo sync)
+
+**`color/sidebar/background`** — alias `color/zinc/50` (#fafafa) → **`color/navy/50` (#e6ebf0)** ⚠️ alias update
+**`color/sidebar/accent`** — alias `color/zinc/100` (#f4f4f5) → **`color/navy/100` (#bfcdda)** ⚠️ alias update
+**`color/sidebar/active`** — unchanged alias (`→ color/sidebar/accent`), so it now resolves to #bfcdda
+- Source: Figma Perron file, collection Semantics, mode Light. Changed by the designer.
+- Other sidebar tokens checked and unchanged: foreground, primary, primary/foreground, accent/foreground, border, ring, active/foreground.
+- Files: `Tokens/semantics.tokens.json`, `Tokens/tokens.tokens.json`, `agentic-ui/src/app/tokens.css`, `Tokens/output/css/variables.css`, `Tokens/output/css/tailwind-v4.css` (CSS hand-patched: Style Dictionary build still broken). Log in `Machine Readable/perron-figma-sync.md`.
+- Dark mode not touched (out of scope).
+- Migration: none for code using `var(--color-sidebar-*)`. Anything hardcoding #fafafa / #f4f4f5 for the sidebar must switch to the token.
+- Contrast: accent vs background 1.35:1 (selected item visible), text on accent 10.9:1.
+
+### Added — Perron prototype (`agentic-ui/src/app/prototype/perron/`)
+
+Route `/prototype/perron`, dev server port 3100. Structure and conventions: `prototype/perron/README.md`.
+
+**Screens:** Rooms, Bookings, Tenants, Maintenance (Functional Spec §3). Each list: WordPress-style view links with counts, filters/search, sortable columns, inline edit in cells.
+**Shared CRUD pattern — record drawer** (`_shared/components/record-drawer.tsx`): right-side `Sheet`, opened by URL `?record=<ID>` (view/edit) or `?record=new` (create). Room drawer 880px, others 640px. Sections never collapse.
+**Record IDs** — one public ID per record, first column, the **only** link that opens a record:
+
+| Module | Prefix | Mock range |
+|---|---|---|
+| Room | `RM-` | 1001–1041 (sorted by room name) |
+| Tenant | `TN-` | from 2001 |
+| Booking | `PH-` | from 463502 |
+| Maintenance | `MT-` | from 3001 |
+
+Names (room, tenant, issue) are plain text, no cross-links.
+**Overlap check on booking create** (⚙️ Q27): contract dates above Room; overlapping rooms marked and listed last, never hidden; 2-person room with one booking shows "1 of 2 booked".
+**Cancel confirmation** (⚙️ JS): status → Cancelled asks for confirmation and reminds to update Available from. Room is never changed automatically (BR01).
+**Dev markers** `<DevNote q="Q27|Q28|Q29|Q30|Title|JS">` on everything that may need WordPress code.
+**Mock data** with hard cases (`HARD_CASES` in `_shared/mock-data.ts`); "today" frozen at 2026-10-08.
+**Prototype bar** above content: "Signed in as" switcher (Mina / Jef / An) and frozen date. Prototype-only.
+
+### Changed — Perron prototype structure
+
+- Split by module: `rooms/`, `bookings/`, `tenants/`, `maintenance/`, each `page.tsx` + `_components/`. Shared code in `_shared/` (`copy.ts`, `mock-data.ts`, `store.tsx`, `components/`).
+- All imports absolute (`@/app/prototype/perron/...`). No `../`.
+- Removed routes: `rooms/[id]`, `bookings/[id]`, `bookings/new`, `tenants/[id]`, `tenants/new`, `maintenance/new` → replaced by `?record=`.
+- Sidebar aligned with DS story: `SidebarGroupLabel` added, form controls removed from `SidebarFooter`.
+- Logo: full Perron wordmark on `brand/primary` instead of the 28×28 logo slot.
+
+### Decisions (designer, 2026-10-08) — do not re-open without asking
+
+1. CRUD uses the record drawer. README says "edit in place, no modals": inline edit stays on lists, full records use the drawer.
+2. Booking ID format `PH-` + number, starting 463502. Same pattern for `RM-`, `TN-`, `MT-`.
+3. ID is the only link to a record's detail.
+4. Sidebar uses the full Perron wordmark.
+5. Prototype is organised by module folders with `_shared/`.
+
+### Known issues
+
+- **`ComboboxField` (DS component) shows `value` instead of `label` in the input.** Prototype workaround in `bookings/_components/booking-drawer.tsx` (uses tenant name as value). Fix belongs in `agentic-ui/src/components/ui/combobox.tsx`, not yet done.
+- **`AlertDialogAction` has no `variant` prop** although its comment says to pass one. Prototype uses `asChild` + `<Button variant="destructive">`.
+
+### Open
+
+- ID prefixes (`RM-`, `TN-`, `MT-`, `PH-`) are not WordPress post IDs; showing them needs a custom field/column → candidate **Q31** for the Functional Spec.
+- Functional Spec and product README do not yet mention: record drawer, ID column on every list.
+- Committed on branch `perron/prototype-v1` (2026-10-08).
+
 ---
 
 ## 2026-06-03

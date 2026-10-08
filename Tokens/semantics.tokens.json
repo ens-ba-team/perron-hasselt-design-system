@@ -425,7 +425,7 @@
     },
     "sidebar": {
       "background": {
-        "$value": "{color.zinc.50}",
+        "$value": "{color.navy.50}",
         "$type": "color",
         "$description": "Intent: Background fill for the sidebar panel.\nUse when: Sidebar container background. Maps to shadcn --sidebar-background.\nDo not use: For page backgrounds — use color/background/default instead.\nStatus: Stable"
       },
@@ -445,7 +445,7 @@
         }
       },
       "accent": {
-        "$value": "{color.zinc.100}",
+        "$value": "{color.zinc.50}",
         "$type": "color",
         "$description": "Intent: Hover background for inactive sidebar nav items.\nUse when: Hover state on sidebar nav rows. Maps to shadcn --sidebar-accent.\nDo not use: As a fill for active items — use color/sidebar/primary instead.\nStatus: Stable",
         "foreground": {

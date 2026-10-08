@@ -16,7 +16,7 @@ The complete "look & feel" definition of the system, captured at the **primitive
 | **Neutral** | **Zinc** (cool gray) `/50–/950` | Overall mood — cool, modern, neutral |
 | **Radius base** | `8px` (`radius/base` = `radius/lg`) | Friendly — not sharp, not pill-soft |
 | **Spacing base** | `4px` unit, linear (8-pt grid) | Balanced density |
-| **Type** | Inter · Tailwind size scale | Clean, screen-native |
+| **Type** | Poppins (Perron, was Inter) · Tailwind size scale | Geometric, friendly |
 
 Mood summary: **cool-neutral, modern, friendly-professional** — shadcn/Tailwind-aligned defaults with the Perron navy + gold brand. The blue ramp is kept for Dark mode brand and is no longer the Light brand. See `Machine Readable/perron-figma-sync.md`.
 
@@ -156,7 +156,7 @@ shadcn/Tailwind-aligned. Tighten semantic mappings for denser/pro feel, loosen f
 
 | Aspect | Value |
 |---|---|
-| **Sans (UI)** | `Inter` |
+| **Sans (UI)** | `Poppins` (Perron, 2026-10-08) |
 | **Mono** | `Roboto Mono` |
 | **Serif** | `Georgia` |
 | **Size scale** | Tailwind default: 12 · 14 · 16 · 18 · 20 · 24 · 30 · 36 · 48 · 60 · 72 · 96 · 128 |

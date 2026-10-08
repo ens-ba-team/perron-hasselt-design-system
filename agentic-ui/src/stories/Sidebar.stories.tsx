@@ -12,7 +12,9 @@ import {
   SidebarSubItem,
   SidebarFooter,
   SidebarToggle,
+  SidebarWatermark,
 } from '@/components/ui/sidebar';
+import { PerronMark } from '@/app/prototype/perron/_shared/components/brand';
 import { BarChart01, Bell01, File06, HelpCircle, LayoutGrid01, Menu01, Settings01, Users01 } from "@untitledui/icons";
 
 // Source: sidebar.meta.json — Figma 95:18202 / 95:15354 / 95:15549 / 95:14510 / 95:14511
@@ -188,6 +190,40 @@ export const Floating: Story = {
         </Sidebar>
         <main className="flex-1 rounded-[var(--radius-lg)] bg-[var(--color-background-default)] p-6">
           <p className="text-sm text-[var(--color-text-secondary)]">Main content</p>
+        </main>
+      </div>
+    </SidebarProvider>
+  ),
+};
+
+// ─── Perron (Figma 95:15648) ──────────────────────────────────────────────────
+// Round brand/primary logo with the white Perron mark, title + caption, watermark.
+
+export const Perron: Story = {
+  render: () => (
+    <SidebarProvider>
+      <div className="flex h-[720px]">
+        <Sidebar type="default" collapsible="none">
+          <SidebarHeader>
+            <SidebarLogo className="rounded-full bg-[var(--color-brand-primary)] text-[var(--color-white)]">
+              <PerronMark className="h-[23px] w-[19px]" />
+            </SidebarLogo>
+            <SidebarBrand title="Perron Hasselt" caption="Admin System" />
+          </SidebarHeader>
+          <SidebarContent>
+            <SidebarGroup>
+              <SidebarGroupLabel>Manage</SidebarGroupLabel>
+              {navItems.map((item) => (
+                <SidebarMenuItem key={item.label} {...item} href="#" />
+              ))}
+            </SidebarGroup>
+          </SidebarContent>
+          <SidebarWatermark className="text-[var(--color-navy-200)]">
+            <PerronMark className="h-[245px] w-[201px]" />
+          </SidebarWatermark>
+        </Sidebar>
+        <main className="flex-1 p-6 bg-[var(--color-background-default)]">
+          <p className="text-sm text-[var(--color-text-secondary)]">Main content area</p>
         </main>
       </div>
     </SidebarProvider>

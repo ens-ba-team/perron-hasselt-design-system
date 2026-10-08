@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { LayoutGrid, Activity, Settings } from 'lucide-react';
+import { Activity, LayoutGrid01, Settings01 } from "@untitledui/icons";
 
 // Source: tabs.meta.json (category, variants, tokens)
 // Spec: Component markdown/Tabs.md — verified against Figma 59:17766 / 59:17793
@@ -87,9 +87,9 @@ export const WithIcon: Story = {
   render: () => (
     <Tabs defaultValue="overview" className="w-96">
       <TabsList>
-        <TabsTrigger value="overview"><LayoutGrid className="size-3.5" aria-hidden="true" />Overview</TabsTrigger>
+        <TabsTrigger value="overview"><LayoutGrid01 className="size-3.5" aria-hidden="true" />Overview</TabsTrigger>
         <TabsTrigger value="activity"><Activity className="size-3.5" aria-hidden="true" />Activity</TabsTrigger>
-        <TabsTrigger value="settings"><Settings className="size-3.5" aria-hidden="true" />Settings</TabsTrigger>
+        <TabsTrigger value="settings"><Settings01 className="size-3.5" aria-hidden="true" />Settings</TabsTrigger>
       </TabsList>
       <TabsContent value="overview" className="p-2">
         <p className="text-sm text-[var(--color-text-secondary)]">Overview content.</p>
@@ -110,9 +110,9 @@ export const LineWithIcon: Story = {
   render: () => (
     <Tabs defaultValue="details" className="w-96">
       <TabsList variant="line">
-        <TabsTrigger value="details" variant="line"><LayoutGrid className="size-3.5" aria-hidden="true" />Details</TabsTrigger>
+        <TabsTrigger value="details" variant="line"><LayoutGrid01 className="size-3.5" aria-hidden="true" />Details</TabsTrigger>
         <TabsTrigger value="history" variant="line"><Activity className="size-3.5" aria-hidden="true" />History</TabsTrigger>
-        <TabsTrigger value="comments" variant="line"><Settings className="size-3.5" aria-hidden="true" />Comments</TabsTrigger>
+        <TabsTrigger value="comments" variant="line"><Settings01 className="size-3.5" aria-hidden="true" />Comments</TabsTrigger>
       </TabsList>
       <TabsContent value="details" className="p-2">
         <p className="text-sm text-[var(--color-text-secondary)]">Details content.</p>

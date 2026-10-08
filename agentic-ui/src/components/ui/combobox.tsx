@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Combobox } from "@base-ui/react/combobox";
 import { cn } from "@/lib/utils";
-import { ChevronDown, Search, X } from "lucide-react";
+import { ChevronDown, SearchLg, X } from "@untitledui/icons";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -552,7 +552,7 @@ export function ComboboxField({
           )}
         >
           {isSearch && (
-            <Search
+            <SearchLg
               className={cn(
                 "h-4 w-4 shrink-0",
                 disabled

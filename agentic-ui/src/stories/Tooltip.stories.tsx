@@ -6,7 +6,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
-import { Archive, Share2, Trash2 } from 'lucide-react';
+import { Archive, Share07, Trash01 } from "@untitledui/icons";
 
 // Source: tooltip.meta.json — Figma 74:1682 (bubble) + 74:1699 (tooltip)
 //
@@ -112,7 +112,7 @@ export const IconButtons: Story = {
       <Tooltip>
         <TooltipTrigger asChild>
           <Button variant="outline" size="icon" aria-label="Share">
-            <Share2 className="h-4 w-4" />
+            <Share07 className="h-4 w-4" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Share</TooltipContent>
@@ -120,7 +120,7 @@ export const IconButtons: Story = {
       <Tooltip>
         <TooltipTrigger asChild>
           <Button variant="destructive" size="icon" aria-label="Delete">
-            <Trash2 className="h-4 w-4" />
+            <Trash01 className="h-4 w-4" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Delete</TooltipContent>

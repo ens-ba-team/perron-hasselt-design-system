@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Empty } from '@/components/ui/empty';
 import { Button } from '@/components/ui/button';
-import { Folder, Search, Inbox, Users, Calendar, Bell } from 'lucide-react';
+import { Bell01, Calendar, Folder, Inbox01, SearchLg, Users01 } from "@untitledui/icons";
 
 // Source: empty.meta.json — Figma verified 97:34667
 // Custom component — no shadcn/Radix base. Purely presentational.
@@ -62,7 +62,7 @@ export const Outline: Story = {
   render: () => (
     <Empty
       variant="outline"
-      icon={<Inbox className="h-5 w-5 text-[var(--color-background-default-foreground)]" />}
+      icon={<Inbox01 className="h-5 w-5 text-[var(--color-background-default-foreground)]" />}
       title="Your inbox is empty"
       description="You're all caught up. New messages will appear here."
     />
@@ -77,7 +77,7 @@ export const Background: Story = {
   render: () => (
     <Empty
       variant="background"
-      icon={<Search className="h-5 w-5 text-[var(--color-background-default-foreground)]" />}
+      icon={<SearchLg className="h-5 w-5 text-[var(--color-background-default-foreground)]" />}
       title="No results found"
       description="Try adjusting your search terms or filters."
       secondaryAction={<Button variant="outline">Clear filters</Button>}
@@ -105,7 +105,7 @@ export const ReadOnly: Story = {
   render: () => (
     <Empty
       variant="outline"
-      icon={<Users className="h-5 w-5 text-[var(--color-background-default-foreground)]" />}
+      icon={<Users01 className="h-5 w-5 text-[var(--color-background-default-foreground)]" />}
       title="No team members"
       description="Ask your admin to invite you to a team to see members here."
     />
@@ -134,7 +134,7 @@ export const AllVariants: Story = {
         <Empty
           key={variant}
           variant={variant}
-          icon={<Bell className="h-5 w-5 text-[var(--color-background-default-foreground)]" />}
+          icon={<Bell01 className="h-5 w-5 text-[var(--color-background-default-foreground)]" />}
           title="No notifications"
           description="You're all caught up."
           primaryAction={<Button size="sm">View settings</Button>}
@@ -155,7 +155,7 @@ export const InsideCard: Story = {
       </div>
       <Empty
         variant="default"
-        icon={<Users className="h-5 w-5 text-[var(--color-background-default-foreground)]" />}
+        icon={<Users01 className="h-5 w-5 text-[var(--color-background-default-foreground)]" />}
         title="No members yet"
         description="Invite people to join your team."
         primaryAction={<Button size="sm">Invite member</Button>}

@@ -6,8 +6,8 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { ArrowUp, ArrowDown, Ellipsis, TrendingUp, TrendingDown } from 'lucide-react';
+import { Avatar } from '@/components/ui/avatar';
+import { ArrowDown, ArrowUp, DotsHorizontal, TrendDown01, TrendUp01 } from "@untitledui/icons";
 
 // Source: table.meta.json — Figma verified 124:8531 / 105:25960 / 105:29158
 //
@@ -183,9 +183,7 @@ export const WithAvatars: Story = {
             <TableRow key={m.name}>
               <TableCell>
                 <div className="flex items-center gap-3">
-                  <Avatar size="sm" className="shrink-0">
-                    <AvatarFallback>{m.initials}</AvatarFallback>
-                  </Avatar>
+                  <Avatar size="sm" className="shrink-0" name={m.name} fallback={m.initials} />
                   <span className="font-medium">{m.name}</span>
                 </div>
               </TableCell>
@@ -195,7 +193,7 @@ export const WithAvatars: Story = {
               </TableCell>
               <TableCell>
                 <Button size="sm" variant="outline">
-                  <Ellipsis className="h-4 w-4" />
+                  <DotsHorizontal className="h-4 w-4" />
                 </Button>
               </TableCell>
             </TableRow>
@@ -234,8 +232,8 @@ export const WithTrends: Story = {
               <TableCell>
                 <span className={`inline-flex items-center gap-1 text-sm font-medium ${m.up ? "text-[var(--color-text-success)]" : "text-[var(--color-text-invalid)]"}`}>
                   {m.up
-                    ? <TrendingUp className="h-4 w-4 text-[var(--color-icon-success)]" />
-                    : <TrendingDown className="h-4 w-4 text-[var(--color-icon-danger)]" />}
+                    ? <TrendUp01 className="h-4 w-4 text-[var(--color-icon-success)]" />
+                    : <TrendDown01 className="h-4 w-4 text-[var(--color-icon-danger)]" />}
                   {m.change}
                 </span>
               </TableCell>

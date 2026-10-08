@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { CircleCheck, Search } from 'lucide-react';
+import { CheckCircle, SearchLg } from "@untitledui/icons";
 
 // Source: input.meta.json (Textarea = Type=Textarea in the Figma input component set)
 // Spec: Component markdown/Input.md — Token Bindings section
@@ -116,7 +116,7 @@ export const WithFieldDisabled: Story = {
 export const WithLeadingIcon: Story = {
   render: () => (
     <div className="relative w-80">
-      <Search
+      <SearchLg
         className="pointer-events-none absolute left-[var(--spacing-component-md)] top-[var(--spacing-component-sm)] h-4 w-4 text-[var(--color-icon-default)]"
         aria-hidden="true"
       />
@@ -132,7 +132,7 @@ export const WithTrailingIcon: Story = {
   render: () => (
     <div className="relative w-80">
       <Textarea className="pr-9" placeholder="Type your message here." />
-      <CircleCheck
+      <CheckCircle
         className="pointer-events-none absolute right-[var(--spacing-component-md)] top-[var(--spacing-component-sm)] h-4 w-4 text-[var(--color-icon-success)]"
         aria-hidden="true"
       />
@@ -152,7 +152,7 @@ export const WithHeader: Story = {
       style={{ resize: 'vertical', minHeight: '160px' }}
     >
       <div className="flex shrink-0 items-center gap-[var(--spacing-component-sm)] px-[var(--spacing-component-md)] py-[var(--spacing-component-xs)]">
-        <Search className="h-4 w-4 shrink-0 text-[var(--color-icon-default)]" aria-hidden="true" />
+        <SearchLg className="h-4 w-4 shrink-0 text-[var(--color-icon-default)]" aria-hidden="true" />
         <span className="text-sm text-[var(--color-background-default-foreground)]">Notes</span>
       </div>
       <Textarea className="flex-1 resize-none rounded-none border-0 bg-transparent focus-visible:outline-none focus-visible:[box-shadow:none]" placeholder="Type your message here." />
@@ -208,7 +208,7 @@ export const WithHeaderAndFooter: Story = {
         style={{ resize: 'vertical', minHeight: '180px' }}
       >
         <div className="flex shrink-0 items-center gap-[var(--spacing-component-sm)] px-[var(--spacing-component-md)] py-[var(--spacing-component-xs)]">
-          <Search className="h-4 w-4 shrink-0 text-[var(--color-icon-default)]" aria-hidden="true" />
+          <SearchLg className="h-4 w-4 shrink-0 text-[var(--color-icon-default)]" aria-hidden="true" />
           <span className="text-sm text-[var(--color-background-default-foreground)]">Notes</span>
         </div>
         <Textarea

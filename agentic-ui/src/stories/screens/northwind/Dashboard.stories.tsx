@@ -10,16 +10,7 @@ import {
   TableHead,
   TableCell,
 } from '@/components/ui/table';
-import {
-  ShoppingCart,
-  Users,
-  Package,
-  TrendingUp,
-  TrendingDown,
-  DollarSign,
-  CircleCheck,
-  Clock,
-} from 'lucide-react';
+import { CheckCircle, Clock, CurrencyDollar, Package, ShoppingCart01, TrendDown01, TrendUp01, Users01 } from "@untitledui/icons";
 
 // ─── Northwind — Dashboard ────────────────────────────────────────────────────
 // Sales overview: KPI cards + recent orders table + activity feed.
@@ -34,17 +25,17 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const metrics = [
-  { label: 'Total revenue', value: '$128,420', change: '+12.5%', up: true, icon: DollarSign },
-  { label: 'Orders', value: '1,284', change: '+8.2%', up: true, icon: ShoppingCart },
-  { label: 'New customers', value: '342', change: '-3.1%', up: false, icon: Users },
+  { label: 'Total revenue', value: '$128,420', change: '+12.5%', up: true, icon: CurrencyDollar },
+  { label: 'Orders', value: '1,284', change: '+8.2%', up: true, icon: ShoppingCart01 },
+  { label: 'New customers', value: '342', change: '-3.1%', up: false, icon: Users01 },
   { label: 'Avg. order value', value: '$99.40', change: '+2.4%', up: true, icon: Package },
 ];
 
 type OrderStatus = 'Paid' | 'Pending' | 'Refunded' | 'Processing';
-const statusVariant: Record<OrderStatus, 'success' | 'warning' | 'danger' | 'secondary'> = {
+const statusVariant: Record<OrderStatus, 'success' | 'warning' | 'error' | 'secondary'> = {
   Paid: 'success',
   Pending: 'warning',
-  Refunded: 'danger',
+  Refunded: 'error',
   Processing: 'secondary',
 };
 
@@ -57,9 +48,9 @@ const orders: { id: string; customer: string; status: OrderStatus; total: string
 ];
 
 const activity = [
-  { icon: CircleCheck, text: 'Order #1042 marked as paid', time: '5m ago' },
-  { icon: ShoppingCart, text: 'New order #1041 from Grace Hopper', time: '22m ago' },
-  { icon: Users, text: 'Katherine Johnson created an account', time: '1h ago' },
+  { icon: CheckCircle, text: 'Order #1042 marked as paid', time: '5m ago' },
+  { icon: ShoppingCart01, text: 'New order #1041 from Grace Hopper', time: '22m ago' },
+  { icon: Users01, text: 'Katherine Johnson created an account', time: '1h ago' },
   { icon: Clock, text: 'Order #1040 awaiting payment', time: '3h ago' },
 ];
 
@@ -70,7 +61,7 @@ function DashboardContent() {
       <div className="grid grid-cols-1 gap-[var(--spacing-component-lg)] sm:grid-cols-2 lg:grid-cols-4">
         {metrics.map((m) => {
           const Icon = m.icon;
-          const Trend = m.up ? TrendingUp : TrendingDown;
+          const Trend = m.up ? TrendUp01 : TrendDown01;
           return (
             <Card key={m.label}>
               <CardContent className="gap-[var(--spacing-component-xs)]">

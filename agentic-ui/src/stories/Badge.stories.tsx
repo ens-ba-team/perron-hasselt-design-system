@@ -1,4 +1,4 @@
-import { Check, Clock, Info, X } from 'lucide-react';
+import { Check, Clock, InfoCircle, X } from "@untitledui/icons";
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Badge } from '@/components/ui/badge';
 
@@ -123,8 +123,8 @@ export const WithTrailingIcon: Story = {
 export const InfoWithIcon: Story = {
   render: () => (
     <Badge variant="blue" shape="pill">
-      <Info aria-hidden="true" />
-      Info
+      <InfoCircle aria-hidden="true" />
+      InfoCircle
     </Badge>
   ),
 };

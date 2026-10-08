@@ -11,17 +11,7 @@ import {
   SidebarMenuItem,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import {
-  LayoutDashboard,
-  ShoppingCart,
-  Users,
-  Package,
-  FileText,
-  BarChart3,
-  Settings,
-  Search,
-  Bell,
-} from 'lucide-react';
+import { BarChart01, Bell01, File06, LayoutAlt01, Package, SearchLg, Settings01, ShoppingCart01, Users01 } from "@untitledui/icons";
 
 // ─── NorthwindShell ───────────────────────────────────────────────────────────
 // The single, reusable app frame: sidebar nav + topbar. Screens render their
@@ -30,11 +20,11 @@ import {
 //   <NorthwindShell active="Dashboard" title="Dashboard"> <DashboardContent/> </NorthwindShell>
 
 const mainNav = [
-  { label: 'Dashboard', icon: LayoutDashboard },
-  { label: 'Orders', icon: ShoppingCart, badge: 12 },
-  { label: 'Customers', icon: Users },
+  { label: 'Dashboard', icon: LayoutAlt01 },
+  { label: 'Orders', icon: ShoppingCart01, badge: 12 },
+  { label: 'Customers', icon: Users01 },
   { label: 'Products', icon: Package },
-  { label: 'Invoices', icon: FileText },
+  { label: 'Invoices', icon: File06 },
 ] as const;
 
 export function NorthwindShell({
@@ -78,12 +68,12 @@ export function NorthwindShell({
             </SidebarGroup>
             <SidebarGroup>
               <SidebarGroupLabel>Insights</SidebarGroupLabel>
-              <SidebarMenuItem icon={<BarChart3 />} label="Reports" href="#" active={active === 'Reports'} />
+              <SidebarMenuItem icon={<BarChart01 />} label="Reports" href="#" active={active === 'Reports'} />
             </SidebarGroup>
           </SidebarContent>
 
           <SidebarFooter>
-            <SidebarMenuItem icon={<Settings />} label="Settings" href="#" active={active === 'Settings'} />
+            <SidebarMenuItem icon={<Settings01 />} label="Settings" href="#" active={active === 'Settings'} />
           </SidebarFooter>
         </Sidebar>
 
@@ -93,14 +83,14 @@ export function NorthwindShell({
             <h1 className="text-base font-semibold text-[var(--color-background-default-foreground)]">{title ?? active}</h1>
             <div className="flex items-center gap-[var(--spacing-component-sm)]">
               <div className="flex h-9 w-64 items-center gap-2 rounded-[var(--radius-md)] border border-[var(--color-input-border)] bg-[var(--color-input-bg)] px-[var(--spacing-component-md)]">
-                <Search className="size-4 text-[var(--color-icon-default)]" aria-hidden="true" />
+                <SearchLg className="size-4 text-[var(--color-icon-default)]" aria-hidden="true" />
                 <span className="text-sm text-[var(--color-input-placeholder)]">Search…</span>
               </div>
               <button
                 aria-label="Notifications"
                 className="relative flex h-9 w-9 items-center justify-center rounded-[var(--radius-md)] text-[var(--color-icon-default)] hover:bg-[var(--color-background-accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-ring)]"
               >
-                <Bell className="size-4" aria-hidden="true" />
+                <Bell01 className="size-4" aria-hidden="true" />
                 <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-[var(--color-brand-primary)]" />
               </button>
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-surface-muted)] text-xs font-medium text-[var(--color-surface-muted-foreground)]">

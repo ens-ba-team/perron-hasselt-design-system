@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
 import { Alert } from '@/components/ui/alert'
-import { ChevronLeft, CircleCheck } from 'lucide-react'
+import { CheckCircle, ChevronLeft } from "@untitledui/icons"
 import { safetyQuestions } from '../../mock-data'
 
 export default function TBMReviewPage() {
@@ -40,7 +40,7 @@ export default function TBMReviewPage() {
         {/* TBM Summary */}
         <div className="p-4 rounded-[var(--radius-lg)] border border-[var(--color-border-default)] bg-[var(--color-surface-default)] flex flex-col gap-3">
           <div className="flex items-center gap-2">
-            <CircleCheck className="h-4 w-4 text-[var(--color-icon-success)]" />
+            <CheckCircle className="h-4 w-4 text-[var(--color-icon-success)]" />
             <p className="text-sm font-semibold text-[var(--color-background-default-foreground)]">Toolbox Meeting Submitted</p>
           </div>
           <p className="text-xs text-[var(--color-text-secondary)]">

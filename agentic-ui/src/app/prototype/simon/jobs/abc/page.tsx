@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
-import { ChevronLeft, MapPin, Clock } from 'lucide-react'
+import { ChevronLeft, Clock, MarkerPin01 } from "@untitledui/icons"
 
 export default function JobPlannerPage() {
   const router = useRouter()
@@ -22,7 +22,7 @@ export default function JobPlannerPage() {
         <div className="flex-1 min-w-0">
           <h1 className="text-base font-semibold text-[var(--color-background-default-foreground)] truncate">{job.customer}</h1>
           <div className="flex items-center gap-1 mt-0.5">
-            <MapPin className="h-3 w-3 text-[var(--color-text-secondary)]" />
+            <MarkerPin01 className="h-3 w-3 text-[var(--color-text-secondary)]" />
             <p className="text-xs text-[var(--color-text-secondary)] truncate">{job.address}</p>
           </div>
         </div>

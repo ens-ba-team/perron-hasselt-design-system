@@ -3,7 +3,7 @@
 import * as React from "react"
 import { DayPicker, CaptionProps, useNavigation } from "react-day-picker"
 import { format, setMonth, setYear, startOfMonth } from "date-fns"
-import { ChevronLeft, ChevronRight, ChevronDown, Clock } from "lucide-react"
+import { ChevronDown, ChevronLeft, ChevronRight, Clock } from "@untitledui/icons"
 import * as Popover from "@radix-ui/react-popover"
 import { cn } from "@/lib/utils"
 

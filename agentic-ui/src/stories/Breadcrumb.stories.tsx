@@ -8,7 +8,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import { House } from 'lucide-react';
+import { Home01 } from "@untitledui/icons";
 
 // Source: breadcrumb.meta.json (category, variants, tokens)
 // Spec: Component markdown/Breadcrumb.md — verified against Figma 291:223 / 52:13919
@@ -58,7 +58,7 @@ export const WithIcon: Story = {
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink href="/" className="inline-flex items-center gap-[var(--spacing-component-xs)]">
-            <House className="h-4 w-4 text-[var(--color-icon-default)]" aria-hidden="true" />
+            <Home01 className="h-4 w-4 text-[var(--color-icon-default)]" aria-hidden="true" />
             Home
           </BreadcrumbLink>
         </BreadcrumbItem>

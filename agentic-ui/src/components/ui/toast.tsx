@@ -1,12 +1,6 @@
 "use client"
 
-import {
-  CircleAlert,
-  TriangleAlert,
-  CircleCheck,
-  Info,
-  Loading02,
-} from "lucide-react"
+import { AlertCircle, AlertTriangle, CheckCircle, InfoCircle, Loading02 } from "@untitledui/icons"
 import { useTheme } from "next-themes"
 import { Toaster as Sonner } from "sonner"
 
@@ -36,16 +30,16 @@ const Toaster = ({ ...props }: ToasterProps) => {
       className="toaster group"
       icons={{
         success: (
-          <CircleCheck className="h-4 w-4 text-[var(--color-icon-success)]" />
+          <CheckCircle className="h-4 w-4 text-[var(--color-icon-success)]" />
         ),
         info: (
-          <Info className="h-4 w-4 text-[var(--color-surface-overlay-foreground)]" />
+          <InfoCircle className="h-4 w-4 text-[var(--color-surface-overlay-foreground)]" />
         ),
         warning: (
-          <TriangleAlert className="h-4 w-4 text-[var(--color-icon-warning)]" />
+          <AlertTriangle className="h-4 w-4 text-[var(--color-icon-warning)]" />
         ),
         error: (
-          <CircleAlert className="h-4 w-4 text-[var(--color-icon-danger)]" />
+          <AlertCircle className="h-4 w-4 text-[var(--color-icon-danger)]" />
         ),
         loading: (
           <Loading02 className="h-4 w-4 animate-spin text-[var(--color-surface-overlay-foreground)]" />

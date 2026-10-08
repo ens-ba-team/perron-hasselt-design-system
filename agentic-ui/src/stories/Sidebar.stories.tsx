@@ -13,16 +13,7 @@ import {
   SidebarFooter,
   SidebarToggle,
 } from '@/components/ui/sidebar';
-import {
-  LayoutGrid,
-  BarChart01,
-  Users,
-  Settings01,
-  HelpCircle,
-  Bell,
-  File06,
-  Menu01,
-} from 'lucide-react';
+import { BarChart01, Bell01, File06, HelpCircle, LayoutGrid01, Menu01, Settings01, Users01 } from "@untitledui/icons";
 
 // Source: sidebar.meta.json — Figma 95:18202 / 95:15354 / 95:15549 / 95:14510 / 95:14511
 //
@@ -46,10 +37,10 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const navItems = [
-  { icon: <LayoutGrid className="h-4 w-4" />, label: 'Dashboard', active: true },
+  { icon: <LayoutGrid01 className="h-4 w-4" />, label: 'Dashboard', active: true },
   { icon: <BarChart01 className="h-4 w-4" />, label: 'Analytics', badge: '3' },
   { icon: <File06 className="h-4 w-4" />, label: 'Projects' },
-  { icon: <Users className="h-4 w-4" />, label: 'Team' },
+  { icon: <Users01 className="h-4 w-4" />, label: 'Team' },
 ];
 
 const bottomItems = [
@@ -83,7 +74,7 @@ export const Default: Story = {
 
             <SidebarGroup>
               <SidebarGroupLabel>Workspace</SidebarGroupLabel>
-              <SidebarMenuItem icon={<Bell className="h-4 w-4" />} label="Notifications" href="#" badge="12" />
+              <SidebarMenuItem icon={<Bell01 className="h-4 w-4" />} label="Notifications" href="#" badge="12" />
             </SidebarGroup>
           </SidebarContent>
 
@@ -119,12 +110,12 @@ export const WithSubItems: Story = {
 
           <SidebarContent>
             <SidebarGroup>
-              <SidebarMenuItem icon={<LayoutGrid className="h-4 w-4" />} label="Dashboard" href="#" active />
+              <SidebarMenuItem icon={<LayoutGrid01 className="h-4 w-4" />} label="Dashboard" href="#" active />
               <SidebarMenuItem icon={<BarChart01 className="h-4 w-4" />} label="Analytics" href="#" />
               <SidebarSubItem label="Overview" href="#" />
               <SidebarSubItem label="Reports" href="#" active />
               <SidebarSubItem label="Exports" href="#" />
-              <SidebarMenuItem icon={<Users className="h-4 w-4" />} label="Team" href="#" />
+              <SidebarMenuItem icon={<Users01 className="h-4 w-4" />} label="Team" href="#" />
             </SidebarGroup>
           </SidebarContent>
         </Sidebar>

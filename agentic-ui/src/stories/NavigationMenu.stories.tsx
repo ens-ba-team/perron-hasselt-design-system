@@ -8,7 +8,7 @@ import {
   NavigationMenuTrigger,
   NavigationMenuPanelLink,
 } from '@/components/ui/navigation-menu';
-import { LayoutGrid, BookOpen, Users, DollarSign, Star } from 'lucide-react';
+import { BookOpen01, CurrencyDollar, LayoutGrid01, Star01, Users01 } from "@untitledui/icons";
 
 // Source: navigation-menu.meta.json — Figma 127:193 / 127:353 / 127:157
 //
@@ -44,7 +44,7 @@ export const ListPanel: Story = {
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger>
-            <LayoutGrid className="h-4 w-4" />
+            <LayoutGrid01 className="h-4 w-4" />
             Products
           </NavigationMenuTrigger>
           <NavigationMenuContent>
@@ -80,7 +80,7 @@ export const GridPanel: Story = {
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger>
-            <BookOpen className="h-4 w-4" />
+            <BookOpen01 className="h-4 w-4" />
             Resources
           </NavigationMenuTrigger>
           <NavigationMenuContent>
@@ -117,7 +117,7 @@ export const FeaturedPanel: Story = {
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger>
-            <Star className="h-4 w-4" />
+            <Star01 className="h-4 w-4" />
             Featured
           </NavigationMenuTrigger>
           <NavigationMenuContent>
@@ -150,7 +150,7 @@ export const LinkType: Story = {
             href="#"
             className="inline-flex items-center gap-[var(--spacing-component-xs)] rounded-[var(--radius-md)] px-[var(--spacing-component-md)] py-[var(--spacing-component-sm)] text-sm font-medium text-[var(--color-background-default-foreground)] hover:bg-[var(--color-background-accent)] hover:text-[var(--color-background-accent-foreground)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-ring)]"
           >
-            <DollarSign className="h-4 w-4" />
+            <CurrencyDollar className="h-4 w-4" />
             Pricing
           </NavigationMenuLink>
         </NavigationMenuItem>
@@ -168,7 +168,7 @@ export const FullNavBar: Story = {
         {/* Trigger — List panel */}
         <NavigationMenuItem>
           <NavigationMenuTrigger>
-            <LayoutGrid className="h-4 w-4" />
+            <LayoutGrid01 className="h-4 w-4" />
             Products
           </NavigationMenuTrigger>
           <NavigationMenuContent>
@@ -183,7 +183,7 @@ export const FullNavBar: Story = {
         {/* Trigger — Grid panel */}
         <NavigationMenuItem>
           <NavigationMenuTrigger>
-            <Users className="h-4 w-4" />
+            <Users01 className="h-4 w-4" />
             Resources
           </NavigationMenuTrigger>
           <NavigationMenuContent>
@@ -206,7 +206,7 @@ export const FullNavBar: Story = {
             href="#"
             className="inline-flex items-center gap-[var(--spacing-component-xs)] rounded-[var(--radius-md)] px-[var(--spacing-component-md)] py-[var(--spacing-component-sm)] text-sm font-medium text-[var(--color-background-default-foreground)] hover:bg-[var(--color-background-accent)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-ring)]"
           >
-            <DollarSign className="h-4 w-4" />
+            <CurrencyDollar className="h-4 w-4" />
             Pricing
           </NavigationMenuLink>
         </NavigationMenuItem>
@@ -223,7 +223,7 @@ export const DisabledLink: Story = {
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger>
-            <BookOpen className="h-4 w-4" />
+            <BookOpen01 className="h-4 w-4" />
             Plans
           </NavigationMenuTrigger>
           <NavigationMenuContent>

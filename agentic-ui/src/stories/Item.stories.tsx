@@ -1,16 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Item } from '@/components/ui/item';
 import { Button } from '@/components/ui/button';
-import {
-  Folder,
-  File05,
-  User01,
-  Settings01,
-  BellRinging01,
-  ChevronRight,
-  Home01,
-  BarChart01,
-} from 'lucide-react';
+import { BarChart01, BellRinging01, ChevronRight, File05, Folder, Home01, Settings01, User01 } from "@untitledui/icons";
 
 // Source: item.meta.json — Figma verified 65:815
 // Custom component — no shadcn base.

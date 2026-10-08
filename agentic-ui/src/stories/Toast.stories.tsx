@@ -119,7 +119,7 @@ export const Promise: Story = {
       variant="outline"
       onClick={() => {
         const uploadFile = () =>
-          new Promise<void>((resolve) => setTimeout(resolve, 2000));
+          new globalThis.Promise<void>((resolve) => setTimeout(resolve, 2000));
 
         toast.promise(uploadFile(), {
           loading: 'Uploading file…',

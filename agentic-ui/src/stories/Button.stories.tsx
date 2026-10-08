@@ -1,4 +1,4 @@
-import { Ellipsis, Plus, Trash2 } from 'lucide-react';
+import { DotsHorizontal, Plus, Trash01 } from "@untitledui/icons";
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Button } from '@/components/ui/button';
 import {
@@ -109,7 +109,7 @@ export const IconOnly: Story = {
       <Tooltip>
         <TooltipTrigger asChild>
           <Button size="icon" aria-label="More actions">
-            <Ellipsis aria-hidden="true" />
+            <DotsHorizontal aria-hidden="true" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>More actions</TooltipContent>
@@ -124,7 +124,7 @@ export const DestructiveWithConfirmation: Story = {
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button variant="destructive">
-          <Trash2 aria-hidden="true" />
+          <Trash01 aria-hidden="true" />
           Delete project
         </Button>
       </AlertDialogTrigger>

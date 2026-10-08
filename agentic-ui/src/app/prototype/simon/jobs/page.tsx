@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { jobs } from '../mock-data'
 import { Badge } from '@/components/ui/badge'
-import { ChevronLeft, MapPin as MapPin, Clock, Calendar } from 'lucide-react'
+import { Calendar, ChevronLeft, Clock, MarkerPin01 as MapPin } from "@untitledui/icons"
 
 const statusVariant: Record<string, 'success' | 'blue' | 'default'> = {
   'In Progress': 'success',

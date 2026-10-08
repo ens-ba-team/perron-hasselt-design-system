@@ -27,7 +27,7 @@ import {
   PaginationNext,
   PaginationEllipsis,
 } from '@/components/ui/pagination';
-import { Plus, Search, Ellipsis } from 'lucide-react';
+import { DotsHorizontal, Plus, SearchLg } from "@untitledui/icons";
 
 // ─── Northwind — Orders (list) ────────────────────────────────────────────────
 // Data-table screen: page header + toolbar (search + status filter) + table +
@@ -42,10 +42,10 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 type OrderStatus = 'Paid' | 'Pending' | 'Refunded' | 'Processing';
-const statusVariant: Record<OrderStatus, 'success' | 'warning' | 'danger' | 'secondary'> = {
+const statusVariant: Record<OrderStatus, 'success' | 'warning' | 'error' | 'secondary'> = {
   Paid: 'success',
   Pending: 'warning',
-  Refunded: 'danger',
+  Refunded: 'error',
   Processing: 'secondary',
 };
 
@@ -80,7 +80,7 @@ function OrdersContent() {
       {/* Toolbar */}
       <div className="flex items-center gap-[var(--spacing-component-sm)]">
         <div className="relative max-w-xs flex-1">
-          <Search className="pointer-events-none absolute left-[var(--spacing-component-md)] top-1/2 size-4 -translate-y-1/2 text-[var(--color-icon-default)]" aria-hidden="true" />
+          <SearchLg className="pointer-events-none absolute left-[var(--spacing-component-md)] top-1/2 size-4 -translate-y-1/2 text-[var(--color-icon-default)]" aria-hidden="true" />
           <Input placeholder="Search orders…" className="pl-9" />
         </div>
         <Select>
@@ -126,7 +126,7 @@ function OrdersContent() {
                     aria-label={`Actions for order ${o.id}`}
                     className="flex size-7 items-center justify-center rounded-[var(--radius-md)] text-[var(--color-icon-default)] hover:bg-[var(--color-background-accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-ring)]"
                   >
-                    <Ellipsis className="size-4" aria-hidden="true" />
+                    <DotsHorizontal className="size-4" aria-hidden="true" />
                   </button>
                 </TableCell>
               </TableRow>

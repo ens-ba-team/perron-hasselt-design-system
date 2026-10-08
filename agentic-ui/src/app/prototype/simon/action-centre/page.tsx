@@ -2,20 +2,20 @@
 
 import { useRouter } from 'next/navigation'
 import { worker } from '../mock-data'
-import { CalendarDays, Briefcase } from 'lucide-react'
+import { Briefcase01, CalendarDate } from "@untitledui/icons"
 
 export default function ActionCentrePage() {
   const router = useRouter()
 
   const cards = [
     {
-      icon: <Briefcase className="h-6 w-6 text-[var(--color-brand-primary)]" />,
+      icon: <Briefcase01 className="h-6 w-6 text-[var(--color-brand-primary)]" />,
       title: 'Marketing Session',
       description: 'Start and manage marketing activities.',
       onClick: () => alert('Marketing Session — not in scope for this prototype.'),
     },
     {
-      icon: <CalendarDays className="h-6 w-6 text-[var(--color-brand-primary)]" />,
+      icon: <CalendarDate className="h-6 w-6 text-[var(--color-brand-primary)]" />,
       title: 'My Schedule',
       description: 'View your assigned calendar and jobs.',
       onClick: () => router.push('/prototype/simon/jobs'),

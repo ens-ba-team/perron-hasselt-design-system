@@ -10,6 +10,8 @@ The design system for **Perron Hasselt Room Management**, a back office for mana
 | **Figma** | [Perron Hasselt Design System](https://www.figma.com/design/7Gn5GiMiQh1SAaTp9FiwNQ) · key `7Gn5GiMiQh1SAaTp9FiwNQ` |
 | **Code** | `agentic-ui/`: Next.js + Tailwind v4 + shadcn/ui + Storybook |
 | **Tokens** | `Tokens/`: DTCG format, 3 tiers |
+| **Product docs** | [`docs/product/`](docs/product/): BRD, Functional Spec, SOP |
+| **Product FigJam** | [Business rules, sitemap, data model, lifecycle](https://www.figma.com/board/RnN40RUrCANewi4MBP60yU): source of truth for product rules |
 | **Index for AI agents** | [`llms.txt`](llms.txt) |
 
 ---
@@ -22,7 +24,11 @@ The design system for **Perron Hasselt Room Management**, a back office for mana
 | Components in the Perron Figma file | 🟡 Only **Button** so far. The other 35 still live in the original Agentic file |
 | Components in code | ✅ All 36 components (inherited from Agentic) |
 | **Dark mode** | ⏸ **Out of scope for now.** Don't audit, sync, or design for Dark |
-| Token build (`sd.build.mjs`) | 🔴 Broken upstream. CSS is being patched by hand, see [section 7](#7-technical-notes) |
+| Token build (`sd.build.mjs`) | 🔴 Broken upstream. CSS is being patched by hand, see [section 8](#8-technical-notes) |
+| Install | 🟡 Works with `npm ci --legacy-peer-deps` (upstream lockfile conflict) |
+| `next build` | ✅ Passes (fixed 2026-10-08) |
+| Product docs | ✅ BRD, Functional Spec, SOP v0.1 (2026-10-08) in `docs/product/` |
+| Perron prototype | ⬜ Not started. Will live in `agentic-ui/src/app/prototype/perron/` |
 
 The full Figma ↔ repo comparison lives in [`Machine Readable/perron-figma-sync.md`](Machine%20Readable/perron-figma-sync.md).
 
@@ -86,8 +92,9 @@ More detail: [`agentic-design-system.md`](agentic-design-system.md).
 cd agentic-ui
 ```
 ```bash
-npm install
+npm ci --legacy-peer-deps
 ```
+`--legacy-peer-deps` is needed: the upstream lockfile pins `@storybook/addon-themes@10.4.6` against `storybook@10.4.1`, which fails npm's peer check.
 ```bash
 npm run storybook
 ```
@@ -106,35 +113,94 @@ node "Machine Readable/validate-artifacts.mjs"
 
 ---
 
-## 6. Applying it to Room Management
+## 6. The product in one page
 
-The design system is a general toolkit. The product has its own constraints, and **when the two conflict, the product rule wins**:
+Read this before designing or building any Room Management screen. Details: [`docs/product/`](docs/product/).
+
+**What it is.** A WordPress back office (ACF Pro + Admin Columns Pro) for **41 units**: Perron 19 (29 rooms) and Perron 17 (12 studios). **3 admin accounts** with equal rights. Tenants have **no account**. No payment tracking, no online booking.
+
+**The one question it answers:** *"Which rooms can be offered to a new tenant, starting from date X?"* Everything else supports this question.
+
+### Two rules that override everything
+
+1. **No automation.** The system never changes what an admin typed: no automatic status changes, no reminders, no emails, no cron. Read-only computed columns are allowed. The client calls it *"an extended version of Excel"*. The operators are older and lose trust in anything that changes on its own.
+2. **Money follows the contract, not the move-out.** A tenant who leaves early still pays the full contract. *Available from* is based on **Contract end**, never on the check-out date.
+
+### Key definitions
+
+| Term | Definition |
+|---|---|
+| **Available from** | The first day after the **last booking** of the room ends. If the room is *Partially occupied*, it is **today**. Entered by the admin, never computed |
+| **Room status** | Available · Reserved · Partially occupied · Occupied. *Partially occupied* (called *Còn chỗ* in Vietnamese docs) is only for 2-person rooms with one tenant |
+| **Booking status** | Upcoming → Active → Ended, or Upcoming → Cancelled (only before signing). Bookings are never deleted |
+| **Maintenance status** | Open · In progress · Done. Never changes the room status |
+| **Three date layers** | Contract start/end (legal) · Check-in/out date (planned) · Check-in/out done (actual). Never merge them |
+
+### UI rules for Perron screens
+
+- **Lists are the product.** Main screens are tables. No dashboard.
+- **Inline editing** in the table. No editing in modals.
+- **Nothing hidden behind tabs or accordions** inside a record. Horizontal scroll is better.
+- **Column order is a design tool:** *Room status* sits next to *Available from*; *Contract end* sits next to *Check-out date*.
+- **Rooms list sorts by Available from by default.** Do not default to a status filter.
+- **Tabs on lists** (saved views): status links with counts, plus *Check-ins this week · Check-outs this month · My task* on Bookings.
+- **No urgency colours.** Status labels are neutral.
+- **Warn, don't hide.** For example, rooms that overlap a new booking are marked and moved down, never removed from the list.
+
+### How the design system applies
+
+When a design-system default conflicts with a product rule, **the product rule wins**:
 
 | Component | How to use it in Perron |
 |---|---|
-| `Table` | The main screen. Prefer editing directly in the table (inline edit) |
-| `Tabs`, `Accordion` | Don't use them to hide fields or data columns |
-| `Dialog`, `Sheet` | Don't use them for editing data. Use `AlertDialog` only for heavy confirmations (e.g. cancelling a booking) |
-| `Badge` | A status label only. **Don't use color to signal urgency** |
-| `Toast` | Only to confirm an action the user just took. Not for deadline reminders or automatic notifications |
-| Date range picker | Only when creating a booking, to check for overlapping dates |
+| `Table` | The main screen. Prefer inline edit |
+| `Tabs`, `Accordion` | Only for list tabs (saved views). Never to hide fields or columns |
+| `Dialog`, `Sheet`, `Drawer` | Not for editing data. Use `AlertDialog` only for heavy confirmations (cancelling a booking) |
+| `Badge` | A neutral status label. **Don't use success/warning/danger colours to rank urgency** |
+| `Toast` | Only to confirm an action the user just took. Never for reminders |
+| Date range picker | Only when creating a booking, to check for overlapping dates. Not on the Rooms list |
+| Dashboard card grid (`layout-patterns.md`) | Not used. Lists are the main screens |
+| `Skeleton`, `ChatBubble`, `InputOTP` | Out of scope |
 
-⚠️ The real product runs on **WordPress + Admin Columns Pro**. The design system is for wireframes, prototypes, and specs. Before putting any component into WP admin, check with a developer whether it can be built there.
+⚠️ The real product runs on **WordPress + Admin Columns Pro**. Not every component can be rebuilt in WP admin without code. Check with a developer before promising anything new.
 
 ---
 
-## 7. Technical notes
+## 7. Building the Perron prototype
+
+**Handoff model:** the team builds the prototype here in React. The **WordPress developer inspects it** and builds the real screens. So the prototype must look and behave like something WordPress can do.
+
+| Rule | Detail |
+|---|---|
+| Location | `agentic-ui/src/app/prototype/perron/` |
+| Read first | `docs/product/Functional Spec …md` (fields, columns, tabs), then [`Prototype-build/prototype-build-skill.md`](Prototype-build/prototype-build-skill.md) |
+| Plan before code | Screen list, component map per screen, `mock-data.ts`. Then shell → screens → self-audit |
+| Look | WordPress list table: status links with counts above the table, filters above the table, inline edit in cells |
+| ⚙️ marker | Mark anything that may need custom code in WordPress: **Q27** overlap marker when creating a booking · **Q28** *My task* column on Bookings · **Q29** contract total · **Q30** open maintenance count on Rooms |
+| Nothing automatic | Never animate or simulate a status changing on its own |
+| Mock data | Must include the hard cases: 2-person room with one tenant, back-to-back bookings on a 1-person room, early move-out, overstay, cancelled booking, renewal |
+| Language | **English** UI copy. Dutch will follow later, so never hard-code display strings inside components |
+| Logo | `public/brand/perron-hasselt-logo-on-dark.svg` (light artwork, for the navy sidebar). Branding slot is exempt from token binding; lock size only (28×28 in the sidebar) |
+| Off-token colours | Avoid. If unavoidable, document the decision at the top of the file |
+| Copy | Follow [`content-guidelines.md`](content-guidelines.md): sentence case, buttons start with a verb, no em dashes, "select" not "click" |
+
+---
+
+## 8. Technical notes
 
 - **Token build is broken:** `node Tokens/sd.build.mjs` reports 7 unresolved `*.foreground` references. This comes from upstream: `foreground` tokens are nested inside tokens that already have a `$value`. Until it's fixed:
   - The JSON files (`Tokens/*.tokens.json`) match Figma.
   - `tokens.css`, `output/css/variables.css`, and `tailwind-v4.css` are **patched by hand**.
   - `output/js/tokens.mjs` is **not updated**.
 - **Old Figma key:** `component-directory.md` and the `meta.json` files still point to the Agentic file (`YWfTOUTpFZ0BNxHobfUqme`). Only switch a component to the Perron key once that component has been built in the Perron file.
-- `agentic-ui/CLAUDE.md` still points to a vault outside this repo. Ignore that path and use `llms.txt` in this repo instead.
+- **Upstream demos removed (2026-10-08):** `src/app/prototype/elevenlabs` and `grabfood` were deleted (still in git history, commit `22fc0b0`). `simon` is kept as a structural reference (routes + `mock-data.ts`) until the Perron prototype has its own structure.
+- **Icons migrated to Untitled UI (2026-10-08):** the Figma Icon page uses Untitled UI, but the code mixed `lucide-react` and `@untitledui/icons` (14 imports used Untitled names from lucide and broke). All 39 files now import from **`@untitledui/icons` only**. 30 lucide-only names were mapped to their Untitled equivalent (e.g. `Search` → `SearchLg`, `TriangleAlert` → `AlertTriangle`, `Trash2` → `Trash01`, `Info` → `InfoCircle`). `lucide-react` is still in `package.json` but unused; `components.json` still says `"iconLibrary": "lucide"` for the shadcn CLI, so swap icons by hand after adding a shadcn component.
+- **Type errors fixed (2026-10-08):** `next build` now passes. Fixes were call-site only, no component changed: `Avatar` callers (`item.tsx`, Card and Table stories) use the new `src` / `name` / `fallback` props; old Badge names updated (`danger` → `error`, `shape="dashed"` → `variant="dashed"`); render-only stories in Accordion, Combobox and InputOTP use an untyped `StoryObj`; `Toast.stories.tsx` uses `globalThis.Promise` because a story named `Promise` shadowed the global.
+- Logo for dark backgrounds: `agentic-ui/public/brand/perron-hasselt-logo-on-dark.svg`.
 
 ---
 
-## 8. Documentation map
+## 9. Documentation map
 
 | File | Read when |
 |---|---|
@@ -148,4 +214,6 @@ The design system is a general toolkit. The product has its own constraints, and
 | `Machine Readable/artifacts/components/*.meta.json` | Working on a specific component |
 | `Prototype-build/` | Building screens and user flows |
 | `CHANGELOG.md` | Recording breaking changes |
+| `docs/product/Functional Spec - …md` | Building any Room Management screen |
+| `docs/product/BRD - …md`, `SOP - …md` | Business rules, admin procedures |
 | `llms.txt` | Index for AI agents |

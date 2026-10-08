@@ -8,7 +8,7 @@ import {
   AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction
 } from '@/components/ui/alert-dialog'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
-import { ChevronLeft, MapPin, TriangleAlert, CircleCheck, CircleAlert } from 'lucide-react'
+import { AlertCircle, AlertTriangle, CheckCircle, ChevronLeft, MarkerPin01 } from "@untitledui/icons"
 import { useSimonPortal } from '../use-portal'
 
 type Step = 'idle' | 'location' | 'geofence-fail' | 'success' | 'tbm-alert'
@@ -35,7 +35,7 @@ export default function CheckInPage() {
       {/* Location denied warning */}
       {locationDenied && (
         <Alert variant="destructive" className="mb-4">
-          <CircleAlert className="h-4 w-4" />
+          <AlertCircle className="h-4 w-4" />
           <AlertTitle>Location required</AlertTitle>
           <AlertDescription>
             Location access is required to check in. Please enable location permissions and try again.
@@ -45,7 +45,7 @@ export default function CheckInPage() {
 
       {/* Map placeholder */}
       <div className="flex-1 min-h-[300px] rounded-[var(--radius-lg)] bg-[var(--color-background-muted)] flex flex-col items-center justify-center gap-3 mb-6 border border-[var(--color-border-default)]">
-        <MapPin className="h-8 w-8 text-[var(--color-brand-primary)]" />
+        <MarkerPin01 className="h-8 w-8 text-[var(--color-brand-primary)]" />
         <p className="text-sm text-[var(--color-text-secondary)]">12 Harbour View Rd, Sydney</p>
         <p className="text-xs text-[var(--color-text-secondary)]">GPS map would render here</p>
       </div>
@@ -78,7 +78,7 @@ export default function CheckInPage() {
           <AlertDialogHeader>
             <div className="flex justify-center mb-2">
               <div className="h-12 w-12 rounded-full bg-[var(--color-status-warning-subtle)] flex items-center justify-center">
-                <TriangleAlert className="h-6 w-6 text-[var(--color-icon-warning)]" />
+                <AlertTriangle className="h-6 w-6 text-[var(--color-icon-warning)]" />
               </div>
             </div>
             <AlertDialogTitle className="text-center">Looks like you're too far away</AlertDialogTitle>
@@ -100,7 +100,7 @@ export default function CheckInPage() {
           <AlertDialogHeader>
             <div className="flex justify-center mb-2">
               <div className="h-12 w-12 rounded-full bg-[var(--color-status-success-subtle)] flex items-center justify-center">
-                <CircleCheck className="h-6 w-6 text-[var(--color-icon-success)]" />
+                <CheckCircle className="h-6 w-6 text-[var(--color-icon-success)]" />
               </div>
             </div>
             <AlertDialogTitle className="text-center">Checked in successfully</AlertDialogTitle>

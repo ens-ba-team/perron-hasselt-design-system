@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Info, CircleAlert, TriangleAlert } from 'lucide-react';
+import { AlertCircle, AlertTriangle, InfoCircle } from "@untitledui/icons";
 import { Button } from '@/components/ui/button';
 
 // Source: alert.meta.json (category, variants, tokens)
@@ -75,7 +75,7 @@ export const DefaultWithIcon: Story = {
   render: () => (
     <Alert className="w-[400px]">
       <div className="flex flex-row items-start gap-[var(--spacing-component-md)]">
-        <Info className="h-4 w-4 shrink-0 mt-0.5" />
+        <InfoCircle className="h-4 w-4 shrink-0 mt-0.5" />
         <div className="flex flex-col gap-[var(--spacing-component-xxs)]">
           <AlertTitle>New integration available</AlertTitle>
           <AlertDescription>Connect your account to unlock additional features.</AlertDescription>
@@ -89,7 +89,7 @@ export const DestructiveWithIcon: Story = {
   render: () => (
     <Alert variant="destructive" className="w-[400px]">
       <div className="flex flex-row items-start gap-[var(--spacing-component-md)]">
-        <CircleAlert className="h-4 w-4 shrink-0 mt-0.5" />
+        <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
         <div className="flex flex-col gap-[var(--spacing-component-xxs)]">
           <AlertTitle>Payment failed</AlertTitle>
           <AlertDescription>Check your card details and try again.</AlertDescription>
@@ -103,7 +103,7 @@ export const WarningWithIcon: Story = {
   render: () => (
     <Alert variant="warning" className="w-[400px]">
       <div className="flex flex-row items-start gap-[var(--spacing-component-md)]">
-        <TriangleAlert className="h-4 w-4 shrink-0 mt-0.5" />
+        <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
         <div className="flex flex-col gap-[var(--spacing-component-xxs)]">
           <AlertTitle>API key expires in 7 days</AlertTitle>
           <AlertDescription>Rotate your key before it expires to avoid service interruption.</AlertDescription>
@@ -121,7 +121,7 @@ export const WithAction: Story = {
   render: () => (
     <Alert variant="warning" className="w-[400px]">
       <div className="flex flex-row items-start gap-[var(--spacing-component-md)]">
-        <TriangleAlert className="h-4 w-4 shrink-0 mt-0.5" />
+        <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
         <div className="flex flex-col gap-[var(--spacing-component-sm)]">
           <div className="flex flex-col gap-[var(--spacing-component-xxs)]">
             <AlertTitle>Storage almost full</AlertTitle>
@@ -141,7 +141,7 @@ export const AllVariants: Story = {
     <div className="flex flex-col gap-4 w-[400px]">
       <Alert>
         <div className="flex flex-row items-start gap-[var(--spacing-component-md)]">
-          <Info className="h-4 w-4 shrink-0 mt-0.5" />
+          <InfoCircle className="h-4 w-4 shrink-0 mt-0.5" />
           <div className="flex flex-col gap-[var(--spacing-component-xxs)]">
             <AlertTitle>Information</AlertTitle>
             <AlertDescription>Your changes were saved successfully.</AlertDescription>
@@ -150,7 +150,7 @@ export const AllVariants: Story = {
       </Alert>
       <Alert variant="destructive">
         <div className="flex flex-row items-start gap-[var(--spacing-component-md)]">
-          <CircleAlert className="h-4 w-4 shrink-0 mt-0.5" />
+          <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
           <div className="flex flex-col gap-[var(--spacing-component-xxs)]">
             <AlertTitle>Error</AlertTitle>
             <AlertDescription>Payment failed — check your card details.</AlertDescription>
@@ -159,7 +159,7 @@ export const AllVariants: Story = {
       </Alert>
       <Alert variant="warning">
         <div className="flex flex-row items-start gap-[var(--spacing-component-md)]">
-          <TriangleAlert className="h-4 w-4 shrink-0 mt-0.5" />
+          <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
           <div className="flex flex-col gap-[var(--spacing-component-xxs)]">
             <AlertTitle>Warning</AlertTitle>
             <AlertDescription>Your API key expires in 7 days.</AlertDescription>

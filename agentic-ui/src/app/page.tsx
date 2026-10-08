@@ -4,7 +4,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Search, Mail, Eye, Copy } from "lucide-react"
+import { Copy01, Eye, Mail01, SearchLg } from "@untitledui/icons"
 
 export default function Home() {
   return (
@@ -54,7 +54,7 @@ export default function Home() {
           <Badge variant="secondary">Secondary</Badge>
           <Badge variant="destructive">Destructive</Badge>
           <Badge variant="outline">Outline</Badge>
-          <Badge variant="outline" shape="dashed">Dashed</Badge>
+          <Badge variant="dashed">Dashed</Badge>
         </div>
 
         <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Badges — Brand (rect)</h2>
@@ -124,7 +124,7 @@ export default function Home() {
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="i-leading">Leading icon</Label>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              <SearchLg className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
               <Input id="i-leading" className="pl-9" placeholder="Search…" />
             </div>
           </div>
@@ -150,7 +150,7 @@ export default function Home() {
             <div className="relative flex items-center">
               <Input id="i-btn" className="pr-[72px]" defaultValue="https://acme.com/ref" readOnly />
               <Button size="sm" variant="outline" className="absolute right-1 h-7 gap-1 text-xs px-2">
-                <Copy className="h-3 w-3" />Copy
+                <Copy01 className="h-3 w-3" />Copy
               </Button>
             </div>
           </div>
@@ -158,7 +158,7 @@ export default function Home() {
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="i-email">Leading + type email</Label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              <Mail01 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
               <Input id="i-email" className="pl-9" type="email" placeholder="you@example.com" />
             </div>
           </div>

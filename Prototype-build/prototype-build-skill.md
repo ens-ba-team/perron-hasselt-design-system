@@ -73,7 +73,7 @@ Whichever option you choose, document it in a comment at the top of the file. Ne
 
 ### Icon verification
 
-Before writing any icons, confirm exact names exist (icon library is **lucide-react**):
+Before writing any icons, confirm exact names exist (icon library is **`@untitledui/icons`** (Untitled UI, matches the Figma Icon page)):
 
 ```bash
 grep -iE "^declare const [A-Za-z]*Heart" node_modules/lucide-react/dist/lucide-react.d.ts
@@ -164,7 +164,7 @@ Build one screen at a time. **Write the full file first, then run `tsc --noEmit`
 - [ ] Every container uses `Card` if it maps to surface/default + border/default + radius/lg
 - [ ] All colors: `var(--color-*)` for content areas. If using brand hex — it is documented and scoped to brand surfaces only
 - [ ] All spacing: Tailwind utilities (`p-3`, `gap-2`) — not `var(--spacing-*)` in className
-- [ ] Icons: `lucide-react` only, PascalCase, `size-4` (h-4 w-4) for body-context. Icons inherit `currentColor` — let them track text color (Paired icon rule) rather than hardcoding a color class
+- [ ] Icons: `@untitledui/icons` only (Untitled UI names, e.g. `XClose`, `SearchLg`, `Home01`), PascalCase, `size-4` (h-4 w-4) for body-context. Icons inherit `currentColor` — let them track text color (Paired icon rule) rather than hardcoding a color class
 - [ ] `aria-invalid`: always `condition || undefined` — never pass `false`
 - [ ] Helper components defined outside the page function — never inside
 

@@ -1,5 +1,5 @@
 import * as React from "react"
-import { ChevronLeft, ChevronRight, Ellipsis } from "lucide-react"
+import { ChevronLeft, ChevronRight, DotsHorizontal } from "@untitledui/icons"
 
 import { cn } from "@/lib/utils"
 
@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils"
 // Prev/Next Hover:    same fill/border as Page Hover   · icon stroke color/background/accent/foreground
 // Prev/Next Disabled: fill color/background/muted · border color/border/disabled · icon stroke color/icon/disabled
 //
-// Ellipsis: fill color/background/default · border color/border/default · text color/background/muted/foreground
+// DotsHorizontal: fill color/background/default · border color/border/default · text color/background/muted/foreground
 //
 // PaginationContent gap (Basic/More/Disabled): spacing/component/xxs (2px)
 // Override gap in story for Simple/WithTotal/ShowAll variants.
@@ -173,7 +173,7 @@ const PaginationEllipsis = ({
     )}
     {...props}
   >
-    <Ellipsis className="h-4 w-4" />
+    <DotsHorizontal className="h-4 w-4" />
     <span className="sr-only">More pages</span>
   </span>
 )

@@ -4,7 +4,7 @@ import * as React from "react"
 import { format } from "date-fns"
 import { DateRange } from "react-day-picker"
 import * as Popover from "@radix-ui/react-popover"
-import { Calendar as CalendarIcon, ChevronDown } from "lucide-react"
+import { Calendar as CalendarIcon, ChevronDown } from "@untitledui/icons"
 import { cn } from "@/lib/utils"
 import { Calendar as CalendarComponent } from "@/components/ui/calendar"
 

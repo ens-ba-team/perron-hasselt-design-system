@@ -11,7 +11,7 @@ import {
   AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
   AlertDialogDescription, AlertDialogFooter, AlertDialogAction
 } from '@/components/ui/alert-dialog'
-import { ChevronLeft } from 'lucide-react'
+import { ChevronLeft } from "@untitledui/icons"
 import { hazards, dailyConditions, safetyEquipment, jobs } from '../mock-data'
 import { useSimonPortal } from '../use-portal'
 

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { CircleCheck, Search } from 'lucide-react';
+import { CheckCircle, SearchLg } from "@untitledui/icons";
 
 // Source: input.meta.json (category, variants, tokens)
 // Patterns: input.examples.tsx
@@ -120,7 +120,7 @@ export const WithFieldDisabled: Story = {
 export const WithLeadingIcon: Story = {
   render: () => (
     <div className="relative w-[280px]">
-      <Search
+      <SearchLg
         className="pointer-events-none absolute left-[var(--spacing-component-md)] top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-icon-default)]"
         aria-hidden="true"
       />
@@ -137,7 +137,7 @@ export const WithTrailingIcon: Story = {
   render: () => (
     <div className="relative w-[280px]">
       <Input className="pr-9" type="email" defaultValue="name@example.com" />
-      <CircleCheck
+      <CheckCircle
         className="pointer-events-none absolute right-[var(--spacing-component-md)] top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-icon-success)]"
         aria-hidden="true"
       />
@@ -158,7 +158,7 @@ export const WithTrailingButton: Story = {
         placeholder="Search projects…"
       />
       <Button variant="outline" size="sm" className="h-9 rounded-l-none shrink-0">
-        Search
+        SearchLg
       </Button>
     </div>
   ),

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Item } from '@/components/ui/item'
 import { Card, CardContent } from '@/components/ui/card'
-import { CircleCheck, MapPin, Clock, Shield, FileCheck } from 'lucide-react'
+import { CheckCircle, Clock, FileCheck02, MarkerPin01, Shield01 } from "@untitledui/icons"
 import { jobs } from '../mock-data'
 
 export default function CompletePage() {
@@ -13,10 +13,10 @@ export default function CompletePage() {
   const job = jobs[0]
 
   const milestones = [
-    { icon: <MapPin className="h-5 w-5" />, label: 'Checked In', detail: 'GPS verified at site' },
-    { icon: <FileCheck className="h-5 w-5" />, label: 'TBM Completed', detail: 'Toolbox meeting submitted' },
-    { icon: <Shield className="h-5 w-5" />, label: 'HAF Completed', detail: 'Hazard assessment submitted' },
-    { icon: <CircleCheck className="h-5 w-5" />, label: 'Safety Acknowledgement', detail: 'Confirmation recorded' },
+    { icon: <MarkerPin01 className="h-5 w-5" />, label: 'Checked In', detail: 'GPS verified at site' },
+    { icon: <FileCheck02 className="h-5 w-5" />, label: 'TBM Completed', detail: 'Toolbox meeting submitted' },
+    { icon: <Shield01 className="h-5 w-5" />, label: 'HAF Completed', detail: 'Hazard assessment submitted' },
+    { icon: <CheckCircle className="h-5 w-5" />, label: 'Safety Acknowledgement', detail: 'Confirmation recorded' },
   ]
 
   return (
@@ -24,7 +24,7 @@ export default function CompletePage() {
       {/* Success hero */}
       <div className="flex flex-col items-center gap-4 text-center">
         <div className="h-16 w-16 rounded-full bg-[var(--color-status-success-subtle)] flex items-center justify-center">
-          <CircleCheck className="h-8 w-8 text-[var(--color-icon-success)]" />
+          <CheckCircle className="h-8 w-8 text-[var(--color-icon-success)]" />
         </div>
         <div>
           <h1 className="text-xl font-semibold text-[var(--color-background-default-foreground)]">
@@ -46,7 +46,7 @@ export default function CompletePage() {
         <CardContent className="flex flex-col gap-2">
           <p className="text-sm font-semibold text-[var(--color-background-default-foreground)]">{job.customer}</p>
           <div className="flex items-center gap-1.5">
-            <MapPin className="h-4 w-4 shrink-0 text-[var(--color-icon-muted)]" />
+            <MarkerPin01 className="h-4 w-4 shrink-0 text-[var(--color-icon-muted)]" />
             <span className="text-xs text-[var(--color-text-secondary)]">{job.address}</span>
           </div>
           <div className="flex items-center gap-1.5">
@@ -69,7 +69,7 @@ export default function CompletePage() {
             icon={<span className="text-[var(--color-icon-success)]">{m.icon}</span>}
             title={m.label}
             description={m.detail}
-            action={<CircleCheck className="h-5 w-5 text-[var(--color-icon-success)]" />}
+            action={<CheckCircle className="h-5 w-5 text-[var(--color-icon-success)]" />}
           />
         ))}
       </div>

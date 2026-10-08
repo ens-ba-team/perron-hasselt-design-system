@@ -1,8 +1,8 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight } from "@untitledui/icons"
 import { cn } from "@/lib/utils"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar } from "@/components/ui/avatar"
 
 // ─── Item ─────────────────────────────────────────────────────────────────────
 // Custom component — no shadcn base.
@@ -131,10 +131,13 @@ const Item = React.forwardRef<HTMLDivElement, ItemProps>(
       }
       if (type === "avatar") {
         return (
-          <Avatar size="default" className="shrink-0">
-            {avatarSrc && <AvatarImage src={avatarSrc} alt={avatarFallback ?? ""} />}
-            <AvatarFallback>{avatarFallback ?? "?"}</AvatarFallback>
-          </Avatar>
+          <Avatar
+            size="default"
+            className="shrink-0"
+            src={avatarSrc}
+            name={avatarFallback ?? ""}
+            fallback={avatarFallback ?? "?"}
+          />
         )
       }
       if (type === "image") {

@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { ChevronLeft } from 'lucide-react'
+import { ChevronLeft } from "@untitledui/icons"
 import { hafQuestions, jobs, worker } from '../mock-data'
 
 export default function HAFPage() {

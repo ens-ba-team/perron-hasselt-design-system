@@ -27,6 +27,29 @@
   --color-blue-800: #193cb8;
   --color-blue-900: #1c398e;
   --color-blue-950: #162455;
+  /* Perron brand ramps (Figma Primitives). Navy base /500, gold base /900 */
+  --color-navy-50: #e6ebf0;
+  --color-navy-100: #bfcdda;
+  --color-navy-200: #96adc1;
+  --color-navy-300: #6e8da8;
+  --color-navy-400: #4c7597;
+  --color-navy-500: #235e89;
+  --color-navy-600: #1b5681;
+  --color-navy-700: #104c75;
+  --color-navy-800: #0b4369;
+  --color-navy-900: #0c3150;
+  --color-navy-950: #082135;
+  --color-gold-50: #fffce8;
+  --color-gold-100: #fff6c5;
+  --color-gold-200: #fff09e;
+  --color-gold-300: #ffea78;
+  --color-gold-400: #ffe45a;
+  --color-gold-500: #ffde3a;
+  --color-gold-600: #ffd13b;
+  --color-gold-700: #edbb35;
+  --color-gold-800: #d7a530;
+  --color-gold-900: #b37f26;
+  --color-gold-950: #93681f;
   --color-red-50: #fef2f2;
   --color-red-100: #fee2e2;
   --color-red-200: #fecaca;
@@ -203,7 +226,7 @@
    * Use instead: color/brand/primary for button fills, color/text/link-hover for the hovered state
    * Status:      active
    */
-  --color-text-link: #2b7fff;
+  --color-text-link: #235e89;
   /**
    * Intent:      Inline text link color on hover
    * Use when:    The :hover state of color/text/link — always used as a pair, never standalone
@@ -211,7 +234,7 @@
    * Use instead: color/text/link for the resting state
    * Status:      active
    */
-  --color-text-link-hover: #155dfc;
+  --color-text-link-hover: #104c75;
   /**
    * Intent:      Inline text link color on hover
    * Use when:    The :hover state of color/text/link — always used as a pair, never standalone
@@ -219,7 +242,7 @@
    * Use instead: color/text/link for the resting state
    * Status:      active
    */
-  --color-text-link-active: #1447e6;
+  --color-text-link-active: #104c75;
   --color-text-invalid: #ef4444; /** Error/invalid text on default backgrounds. Use for form field labels, descriptions, and alert text in invalid or destructive states. NOT the same as status/danger-subtle/foreground (which requires a danger-subtle background). */
   --color-text-success: #15803d;
   /**
@@ -253,7 +276,7 @@
    * Use instead: color/border/error for validation errors, color/border/strong for emphasis
    * Status:      active
    */
-  --color-border-focus: #2b7fff;
+  --color-border-focus: #235e89;
   /**
    * Intent:      Slightly more prominent border when a user hovers an interactive element
    * Use when:    Input border on :hover, selectable card on :hover, interactive list item on :hover
@@ -302,7 +325,7 @@
    * Foreground:  color/brand/primary/foreground
    * Status:      active
    */
-  --color-brand-primary: #2b7fff;
+  --color-brand-primary: #235e89;
   /**
    * Intent:      Text and icon color placed directly on a color/brand/primary fill
    * Use when:    Label inside a primary button, icon inside a filled brand badge
@@ -318,7 +341,7 @@
    * Use instead: color/brand/primary for resting, color/brand/primary-active for pressed
    * Status:      active
    */
-  --color-brand-primary-hover: #155dfc;
+  --color-brand-primary-hover: #104c75;
   /**
    * Intent:      Darkest brand fill for the pressed/active state of a primary element
    * Use when:    Primary button :active fill — the moment of click or tap
@@ -326,7 +349,7 @@
    * Use instead: color/brand/primary-hover for hover, color/brand/primary for resting
    * Status:      active
    */
-  --color-brand-primary-active: #1447e6;
+  --color-brand-primary-active: #104c75;
   /**
    * Intent:      Light brand-tinted surface for lower-emphasis brand presence
    * Use when:    Secondary button fill, selected row highlight, brand-tinted badge background, active nav item background
@@ -335,7 +358,7 @@
    * Foreground:  color/brand/secondary/foreground
    * Status:      active
    */
-  --color-brand-secondary: #dbeafe;
+  --color-brand-secondary: #b37f26;
   /**
    * Intent:      Text and icon color on a color/brand/secondary fill
    * Use when:    Label inside a secondary brand button, text inside a brand-tinted badge
@@ -343,7 +366,7 @@
    * Use instead: color/text/link for inline brand-colored text on neutral backgrounds
    * Status:      active
    */
-  --color-brand-secondary-foreground: #1447e6;
+  --color-brand-secondary-foreground: #fffce8;
   /**
    * Intent: Fill color for destructive CTA elements — buttons that delete, remove, or permanently alter data.
    * Use when: Delete buttons, Remove confirmations, destructive dialog primary actions. Maps to shadcn --destructive.
@@ -369,7 +392,7 @@
    * Foreground:  color/brand/secondary/foreground
    * Status:      active
    */
-  --color-brand-secondary-hover: #bedbff;
+  --color-brand-secondary-hover: #d7a530;
   /**
    * Intent:      Light brand-tinted surface for lower-emphasis brand presence
    * Use when:    Secondary button fill, selected row highlight, brand-tinted badge background, active nav item background
@@ -378,7 +401,7 @@
    * Foreground:  color/brand/secondary/foreground
    * Status:      active
    */
-  --color-brand-secondary-active: #8ec5ff;
+  --color-brand-secondary-active: #b37f26;
   --color-brand-destructive-hover: #dc2626; /** Destructive button background on hover. Aliases color/red/600. */
   --color-brand-destructive-active: #b91c1c; /** Destructive button background on active/pressed. Aliases color/red/700. */
   /**
@@ -610,7 +633,7 @@
    * Note:        shadcn core token (maps to --ring). Used alongside color/border/focus on inputs, and standalone on buttons and links that have no explicit border
    * Status:      active
    */
-  --color-ring: #2b7fff;
+  --color-ring: #235e89;
   /**
    * Intent:      Default color for standalone icons on light/white surfaces
    * Use when:    Icons beside body text, nav icons, toolbar icons, any icon on a neutral background
@@ -650,7 +673,7 @@
    * Use instead: color/brand/primary/foreground for icons inside filled brand containers
    * Status:      active
    */
-  --color-icon-brand: #2b7fff;
+  --color-icon-brand: #235e89;
   /**
    * Intent:      Danger or error icon on a light surface
    * Use when:    Error icon beside a validation message, destructive action icon on white bg
@@ -1387,14 +1410,14 @@
   --layout-grid-margin-mobile: 16; /** Grid margin on mobile — matches container padding */
   --layout-grid-margin-tablet: 32; /** Grid margin on tablet */
   --layout-grid-margin-desktop: 80; /** Grid margin on desktop — the 80px Figma layout guide */
-  --button-primary-bg-bg: #2b7fff;
-  --button-primary-bg-hover: #155dfc;
-  --button-primary-bg-active: #1447e6;
+  --button-primary-bg-bg: #235e89;
+  --button-primary-bg-hover: #104c75;
+  --button-primary-bg-active: #104c75;
   --button-primary-fg-fg: #ffffff;
-  --button-secondary-bg-bg: #dbeafe;
-  --button-secondary-bg-hover: #bedbff;
-  --button-secondary-bg-active: #8ec5ff;
-  --button-secondary-fg-fg: #1447e6;
+  --button-secondary-bg-bg: #b37f26;
+  --button-secondary-bg-hover: #d7a530;
+  --button-secondary-bg-active: #b37f26;
+  --button-secondary-fg-fg: #fffce8;
   --button-destructive-bg-bg: #ef4444;
   --button-destructive-bg-hover: #dc2626;
   --button-destructive-bg-active: #b91c1c;
@@ -1405,17 +1428,17 @@
   --button-outline-fg-fg: #18181b;
   --button-outline-border-default: #e4e4e7;
   --button-outline-border-hover: #d4d4d8;
-  --button-outline-border-focus: #2b7fff;
+  --button-outline-border-focus: #235e89;
   --button-outline-border-active: #a1a1aa;
   --button-outline-border-disabled: #f4f4f5;
   --button-ghost-bg-hover: #f4f4f5;
   --button-ghost-bg-bg: #ffffff;
   --button-ghost-bg-active: #f4f4f5;
   --button-ghost-fg-fg: #18181b;
-  --button-link-fg-default: #2b7fff;
-  --button-link-fg-hover: #155dfc;
+  --button-link-fg-default: #235e89;
+  --button-link-fg-hover: #104c75;
   --button-link-fg-disabled: #a1a1aa;
-  --button-link-fg-active: #1447e6;
+  --button-link-fg-active: #104c75;
   --button-size-button-radius-1: 12px; /** Corner radius for Large and Icon Large (11px = radius/xl) */
   --button-size-button-radius-2: 8px; /** Corner radius for Small, Default, Icon Small, Icon Default (8px = radius/base) */
   --button-size-button-height-default: 40px; /** Height for Default button (40px) — shadcn default */
@@ -1442,6 +1465,16 @@
 .dark {
   /* Dark mode — generated from Figma Semantics/Components Dark mode (source of truth).
      Only tokens whose dark value differs from light are overridden; the rest inherit :root. */
+  --opacity-overlay: 20;
+
+  /* Perron: Light brand primary is navy; Figma Dark mode still resolves primary to blue */
+  --color-brand-primary: #2b7fff;
+  --color-brand-primary-hover: #155dfc;
+  --color-brand-primary-active: #1447e6;
+  --color-icon-brand: #2b7fff;
+  --button-primary-bg-bg: #2b7fff;
+  --button-primary-bg-hover: #155dfc;
+  --button-primary-bg-active: #1447e6;
 
   /* Semantic colors */
   --color-background-default: #09090b;
@@ -1463,12 +1496,12 @@
   --color-text-secondary: #a1a1aa;
   --color-text-disabled: #71717a;
   --color-text-inverse: #18181b;
-  --color-text-link: #51a2ff;
-  --color-text-link-hover: #8ec5ff;
-  --color-text-link-active: #bedbff;
+  --color-text-link: #2b7fff;
+  --color-text-link-hover: #155dfc;
+  --color-text-link-active: #1447e6;
   --color-border-default: #71717a;
   --color-border-subtle: #27272a;
-  --color-border-focus: #51a2ff;
+  --color-border-focus: #4c7597;
   --color-brand-secondary: #1c398e;
   --color-brand-secondary-hover: #193cb8;
   --color-brand-secondary-active: #1447e6;
@@ -1485,7 +1518,7 @@
   --color-status-info: #51a2ff;
   --color-status-info-subtle: #162455;
   --color-status-info-subtle-foreground: #51a2ff;
-  --color-ring: #51a2ff;
+  --color-ring: #4c7597;
   --color-status-offline: #3f3f46;
   --color-status-offline-foreground: #fafafa;
   --color-background-default-foreground: #fafafa;
@@ -1534,15 +1567,15 @@
   --button-outline-fg-fg: #fafafa;
   --button-outline-border-default: #71717a;
   --button-outline-border-hover: #52525b;
-  --button-outline-border-focus: #51a2ff;
+  --button-outline-border-focus: #4c7597;
   --button-outline-border-disabled: #3f3f46;
   --button-ghost-bg-bg: #09090b;
   --button-ghost-bg-hover: #27272a;
   --button-ghost-bg-active: #27272a;
   --button-ghost-fg-fg: #fafafa;
-  --button-link-fg-default: #51a2ff;
-  --button-link-fg-hover: #8ec5ff;
-  --button-link-fg-active: #bedbff;
+  --button-link-fg-default: #2b7fff;
+  --button-link-fg-hover: #155dfc;
+  --button-link-fg-active: #1447e6;
   --button-link-fg-disabled: #71717a;
   --tooltip-bg: #fafafa;
   --tooltip-fg: #000000;

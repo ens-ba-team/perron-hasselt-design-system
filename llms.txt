@@ -10,9 +10,12 @@
 
 ## Rules and Process
 
+- `README.md`: **Perron onboarding — read first.** Status, principles, brand (navy base /500, gold base /900), Dark mode out of scope, product-specific component rules.
+
 - `agentic-design-system.md`: Token architecture, all semantic token names and rules, spacing system, layout grid, Figma ↔ Tailwind mapping, dark mode implementation (`.dark` class, `tokens.css` override block). **Read before any build.**
 - `agentic-theme.md`: Theme reference — the system's look & feel at the primitive layer (brand ramp, neutral ramp, status ramps, radius, spacing, typography) plus a re-theme workflow. **Read before any theming or re-skin.**
 - `content-guidelines.md`: Voice-neutral UX writing mechanics — capitalization, button labels, error messages, empty states, punctuation. Brand voice/tone is left to the consuming product.
+- `Machine Readable/perron-figma-sync.md`: **Perron Figma file `7Gn5GiMiQh1SAaTp9FiwNQ` vs this repo** — what exists, token diff, open decisions. Read before any Perron theming.
 - `Machine Readable/figma-ids.md`: Figma node IDs, effect style IDs (shadows), text style IDs (typography), variable collection IDs. Reference when scripting against Figma.
 - `Skills/Token Binding Skill.md`: Token binding API reference and fix scripts.
 

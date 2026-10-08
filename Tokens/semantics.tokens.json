@@ -64,17 +64,17 @@
         "$description": "Intent:      Text on dark surfaces where the default dark text would be invisible\nUse when:    Text on color/background/inverted, dark banners, dark tooltips\nDo not use:  Text on any light or white surface\nUse instead: color/background/default/foreground on light surfaces\nStatus:      active"
       },
       "link": {
-        "$value": "{color.blue.500}",
+        "$value": "{color.brand.primary}",
         "$type": "color",
         "$description": "Intent:      Inline text link color on light surfaces\nUse when:    Hyperlinks in body copy, navigation links, breadcrumbs\nDo not use:  Buttons — links are inline text, buttons are interactive containers\nUse instead: color/brand/primary for button fills, color/text/link-hover for the hovered state\nStatus:      active"
       },
       "link-hover": {
-        "$value": "{color.blue.600}",
+        "$value": "{color.brand.primary-hover}",
         "$type": "color",
         "$description": "Intent:      Inline text link color on hover\nUse when:    The :hover state of color/text/link — always used as a pair, never standalone\nDo not use:  Default/resting link state — contrast is slightly higher than needed at rest\nUse instead: color/text/link for the resting state\nStatus:      active"
       },
       "link-active": {
-        "$value": "{color.blue.700}",
+        "$value": "{color.brand.primary-active}",
         "$type": "color",
         "$description": "Intent:      Inline text link color on hover\nUse when:    The :hover state of color/text/link — always used as a pair, never standalone\nDo not use:  Default/resting link state — contrast is slightly higher than needed at rest\nUse instead: color/text/link for the resting state\nStatus:      active"
       },
@@ -137,7 +137,7 @@
     },
     "brand": {
       "primary": {
-        "$value": "{color.blue.500}",
+        "$value": "{color.navy.500}",
         "$type": "color",
         "$description": "Intent:      The main brand fill color for primary interactive elements\nUse when:    Primary button fill, active toggle fill, selected chip fill, key CTAs\nDo not use:  Text color on light backgrounds — use color/text/link for inline brand-colored text\nUse instead: color/text/link for inline links, color/brand/secondary for lower-emphasis brand surfaces\nForeground:  color/brand/primary/foreground\nStatus:      active",
         "foreground": {
@@ -147,21 +147,21 @@
         }
       },
       "primary-hover": {
-        "$value": "{color.blue.600}",
+        "$value": "{color.navy.700}",
         "$type": "color",
         "$description": "Intent:      Darker brand fill for the hover state of a primary element\nUse when:    Primary button :hover fill — always paired with color/brand/primary, never used standalone\nDo not use:  Resting state or active/pressed state\nUse instead: color/brand/primary for resting, color/brand/primary-active for pressed\nStatus:      active"
       },
       "primary-active": {
-        "$value": "{color.blue.700}",
+        "$value": "{color.navy.700}",
         "$type": "color",
         "$description": "Intent:      Darkest brand fill for the pressed/active state of a primary element\nUse when:    Primary button :active fill — the moment of click or tap\nDo not use:  Hover or resting states\nUse instead: color/brand/primary-hover for hover, color/brand/primary for resting\nStatus:      active"
       },
       "secondary": {
-        "$value": "{color.blue.100}",
+        "$value": "{color.gold.900}",
         "$type": "color",
         "$description": "Intent:      Light brand-tinted surface for lower-emphasis brand presence\nUse when:    Secondary button fill, selected row highlight, brand-tinted badge background, active nav item background\nDo not use:  High-emphasis CTAs — too light to read as a primary action\nUse instead: color/brand/primary for high-emphasis filled actions\nForeground:  color/brand/secondary/foreground\nStatus:      active",
         "foreground": {
-          "$value": "{color.blue.700}",
+          "$value": "{color.gold.50}",
           "$type": "color",
           "$description": "Intent:      Text and icon color on a color/brand/secondary fill\nUse when:    Label inside a secondary brand button, text inside a brand-tinted badge\nDo not use:  On white or neutral surfaces — too dark-blue for general body text\nUse instead: color/text/link for inline brand-colored text on neutral backgrounds\nStatus:      active"
         }
@@ -177,12 +177,12 @@
         }
       },
       "secondary-hover": {
-        "$value": "{color.blue.200}",
+        "$value": "{color.gold.800}",
         "$type": "color",
         "$description": "Intent:      Light brand-tinted surface for lower-emphasis brand presence\nUse when:    Secondary button fill, selected row highlight, brand-tinted badge background, active nav item background\nDo not use:  High-emphasis CTAs — too light to read as a primary action\nUse instead: color/brand/primary for high-emphasis filled actions\nForeground:  color/brand/secondary/foreground\nStatus:      active"
       },
       "secondary-active": {
-        "$value": "{color.blue.300}",
+        "$value": "{color.gold.900}",
         "$type": "color",
         "$description": "Intent:      Light brand-tinted surface for lower-emphasis brand presence\nUse when:    Secondary button fill, selected row highlight, brand-tinted badge background, active nav item background\nDo not use:  High-emphasis CTAs — too light to read as a primary action\nUse instead: color/brand/primary for high-emphasis filled actions\nForeground:  color/brand/secondary/foreground\nStatus:      active"
       },
@@ -350,7 +350,7 @@
       }
     },
     "ring": {
-      "$value": "{color.blue.500}",
+      "$value": "{color.navy.500}",
       "$type": "color",
       "$description": "Intent:      Outer focus ring halo applied to interactive elements on keyboard focus\nUse when:    box-shadow focus ring on buttons, inputs, links — the visible glow outside the element border\nDo not use:  As a border replacement — ring is additive, always layered on top of the element border\nNote:        shadcn core token (maps to --ring). Used alongside color/border/focus on inputs, and standalone on buttons and links that have no explicit border\nStatus:      active"
     },

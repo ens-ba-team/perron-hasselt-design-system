@@ -12,17 +12,22 @@ The complete "look & feel" definition of the system, captured at the **primitive
 
 | Lever | Current value | Personality it sets |
 |---|---|---|
-| **Brand hue** | Blue — anchor `/500` = `#2b7fff` | Identity / primary action |
+| **Brand hue** | **Perron navy** `color/navy/500` = `#235e89` (base /500) · secondary **gold**, base `color/gold/900` = `#b37f26` (exception: gold anchors at /900, not /500, also the secondary button fill) | Identity / primary action |
 | **Neutral** | **Zinc** (cool gray) `/50–/950` | Overall mood — cool, modern, neutral |
 | **Radius base** | `8px` (`radius/base` = `radius/lg`) | Friendly — not sharp, not pill-soft |
 | **Spacing base** | `4px` unit, linear (8-pt grid) | Balanced density |
 | **Type** | Inter · Tailwind size scale | Clean, screen-native |
 
-Mood summary: **cool-neutral, modern, friendly-professional** — shadcn/Tailwind-aligned defaults with a blue brand.
+Mood summary: **cool-neutral, modern, friendly-professional** — shadcn/Tailwind-aligned defaults with the Perron navy + gold brand. The blue ramp is kept for Dark mode brand and is no longer the Light brand. See `Machine Readable/perron-figma-sync.md`.
 
 ---
 
-## 1. Brand ramp — Blue
+## 1. Brand ramp — Perron navy + gold
+
+> Light brand is **navy** (`color/navy/*`, base /500 `#235e89`) and **gold** (`color/gold/*`, base /900 `#b37f26`, exception). Full ramps and contrast: `Machine Readable/perron-figma-sync.md`. The **blue** ramp below is kept for Dark mode brand, status/info, and sidebar ring.
+
+### Blue ramp (Dark mode brand · info)
+
 
 Anchor = `/500`. To re-theme the brand, **regenerate the whole ramp from a new hue** (don't swap `/500` alone).
 
@@ -58,7 +63,9 @@ Measure `/500` against **both**:
 - If `/500` vs white is **3:1–4.5:1** → ⚠️ acceptable as a **fill only**. Button labels technically miss AA at ≤14px. Mitigate by using a **darker step (`/600`–`/700`) for any text, icon, or link** use of the brand color.
 - If `/500` vs white < **3:1** → ❌ reject. Pick a darker hue or shift the anchor.
 
-**Current blue/500 (`#2b7fff`) = 3.8:1 vs white** → middle band: ✅ fill, ❌ small text. This is an accepted brand constraint. That's exactly why `color/text/link` and `color/icon/info` resolve to **blue/600**, not /500 — the system bumps to a darker step wherever the brand becomes text/icons.
+**Perron navy/500 (`#235e89`) = 6.9:1 vs white** ✅ passes for text. (Agentic blue/500 `#2b7fff` was 3.8:1.) The note below describes the original blue setup:
+
+**Blue/500 (`#2b7fff`) = 3.8:1 vs white** → middle band: ✅ fill, ❌ small text. This is an accepted brand constraint. That's exactly why `color/text/link` and `color/icon/info` resolve to **blue/600**, not /500 — the system bumps to a darker step wherever the brand becomes text/icons.
 
 **The fill-vs-text split (apply to every accent ramp):**
 - `/500` = fills (3:1 floor, 4.5:1 ideal)

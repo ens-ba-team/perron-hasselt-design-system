@@ -259,6 +259,100 @@
         "$value": "#f4a362",
         "$type": "color"
       }
+    },
+    "navy": {
+      "50": {
+        "$value": "#e6ebf0",
+        "$type": "color"
+      },
+      "100": {
+        "$value": "#bfcdda",
+        "$type": "color"
+      },
+      "200": {
+        "$value": "#96adc1",
+        "$type": "color"
+      },
+      "300": {
+        "$value": "#6e8da8",
+        "$type": "color"
+      },
+      "400": {
+        "$value": "#4c7597",
+        "$type": "color"
+      },
+      "500": {
+        "$value": "#235e89",
+        "$type": "color",
+        "$description": "Navy base (Rule 1: brand anchors at /500)"
+      },
+      "600": {
+        "$value": "#1b5681",
+        "$type": "color"
+      },
+      "700": {
+        "$value": "#104c75",
+        "$type": "color"
+      },
+      "800": {
+        "$value": "#0b4369",
+        "$type": "color"
+      },
+      "900": {
+        "$value": "#0c3150",
+        "$type": "color"
+      },
+      "950": {
+        "$value": "#082135",
+        "$type": "color"
+      }
+    },
+    "gold": {
+      "50": {
+        "$value": "#fffce8",
+        "$type": "color"
+      },
+      "100": {
+        "$value": "#fff6c5",
+        "$type": "color"
+      },
+      "200": {
+        "$value": "#fff09e",
+        "$type": "color"
+      },
+      "300": {
+        "$value": "#ffea78",
+        "$type": "color"
+      },
+      "400": {
+        "$value": "#ffe45a",
+        "$type": "color"
+      },
+      "500": {
+        "$value": "#ffde3a",
+        "$type": "color"
+      },
+      "600": {
+        "$value": "#ffd13b",
+        "$type": "color"
+      },
+      "700": {
+        "$value": "#edbb35",
+        "$type": "color"
+      },
+      "800": {
+        "$value": "#d7a530",
+        "$type": "color"
+      },
+      "900": {
+        "$value": "#b37f26",
+        "$type": "color",
+        "$description": "Gold base — exception to Rule 1: gold anchors at /900, not /500"
+      },
+      "950": {
+        "$value": "#93681f",
+        "$type": "color"
+      }
     }
   },
   "spacing": {

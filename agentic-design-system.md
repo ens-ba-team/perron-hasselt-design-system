@@ -53,8 +53,10 @@ color/yellow/50 → yellow/950
 
 **Rule 1 — primary brand color is always `/500`.** The main brand color (buttons, links, CTAs) anchors at /500.
 ```
-color/blue/500  →  brand primary blue (e.g. #2B7FFF)
+color/navy/500  →  Perron brand primary navy (#235e89)
 ```
+
+**Perron exception — gold anchors at `/900`.** `color/gold/900` (`#b37f26`) is the gold base, not `/500`. Rule 1 still applies to navy and every other ramp. Secondary gold values are locked, see `Machine Readable/perron-figma-sync.md`.
 
 **Rule 2 — build scale outward from /500 using perceptual lightness:**
 ```
@@ -1398,8 +1400,8 @@ WCAG thresholds: AA text 4.5:1 · AA large/UI 3:1 · AAA 7:1
 | `surface/default → default/foreground` | #fff/#18181b | 17.7 | ✅ | ✅ | ✅ |
 | `surface/raised → raised/foreground` | #fafafa/#18181b | 17.0 | ✅ | ✅ | ✅ |
 | `surface/overlay → overlay/foreground` | #fff/#18181b | 17.7 | ✅ | ✅ | ✅ |
-| `brand/primary → primary/foreground` | #2b7fff/#fff | **3.8** | ❌ | ✅ | ❌ |
-| `brand/secondary → secondary/foreground` | #dbeafe/#1447e6 | 5.6 | ✅ | ✅ | ❌ |
+| `brand/primary → primary/foreground` | #235e89/#fff | 6.9 | ✅ | ✅ | ❌ |
+| `brand/secondary → secondary/foreground` | #b37f26/#fffce8 | **3.4** | ❌ | ✅ | ❌ | <!-- Perron: secondary locked by designer, accepted -->
 | `brand/destructive → destructive/foreground` | #ef4444/#fff | **3.8** | ❌ | ✅ | ❌ |
 | `status/success → success/foreground` | #22c55e/#18181b | 7.8 | ✅ | ✅ | ✅ |
 | `status/warning → warning/foreground` | #eab308/#18181b | 9.2 | ✅ | ✅ | ✅ |

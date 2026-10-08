@@ -18,17 +18,21 @@ The design system for **Perron Hasselt Room Management**, a back office for mana
 
 ## 1. Current status
 
+> **Last checked: 2026-10-08.** This table is the single place that says where things stand. Any change that moves a row must update it in the same commit (see `CHANGELOG.md` for the history).
+
 | Area | Status |
 |---|---|
-| Brand theme (color) | ✅ Synced Figma ↔ code (Light) |
-| Components in the Perron Figma file | 🟡 Only **Button** so far. The other 35 still live in the original Agentic file |
+| Brand theme (color) | ✅ Synced Figma ↔ code (Light), incl. sidebar tokens (background `navy/50`, accent `zinc/50`) |
+| Typography | ✅ `font-family/sans` = **Poppins** (Figma ↔ code ↔ Storybook). Mono = Roboto Mono |
+| Components in the Perron Figma file | 🟡 All component pages are in the Perron file. **Synced to code: Button, Sidebar.** The other 34 are not audited yet; their `meta.json` node IDs still point to the Agentic file |
 | Components in code | ✅ All 36 components (inherited from Agentic) |
 | **Dark mode** | ⏸ **Out of scope for now.** Don't audit, sync, or design for Dark |
 | Token build (`sd.build.mjs`) | 🔴 Broken upstream. CSS is being patched by hand, see [section 8](#8-technical-notes) |
 | Install | 🟡 Works with `npm ci --legacy-peer-deps` (upstream lockfile conflict) |
 | `next build` | ✅ Passes (fixed 2026-10-08) |
 | Product docs | ✅ BRD, Functional Spec, SOP v0.1 (2026-10-08) in `docs/product/` |
-| Perron prototype | ⬜ Not started. Will live in `agentic-ui/src/app/prototype/perron/` |
+| Perron prototype | ✅ v1 built: Rooms, Bookings, Tenants, Maintenance + record drawers. `agentic-ui/src/app/prototype/perron/` (structure and rules in its `README.md`). Merged to `main` |
+| Open questions for dev | 🟡 Q27–Q30 (Functional Spec §9) + **Q31** candidate: public ID prefixes `RM-`/`TN-`/`PH-`/`MT-` need a custom field |
 
 The full Figma ↔ repo comparison lives in [`Machine Readable/perron-figma-sync.md`](Machine%20Readable/perron-figma-sync.md).
 
@@ -56,7 +60,7 @@ The full Figma ↔ repo comparison lives in [`Machine Readable/perron-figma-sync
 - **Rule:** a brand color always anchors its base at `/500`. **Gold is the only exception** and anchors at `/900`.
 - **Links** share the primary tokens: `color/text/link` → `color/brand/primary` (navy).
 - 🔒 **The secondary (gold) colors are final. Do not change them**, even though contrast falls short (fill 3.4:1, hover 2.2:1). Don't reopen this unless the design lead asks.
-- Font: **Inter**. Spacing on a **4px** grid. Base radius **8px**; Large buttons use 12px.
+- Font: **Poppins** (mono: Roboto Mono). Spacing on a **4px** grid. Base radius **8px**; Large buttons use 12px.
 
 ---
 
@@ -174,13 +178,15 @@ When a design-system default conflicts with a product rule, **the product rule w
 |---|---|
 | Location | `agentic-ui/src/app/prototype/perron/` |
 | Read first | `docs/product/Functional Spec …md` (fields, columns, tabs), then [`Prototype-build/prototype-build-skill.md`](Prototype-build/prototype-build-skill.md) |
-| Plan before code | Screen list, component map per screen, `mock-data.ts`. Then shell → screens → self-audit |
+| Plan before code | Screen list, component map per screen, mock data in the module's `data.ts`. Then shell → screens → self-audit |
+| Structure | One folder per module (`page.tsx`, `copy.ts`, `data.ts`, `store.ts`, `_components/`) + `_shared/`. See the prototype's `README.md` |
+| CRUD | Record drawer (right `Sheet`) opened by `?record=<ID>`. Inline edit stays on list cells. The record ID (`RM-`, `TN-`, `PH-`, `MT-`) in the first column is the only link to a record |
 | Look | WordPress list table: status links with counts above the table, filters above the table, inline edit in cells |
 | ⚙️ marker | Mark anything that may need custom code in WordPress: **Q27** overlap marker when creating a booking · **Q28** *My task* column on Bookings · **Q29** contract total · **Q30** open maintenance count on Rooms |
 | Nothing automatic | Never animate or simulate a status changing on its own |
 | Mock data | Must include the hard cases: 2-person room with one tenant, back-to-back bookings on a 1-person room, early move-out, overstay, cancelled booking, renewal |
 | Language | **English** UI copy. Dutch will follow later, so never hard-code display strings inside components |
-| Logo | `public/brand/perron-hasselt-logo-on-dark.svg` (light artwork, for the navy sidebar). Branding slot is exempt from token binding; lock size only (28×28 in the sidebar) |
+| Logo | Sidebar = Figma `95:15648`: round `brand/primary` logo with the white Perron mark (`PerronMark` in `prototype/perron/_shared/components/brand.tsx`), plus `SidebarWatermark` (mark, `navy/200`, 20%). Full wordmark for dark backgrounds: `public/brand/perron-hasselt-logo-on-dark.svg` |
 | Off-token colours | Avoid. If unavoidable, document the decision at the top of the file |
 | Copy | Follow [`content-guidelines.md`](content-guidelines.md): sentence case, buttons start with a verb, no em dashes, "select" not "click" |
 
@@ -193,10 +199,11 @@ When a design-system default conflicts with a product rule, **the product rule w
   - `tokens.css`, `output/css/variables.css`, and `tailwind-v4.css` are **patched by hand**.
   - `output/js/tokens.mjs` is **not updated**.
 - **Old Figma key:** `component-directory.md` and the `meta.json` files still point to the Agentic file (`YWfTOUTpFZ0BNxHobfUqme`). Only switch a component to the Perron key once that component has been built in the Perron file.
-- **Upstream demos removed (2026-10-08):** `src/app/prototype/elevenlabs` and `grabfood` were deleted (still in git history, commit `22fc0b0`). `simon` is kept as a structural reference (routes + `mock-data.ts`) until the Perron prototype has its own structure.
+- **Upstream demos removed (2026-10-08):** `src/app/prototype/elevenlabs` and `grabfood` were deleted (still in git history, commit `22fc0b0`). `simon` was kept as a structural reference; the Perron prototype now has its own structure, so `simon` can be removed when convenient.
 - **Icons migrated to Untitled UI (2026-10-08):** the Figma Icon page uses Untitled UI, but the code mixed `lucide-react` and `@untitledui/icons` (14 imports used Untitled names from lucide and broke). All 39 files now import from **`@untitledui/icons` only**. 30 lucide-only names were mapped to their Untitled equivalent (e.g. `Search` → `SearchLg`, `TriangleAlert` → `AlertTriangle`, `Trash2` → `Trash01`, `Info` → `InfoCircle`). `lucide-react` is still in `package.json` but unused; `components.json` still says `"iconLibrary": "lucide"` for the shadcn CLI, so swap icons by hand after adding a shadcn component.
 - **Type errors fixed (2026-10-08):** `next build` now passes. Fixes were call-site only, no component changed: `Avatar` callers (`item.tsx`, Card and Table stories) use the new `src` / `name` / `fallback` props; old Badge names updated (`danger` → `error`, `shape="dashed"` → `variant="dashed"`); render-only stories in Accordion, Combobox and InputOTP use an untyped `StoryObj`; `Toast.stories.tsx` uses `globalThis.Promise` because a story named `Promise` shadowed the global.
 - Logo for dark backgrounds: `agentic-ui/public/brand/perron-hasselt-logo-on-dark.svg`.
+- **Stale CSS after font or branch changes:** Next keeps compiled CSS in `agentic-ui/.next`. After changing fonts, `globals.css`, or switching git branches, delete `.next` and restart the dev server. Check fonts with `getComputedStyle(document.body).fontFamily`.
 
 ---
 

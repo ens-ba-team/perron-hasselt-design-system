@@ -2,7 +2,7 @@
 
 > Design system for Perron Hasselt Room Management, forked from the Agentic Design System (shadcn/ui + Tailwind CSS, three-tier tokens, 36 components) and re-themed navy/gold. Read `README.md` first.
 
-**Figma file key (Perron):** `7Gn5GiMiQh1SAaTp9FiwNQ`. Only Button is built there so far.
+**Figma file key (Perron):** `7Gn5GiMiQh1SAaTp9FiwNQ`. All component pages exist; synced to code so far: Button, Sidebar (`95:18202`). Status: `README.md` §1.
 **Figma file key (Agentic, legacy):** `YWfTOUTpFZ0BNxHobfUqme`. `component-directory.md` and `meta.json` node IDs still point here.
 **Storybook:** run locally — `cd agentic-ui && npm ci --legacy-peer-deps && npm run storybook` → `http://localhost:6006`
 **Code:** `agentic-ui/` — Next.js + Tailwind v4 + shadcn/ui. All `agentic-ui/...` paths below are relative to the repo root.
@@ -14,6 +14,11 @@
 - `docs/product/Functional Spec - Perron Hasselt Room Management.md`: **Read before building any Room Management screen.** Fields, list columns, tabs, computed values, overlap check, items needing custom code (Q27–Q30).
 - `docs/product/BRD - Perron Hasselt Room Management.md`: Business rules BR01–BR29, scope, data model, glossary.
 - `docs/product/SOP - Perron Hasselt Room Management.md`: How admins operate the system step by step. Useful for flows and mock data.
+
+## Perron prototype
+
+- `agentic-ui/src/app/prototype/perron/README.md`: structure (one folder per module + a shared folder), import rules, where to change what.
+- `CHANGELOG.md`: newest `(Perron)` entries list files, decisions and open items. Read before changing the prototype or tokens.
 
 ## Rules and Process
 

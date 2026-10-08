@@ -6,7 +6,18 @@ Format: newest first. Each entry includes what changed, the migration path, and 
 
 > **Rule:** Every breaking change must be recorded here before it ships. A breaking change is any rename, removal, or token alias update that would cause a consumer (code, Figma instance, design spec) to break silently.
 
-> **For AI agents:** read the newest entry before changing tokens or the Perron prototype. Each Perron entry lists *Files*, *Decisions* (do not re-open without the designer) and *Open* items. If code and this file disagree, check Figma (`7Gn5GiMiQh1SAaTp9FiwNQ`) first, then ask; never "fix" a recorded decision silently.
+> **For AI agents:** read the newest entry before changing tokens or the Perron prototype. **Every change also updates `README.md` §1 Current status if it moves a row** (CHANGELOG = history, README §1 = current state). Each Perron entry lists *Files*, *Decisions* (do not re-open without the designer) and *Open* items. If code and this file disagree, check Figma (`7Gn5GiMiQh1SAaTp9FiwNQ`) first, then ask; never "fix" a recorded decision silently.
+
+---
+
+## 2026-10-08 (Perron) — docs status sync
+
+### Fixed — stale documentation
+- `README.md` §1 Current status still said the prototype was "Not started" and the Perron Figma file had "Only Button". Updated: prototype v1 built and merged; all component pages in the Perron Figma file, Button + Sidebar synced; typography row (Poppins); Q31 row.
+- `README.md` §3 font Inter → Poppins; §7 adds Structure and CRUD rows, Logo row matches Figma sidebar; §8 `.next` cache note, `simon` note.
+- `llms.txt`: Perron Figma status, new "Perron prototype" section.
+- `Machine Readable/perron-figma-sync.md`: component status, watermark 20%.
+- Rule added: changes that move a status row update `README.md` §1 in the same commit.
 
 ---
 

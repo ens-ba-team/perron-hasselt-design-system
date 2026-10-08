@@ -704,7 +704,7 @@
    * Do not use: For page backgrounds — use color/background/default instead.
    * Status: Stable
    */
-  --color-sidebar-background: #fafafa;
+  --color-sidebar-background: #e6ebf0;
   /**
    * Intent: Default text and icon color inside the sidebar.
    * Use when: Sidebar nav labels, section headings, icon color. Maps to shadcn --sidebar-foreground.
@@ -732,7 +732,7 @@
    * Do not use: As a fill for active items — use color/sidebar/primary instead.
    * Status: Stable
    */
-  --color-sidebar-accent: #f4f4f5;
+  --color-sidebar-accent: #fafafa;
   /**
    * Intent: Text and icon color on top of color/sidebar/accent fill.
    * Use when: Labels inside hovered sidebar nav items. Maps to shadcn --sidebar-accent-foreground.
@@ -760,7 +760,7 @@
    * Do not use: As a fill for active items — use color/sidebar/primary instead.
    * Status: Stable
    */
-  --color-sidebar-active: #f4f4f5;
+  --color-sidebar-active: #fafafa;
   /**
    * Intent: Text and icon color on top of color/sidebar/accent fill.
    * Use when: Labels inside hovered sidebar nav items. Maps to shadcn --sidebar-accent-foreground.
@@ -1133,7 +1133,7 @@
    * Use instead: font-family/mono for code; font-family/serif for editorial contexts.
    * Status: Stable
    */
-  --font-family-sans: Inter;
+  --font-family-sans: Poppins;
   /**
    * Intent: Monospace typeface for code and technical content.
    * Use when: Code blocks, inline code snippets, terminal output, token or variable names displayed in UI.

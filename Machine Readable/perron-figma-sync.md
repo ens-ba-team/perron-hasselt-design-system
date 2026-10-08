@@ -74,3 +74,16 @@ Remaining, all expected:
 ### Still open
 - File key swap: replace `YWfTOUTpFZ0BNxHobfUqme` once the other 35 components exist in the Perron file.
 - Page `-->Icon` (`15:741`) not inspected yet.
+
+## Sync 2026-10-08 — sidebar background
+
+Figma (Semantics, Light): `color/sidebar/background` → alias `color/navy/50` (#e6ebf0), was `color/zinc/50` (#fafafa).
+Synced to `Tokens/semantics.tokens.json`, `Tokens/tokens.tokens.json`, `agentic-ui/src/app/tokens.css`, `Tokens/output/css/variables.css`, `Tokens/output/css/tailwind-v4.css` (hand-patched, SD build still broken). Dark mode untouched (out of scope).
+Other 9 sidebar tokens checked: unchanged, match repo.
+Follow-up same day: `color/sidebar/accent` → `color/navy/100` (#bfcdda), was `zinc/100`. `color/sidebar/active` aliases accent, so it follows. Synced to the same five files.
+
+## Sync 2026-10-08 — font + sidebar v2
+
+- `font-family/sans`: Inter → **Poppins** (Primitives). All 17 text styles use Poppins; sizes, weights, line heights unchanged. Code: `next/font` Poppins 400/500/600/700 in `agentic-ui/src/app/layout.tsx`, `--font-sans` / `--font-heading` → `--font-poppins` in `globals.css`.
+- `color/sidebar/accent` → **`color/zinc/50` (#fafafa)** (was navy/100 earlier the same day). `sidebar/active` follows.
+- Sidebar component (Perron node `95:18202`, variant `95:15648`): round brand/primary logo + white mark, title Medium 16 / caption Medium 12, group label Medium 12 (no uppercase), nav item 32px Regular, watermark mark navy/200 @10% bottom-left. Code: `agentic-ui/src/components/ui/sidebar.tsx` aligned + new `SidebarWatermark`.

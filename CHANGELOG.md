@@ -10,6 +10,16 @@ Format: newest first. Each entry includes what changed, the migration path, and 
 
 ---
 
+## 2026-10-08 (Perron) — sidebar watermark 20%
+
+### Changed
+
+**`SidebarWatermark` opacity** — 10% → **20%** (Figma Perron `95:18202`: all three Expanded variants; Collapsed variants have no watermark).
+- Files: `agentic-ui/src/components/ui/sidebar.tsx` (`opacity-20`), `Machine Readable/artifacts/components/sidebar.meta.json` (`tokens.watermark.opacity`), comments in `prototype/perron/_shared/components/brand.tsx` and `prototype/perron/layout.tsx`.
+- Supersedes "opacity 10%" in the entry below.
+
+---
+
 ## 2026-10-08 (Perron) — font, sidebar v2, form fields
 
 ### Changed — tokens (Figma → repo)

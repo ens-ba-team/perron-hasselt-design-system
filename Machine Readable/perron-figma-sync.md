@@ -17,7 +17,7 @@ The Perron file is a **duplicate of the Agentic file**, re-themed. Node IDs are 
 | -->Icon | `15:741` | Icon set (not inspected yet) |
 | -->Buttons | `12:35` | Section `Button` (`410:4045`) → component set `12:2893` + `_best-practice` (`410:3780`) |
 
-**Only Button exists as a component.** The other 35 components in `component-directory.md` are not in this file yet, so their node IDs point to the Agentic file.
+~~Only Button exists as a component.~~ **Update 2026-10-08:** all component pages now exist in the Perron file (Display, Actions, Feedback, Navigation, Layout, Forms, Overlay). Synced and verified against code: **Button, Sidebar**. The rest are not audited yet, so `component-directory.md` / `meta.json` node IDs still point to the Agentic file.
 
 ### Button — structure matches repo ✅
 - Type: Default, Secondary, Destructive, Outline, Ghost, Link
@@ -86,4 +86,8 @@ Follow-up same day: `color/sidebar/accent` → `color/navy/100` (#bfcdda), was `
 
 - `font-family/sans`: Inter → **Poppins** (Primitives). All 17 text styles use Poppins; sizes, weights, line heights unchanged. Code: `next/font` Poppins 400/500/600/700 in `agentic-ui/src/app/layout.tsx`, `--font-sans` / `--font-heading` → `--font-poppins` in `globals.css`.
 - `color/sidebar/accent` → **`color/zinc/50` (#fafafa)** (was navy/100 earlier the same day). `sidebar/active` follows.
-- Sidebar component (Perron node `95:18202`, variant `95:15648`): round brand/primary logo + white mark, title Medium 16 / caption Medium 12, group label Medium 12 (no uppercase), nav item 32px Regular, watermark mark navy/200 @10% bottom-left. Code: `agentic-ui/src/components/ui/sidebar.tsx` aligned + new `SidebarWatermark`.
+- Sidebar component (Perron node `95:18202`, variant `95:15648`): round brand/primary logo + white mark, title Medium 16 / caption Medium 12, group label Medium 12 (no uppercase), nav item 32px Regular, watermark mark navy/200 @10% bottom-left (**now 20%**, see below). Code: `agentic-ui/src/components/ui/sidebar.tsx` aligned + new `SidebarWatermark`.
+
+## Sync 2026-10-08 — watermark 20%
+
+`SidebarWatermark` opacity 10% → **20%** (all three Expanded variants of `95:18202`; Collapsed variants have no watermark).

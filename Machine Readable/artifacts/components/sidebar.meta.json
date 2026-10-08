@@ -202,7 +202,7 @@
     "iconRule": "Icon Placeholder instances are stroke-based. Bind color on VECTOR node strokes — never on instance fill.",
     "watermark": {
       "fill": "color/navy/200",
-      "opacity": "10%",
+      "opacity": "20%",
       "position": "absolute, left 0, bottom -16px, clipped by sidebar",
       "shape": "NOT TOKEN-BOUND — branding asset (Perron mark)",
       "node": "Laag_1-2 in 95:15648"

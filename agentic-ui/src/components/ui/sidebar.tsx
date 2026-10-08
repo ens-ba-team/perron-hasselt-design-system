@@ -379,7 +379,7 @@ export function SidebarBadge({
 }
 
 // ─── Watermark (branding — NOT token-bound for shape) ─────────────────────────
-// Figma 95:15648 "Laag_1-2": brand mark, absolute bottom-left, 10% opacity, clipped by the
+// Figma 95:15648 "Laag_1-2": brand mark, absolute bottom-left, 20% opacity, clipped by the
 // sidebar. Decorative only: aria-hidden, no pointer events. Hidden when collapsed.
 
 export function SidebarWatermark({
@@ -393,7 +393,7 @@ export function SidebarWatermark({
   return (
     <div
       aria-hidden="true"
-      className={cn("pointer-events-none absolute -bottom-4 left-0 opacity-10", className)}
+      className={cn("pointer-events-none absolute -bottom-4 left-0 opacity-20", className)}
       {...props}
     >
       {children}

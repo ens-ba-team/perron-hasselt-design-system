@@ -10,6 +10,22 @@ Format: newest first. Each entry includes what changed, the migration path, and 
 
 ---
 
+## 2026-10-08 (Perron) — sidebar watermark 20%
+
+### Changed
+
+**`SidebarWatermark` opacity** — 10% → **20%** (Figma Perron `95:18202`: all three Expanded variants; Collapsed variants have no watermark).
+- Files: `agentic-ui/src/components/ui/sidebar.tsx` (`opacity-20`), `Machine Readable/artifacts/components/sidebar.meta.json` (`tokens.watermark.opacity`), comments in `prototype/perron/_shared/components/brand.tsx` and `prototype/perron/layout.tsx`.
+- Supersedes "opacity 10%" in the entry below.
+
+### Fixed — font
+
+- **Storybook still loaded Inter**: `agentic-ui/.storybook/preview-head.html` hard-coded Google Fonts Inter and `body { font-family: var(--font-inter) }`. Now Poppins 400/500/600/700 + `--font-poppins`.
+- **Prototype rendered in Times** after the Poppins switch: stale Next/Tailwind build cache (`agentic-ui/.next`) still served `html { font-family: var(--font-inter) }`, a variable that no longer exists. Source was correct. Fix: delete `.next` and restart the dev server. Verified in browser: every element Poppins, IDs Roboto Mono.
+- Agents: after changing fonts or `globals.css`, or switching git branches, clear `agentic-ui/.next` before judging the result. Check `getComputedStyle(document.body).fontFamily`, not only the CSS variable.
+
+---
+
 ## 2026-10-08 (Perron) — font, sidebar v2, form fields
 
 ### Changed — tokens (Figma → repo)

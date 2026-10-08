@@ -28,7 +28,7 @@ import { PerronStoreProvider, usePerron } from '@/app/prototype/perron/_shared/s
 // Stands in for the WordPress admin: left menu with the four post types, list screens on the right.
 //
 // Sidebar follows Figma Perron DS 95:15648 (2026-10-08): round brand/primary logo with the white
-// Perron mark, title + caption, and a 10% navy/200 watermark of the mark at the bottom left.
+// Perron mark, title + caption, and a 20% navy/200 watermark of the mark at the bottom left.
 
 const BASE = '/prototype/perron'
 

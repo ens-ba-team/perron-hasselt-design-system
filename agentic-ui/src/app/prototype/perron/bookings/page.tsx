@@ -9,6 +9,7 @@ import { Empty } from '@/components/ui/empty'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { COPY } from '@/app/prototype/perron/_shared/copy'
+import { ListPagination, usePaged } from '@/app/prototype/perron/_shared/components/list-pagination'
 import { BOOKINGS_COPY } from '@/app/prototype/perron/bookings/copy'
 import { TODAY, formatDate, formatMoney, weekRange } from '@/app/prototype/perron/_shared/format'
 import { type Booking, type BookingStatus } from '@/app/prototype/perron/_shared/types'
@@ -113,6 +114,7 @@ export default function BookingsPage() {
   const visible = searched
     .filter((b) => inTab(b, tab))
     .sort((a, b) => compareValues(sortValue(a, sort.key), sortValue(b, sort.key), sort.dir))
+  const paged = usePaged(visible, `${tab}|${query}|${sort.key}-${sort.dir}`)
 
   const changeTab = (key: string) => {
     setTab(key as TabKey)
@@ -155,7 +157,6 @@ export default function BookingsPage() {
           <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={BOOKINGS_COPY.searchPlaceholder}
             aria-label={COPY.common.search} className="pl-9" />
         </div>
-        <span className="ml-auto text-sm text-[var(--color-text-secondary)]">{COPY.common.items(visible.length)}</span>
       </div>
 
       {visible.length === 0 ? (
@@ -186,7 +187,7 @@ export default function BookingsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {visible.map((b) => {
+              {paged.pageItems.map((b) => {
                 const tenant = store.tenant(b.tenantId)
                 const room = store.room(b.roomId)
                 return (
@@ -247,6 +248,8 @@ export default function BookingsPage() {
           </Table>
         </TableFrame>
       )}
+
+      {visible.length > 0 && <ListPagination {...paged} />}
 
       <BookingDrawer />
 

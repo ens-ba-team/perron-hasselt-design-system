@@ -17,6 +17,7 @@ perron/
       record-drawer.tsx       Shared CRUD pattern: right Sheet, opened by ?record=<id>|new
       list-parts.tsx          IdLink, ViewLinks, SortHead, PageHeader, TableFrame, DevNote
       inline-cell.tsx         Inline edit in list cells
+      list-pagination.tsx     ListPagination + usePaged: Total · pages · rows per page (default 50)
       form-fields.tsx         Field, ChoiceSelect, asOptions, staffOptions, NONE
       brand.tsx               PerronMark (logo + watermark, from Figma)
   <module>/                   rooms | bookings | tenants | maintenance
@@ -38,6 +39,10 @@ perron/
 | A new field | `_shared/types.ts` → `_shared/copy.ts` `labels` → the module's list and drawer |
 | A form control used by several drawers | `_shared/components/form-fields.tsx` |
 | Sidebar look | Figma first, then `src/components/ui/sidebar.tsx` (DS component) |
+
+## Lists
+
+Every list ends with `<ListPagination {...usePaged(visible, resetKey)} />`. `resetKey` must include every tab, filter, search and sort value so the list goes back to page 1 when they change. Default 50 rows per page (20 / 50 / 100), so the 41 rooms fit on one page.
 
 ## Rules
 

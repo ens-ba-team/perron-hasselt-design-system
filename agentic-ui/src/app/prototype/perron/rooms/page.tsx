@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { toast } from 'sonner'
 import { COPY } from '@/app/prototype/perron/_shared/copy'
+import { ListPagination, usePaged } from '@/app/prototype/perron/_shared/components/list-pagination'
 import { ROOMS_COPY } from '@/app/prototype/perron/rooms/copy'
 import { formatDate, formatMoney } from '@/app/prototype/perron/_shared/format'
 import { type Room } from '@/app/prototype/perron/_shared/types'
@@ -59,6 +60,7 @@ export default function RoomsPage() {
   const visible = filteredExceptView
     .filter((r) => view === ALL || r.status === view)
     .sort((a, b) => compareValues(a[sort.key], b[sort.key], sort.dir) || compareValues(a.name, b.name, 'asc'))
+  const paged = usePaged(visible, `${view}|${building}|${type}|${query}|${sort.key}-${sort.dir}`)
 
   const save = (r: Room, patch: Partial<Room>) => {
     updateRoom(r.id, patch)
@@ -113,7 +115,6 @@ export default function RoomsPage() {
             className="pl-9"
           />
         </div>
-        <span className="text-sm text-[var(--color-text-secondary)]">{COPY.common.items(visible.length)}</span>
       </div>
 
       {visible.length === 0 ? (
@@ -145,7 +146,7 @@ export default function RoomsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {visible.map((r) => (
+              {paged.pageItems.map((r) => (
                 <TableRow key={r.id}>
                   <TableCell className={CELL}>
                     <IdLink id={r.id} onOpen={() => router.push(recordHref('rooms', r.id))} />
@@ -194,6 +195,8 @@ export default function RoomsPage() {
           </Table>
         </TableFrame>
       )}
+
+      {visible.length > 0 && <ListPagination {...paged} />}
 
       <RoomDrawer />
     </div>

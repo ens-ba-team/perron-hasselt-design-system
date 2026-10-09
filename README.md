@@ -18,7 +18,7 @@ The design system for **Perron Hasselt Room Management**, a back office for mana
 
 ## 1. Current status
 
-> **Last checked: 2026-10-08.** This table is the single place that says where things stand. Any change that moves a row must update it in the same commit (see `CHANGELOG.md` for the history).
+> **Last checked: 2026-10-09.** This table is the single place that says where things stand. Any change that moves a row must update it in the same commit (see `CHANGELOG.md` for the history).
 
 | Area | Status |
 |---|---|
@@ -31,7 +31,7 @@ The design system for **Perron Hasselt Room Management**, a back office for mana
 | Install | 🟡 Works with `npm ci --legacy-peer-deps` (upstream lockfile conflict) |
 | `next build` | ✅ Passes (fixed 2026-10-08) |
 | Product docs | ✅ BRD, Functional Spec, SOP v0.1 (2026-10-08) in `docs/product/` |
-| Perron prototype | ✅ v1 built: Rooms, Bookings, Tenants, Maintenance + record drawers. `agentic-ui/src/app/prototype/perron/` (structure and rules in its `README.md`). Merged to `main` |
+| Perron prototype | ✅ v1 built: Rooms, Bookings, Tenants, Maintenance + record drawers + pagination on every list. `agentic-ui/src/app/prototype/perron/` (structure and rules in its `README.md`). Merged to `main` |
 | Open questions for dev | 🟡 Q27–Q30 (Functional Spec §9) + **Q31** candidate: public ID prefixes `RM-`/`TN-`/`PH-`/`MT-` need a custom field |
 
 The full Figma ↔ repo comparison lives in [`Machine Readable/perron-figma-sync.md`](Machine%20Readable/perron-figma-sync.md).

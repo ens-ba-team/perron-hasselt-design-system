@@ -9,6 +9,7 @@ import { Empty } from '@/components/ui/empty'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { COPY } from '@/app/prototype/perron/_shared/copy'
+import { ListPagination, usePaged } from '@/app/prototype/perron/_shared/components/list-pagination'
 import { MAINTENANCE_COPY } from '@/app/prototype/perron/maintenance/copy'
 import { formatDate } from '@/app/prototype/perron/_shared/format'
 import { type Maintenance, type MaintenanceStatus } from '@/app/prototype/perron/_shared/types'
@@ -40,6 +41,7 @@ export default function MaintenancePage() {
   })
   const views = MAINTENANCE_STATUSES.map((s) => ({ key: s, label: s, count: searched.filter((m) => m.status === s).length }))
   const visible = searched.filter((m) => m.status === tab).sort((a, b) => b.reportedDate.localeCompare(a.reportedDate))
+  const paged = usePaged(visible, `${tab}|${query}`)
 
   const save = (m: Maintenance, patch: Partial<Maintenance>) => {
     updateMaintenance(m.id, patch)
@@ -67,7 +69,6 @@ export default function MaintenancePage() {
           <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={MAINTENANCE_COPY.searchPlaceholder}
             aria-label={COPY.common.search} className="pl-9" />
         </div>
-        <span className="ml-auto text-sm text-[var(--color-text-secondary)]">{COPY.common.items(visible.length)}</span>
       </div>
 
       {visible.length === 0 ? (
@@ -88,7 +89,7 @@ export default function MaintenancePage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {visible.map((m) => (
+              {paged.pageItems.map((m) => (
                 <TableRow key={m.id}>
                   <TableCell className={CELL}>
                     <IdLink id={m.id} onOpen={() => router.push(recordHref('maintenance', m.id))} />
@@ -120,6 +121,8 @@ export default function MaintenancePage() {
           </Table>
         </TableFrame>
       )}
+
+      {visible.length > 0 && <ListPagination {...paged} />}
 
       <MaintenanceDrawer />
     </div>

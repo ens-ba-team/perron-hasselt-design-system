@@ -10,6 +10,22 @@ Format: newest first. Each entry includes what changed, the migration path, and 
 
 ---
 
+## 2026-10-09 (Perron) — pagination on every list
+
+### Added — prototype
+- `_shared/components/list-pagination.tsx`: `ListPagination` (DS `Pagination`, pattern With Total + With Changer: Total N items · Prev · pages with ellipsis · Next · rows per page) and `usePaged(items, resetKey)`.
+- Applied to Rooms, Bookings, Tenants, Maintenance. Back to page 1 when tab, filter, search, sort or rows per page change.
+- **Default 50 rows per page** (options 20 / 50 / 100) so the 41 rooms stay on one page ("the list is the product"). WordPress equivalent: Screen Options per-page value.
+- Removed the "N items" count above each table (now in the pagination bar).
+
+### Fixed — DS component `Pagination`
+- `PaginationPrevious` / `PaginationNext` disabled styles used `[aria-disabled=true]:` (invalid Tailwind variant, never applied). Now `aria-disabled:`. File: `agentic-ui/src/components/ui/pagination.tsx`; `pagination.meta.json` changelog updated.
+
+### Status
+- `README.md` §1 Perron prototype row updated, Last checked 2026-10-09.
+
+---
+
 ## 2026-10-08 (Perron) — docs status sync
 
 ### Fixed — stale documentation

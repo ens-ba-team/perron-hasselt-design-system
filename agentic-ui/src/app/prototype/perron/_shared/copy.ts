@@ -98,6 +98,12 @@ export const COPY = {
       actions: 'Actions',
     },
   },
+  pagination: {
+    total: (n: number) => `Total ${n} ${n === 1 ? 'item' : 'items'}`,
+    perPage: (n: number) => `${n} / page`,
+    perPageLabel: 'Rows per page',
+    page: (n: number) => `Page ${n}`,
+  },
   inline: {
     edit: (field: string) => `Edit ${field}`,
     save: 'Save',

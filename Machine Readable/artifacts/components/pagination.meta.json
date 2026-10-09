@@ -290,7 +290,7 @@
     "sourceMarkdown": "Component Markdown/Pagination.md",
     "storyFile": "src/stories/Pagination.stories.tsx",
     "artifactStatus": "ready",
-    "lastAuditDate": "2026-05-28",
+    "lastAuditDate": "2026-10-09",
     "auditRules": "R1–R8",
     "version": "3.0",
     "openQuestions": [],
@@ -298,7 +298,12 @@
       "Examples assume a higher-level PaginationBar wrapper for generated layouts; source markdown itself does not mark this component not ready."
     ],
     "knownIssues": [],
-    "changelog": [],
+    "changelog": [
+      {
+        "date": "2026-10-09",
+        "change": "Fix: PaginationPrevious/Next disabled styles used invalid Tailwind variant `[aria-disabled=true]:` (never applied). Now `aria-disabled:`. Disabled prev/next is muted and not clickable."
+      }
+    ],
     "darkMode": {
       "notes": "No known dark mode differences — all tokens are semantic and mode-aware.",
       "pairedSurfaceRisk": "None identified."

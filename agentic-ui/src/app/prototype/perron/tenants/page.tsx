@@ -9,6 +9,7 @@ import { Empty } from '@/components/ui/empty'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { COPY } from '@/app/prototype/perron/_shared/copy'
+import { ListPagination, usePaged } from '@/app/prototype/perron/_shared/components/list-pagination'
 import { TENANTS_COPY } from '@/app/prototype/perron/tenants/copy'
 import type { Tenant } from '@/app/prototype/perron/_shared/types'
 import { usePerron } from '@/app/prototype/perron/_shared/store'
@@ -36,6 +37,7 @@ export default function TenantsPage() {
   const visible = tenants
     .filter((t) => !query || `${t.name} ${t.email} ${t.university}`.toLowerCase().includes(query.toLowerCase()))
     .sort((a, b) => a.name.localeCompare(b.name))
+  const paged = usePaged(visible, query)
 
   const save = (t: Tenant, patch: Partial<Tenant>) => {
     updateTenant(t.id, patch)
@@ -60,7 +62,6 @@ export default function TenantsPage() {
           <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={TENANTS_COPY.searchPlaceholder}
             aria-label={COPY.common.search} className="pl-9" />
         </div>
-        <span className="ml-auto text-sm text-[var(--color-text-secondary)]">{COPY.common.items(visible.length)}</span>
       </div>
 
       {visible.length === 0 ? (
@@ -81,7 +82,7 @@ export default function TenantsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {visible.map((t) => (
+              {paged.pageItems.map((t) => (
                 <TableRow key={t.id}>
                   <TableCell className={CELL}>
                     <IdLink id={t.id} onOpen={() => router.push(recordHref('tenants', t.id))} />
@@ -109,6 +110,8 @@ export default function TenantsPage() {
           </Table>
         </TableFrame>
       )}
+
+      {visible.length > 0 && <ListPagination {...paged} />}
 
       <TenantDrawer />
     </div>

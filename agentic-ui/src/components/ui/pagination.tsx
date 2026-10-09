@@ -112,10 +112,10 @@ const PaginationPrevious = ({
       "hover:bg-[var(--color-background-accent)]",
       "hover:text-[var(--color-background-accent-foreground)]",
       // Disabled state
-      "[aria-disabled=true]:pointer-events-none",
-      "[aria-disabled=true]:bg-[var(--color-background-muted)]",
-      "[aria-disabled=true]:border-[var(--color-border-disabled)]",
-      "[aria-disabled=true]:text-[var(--color-icon-disabled)]",
+      "aria-disabled:pointer-events-none",
+      "aria-disabled:bg-[var(--color-background-muted)]",
+      "aria-disabled:border-[var(--color-border-disabled)]",
+      "aria-disabled:text-[var(--color-icon-disabled)]",
       className
     )}
     {...props}
@@ -141,10 +141,10 @@ const PaginationNext = ({
       "text-[var(--color-background-default-foreground)]",
       "hover:bg-[var(--color-background-accent)]",
       "hover:text-[var(--color-background-accent-foreground)]",
-      "[aria-disabled=true]:pointer-events-none",
-      "[aria-disabled=true]:bg-[var(--color-background-muted)]",
-      "[aria-disabled=true]:border-[var(--color-border-disabled)]",
-      "[aria-disabled=true]:text-[var(--color-icon-disabled)]",
+      "aria-disabled:pointer-events-none",
+      "aria-disabled:bg-[var(--color-background-muted)]",
+      "aria-disabled:border-[var(--color-border-disabled)]",
+      "aria-disabled:text-[var(--color-icon-disabled)]",
       className
     )}
     {...props}

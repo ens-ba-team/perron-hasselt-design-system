@@ -37,6 +37,7 @@ export const COPY = {
     readOnly: 'Read-only',
     required: (field: string) => `${field} is required.`,
     selectRoom: 'Select a room',
+    pickDate: 'Select a date',
     notes: 'Notes',
   },
   dev: {

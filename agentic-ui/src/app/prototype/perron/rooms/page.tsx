@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
-import { SearchLg } from '@untitledui/icons'
+import { Plus, SearchLg } from '@untitledui/icons'
 import { Button } from '@/components/ui/button'
 import { Empty } from '@/components/ui/empty'
 import { Input } from '@/components/ui/input'
@@ -17,7 +17,7 @@ import { type Room } from '@/app/prototype/perron/_shared/types'
 import { BUILDINGS, ROOM_STATUSES, ROOM_TYPES } from '@/app/prototype/perron/rooms/data'
 import { usePerron } from '@/app/prototype/perron/_shared/store'
 import { InlineCell } from '@/app/prototype/perron/_shared/components/inline-cell'
-import { recordHref } from '@/app/prototype/perron/_shared/components/record-drawer'
+import { NEW, recordHref } from '@/app/prototype/perron/_shared/components/record-drawer'
 import { RoomDrawer } from '@/app/prototype/perron/rooms/_components/room-drawer'
 import { CELL, DevNote, IdLink, PageHeader, SortHead, TableFrame, ViewLinks, compareValues, type SortState } from '@/app/prototype/perron/_shared/components/list-parts'
 
@@ -78,7 +78,16 @@ export default function RoomsPage() {
 
   return (
     <div className="flex flex-col gap-4 p-6">
-      <PageHeader title={ROOMS_COPY.title} description={ROOMS_COPY.description} />
+      <PageHeader
+        title={ROOMS_COPY.title}
+        description={ROOMS_COPY.description}
+        action={
+          <Button size="sm" onClick={() => router.push(recordHref('rooms', NEW))}>
+            <Plus />
+            {ROOMS_COPY.add}
+          </Button>
+        }
+      />
 
       <ViewLinks views={views} active={view} onChange={setView} />
 

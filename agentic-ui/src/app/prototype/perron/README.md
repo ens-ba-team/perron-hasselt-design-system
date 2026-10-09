@@ -17,8 +17,8 @@ perron/
       record-drawer.tsx       Shared CRUD pattern: right Sheet, opened by ?record=<id>|new
       list-parts.tsx          IdLink, ViewLinks, SortHead, PageHeader, TableFrame, DevNote
       inline-cell.tsx         Inline edit in list cells
-      list-pagination.tsx     ListPagination + usePaged: Total · pages · rows per page (default 50)
-      form-fields.tsx         Field, ChoiceSelect, asOptions, staffOptions, NONE
+      list-pagination.tsx     ListPagination + usePaged: Total · pages · rows per page (10 / 20 / 50, default 50)
+      form-fields.tsx         Field, ChoiceSelect, DateField, asOptions, staffOptions, NONE
       brand.tsx               PerronMark (logo + watermark, from Figma)
   <module>/                   rooms | bookings | tenants | maintenance
     page.tsx                  List screen
@@ -42,7 +42,7 @@ perron/
 
 ## Lists
 
-Every list ends with `<ListPagination {...usePaged(visible, resetKey)} />`. `resetKey` must include every tab, filter, search and sort value so the list goes back to page 1 when they change. Default 50 rows per page (20 / 50 / 100), so the 41 rooms fit on one page.
+Every list ends with `<ListPagination {...usePaged(visible, resetKey)} />`. `resetKey` must include every tab, filter, search and sort value so the list goes back to page 1 when they change. Rows per page 10 / 20 / 50, default 50, so the 41 rooms fit on one page.
 
 ## Rules
 
@@ -54,6 +54,7 @@ Every list ends with `<ListPagination {...usePaged(visible, resetKey)} />`. `res
 - Use absolute imports (`@/app/prototype/perron/...`), never `../`.
 - `_` folders are private to Next.js routing: they never become URLs.
 - Every record has one ID (`RM-`, `PH-`, `TN-`, `MT-`) in the first column. The ID is the only link that opens a record.
+- Dates: always `DateField` (DS DatePicker), stored as ISO `YYYY-MM-DD`, shown as `MMM d, yyyy`. Never `<Input type="date">`.
 - Mark anything that may need WordPress code with `<DevNote q="Q27" …>` (⚙️).
 
 ## Changelog

@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 import { COPY } from '@/app/prototype/perron/_shared/copy'
-import { NONE } from '@/app/prototype/perron/_shared/components/form-fields'
+import { DateField, NONE } from '@/app/prototype/perron/_shared/components/form-fields'
 
 // Inline editing, modelled on Admin Columns Pro: a pencil appears on hover,
 // the cell turns into its field, Save or Enter writes, Cancel or Escape restores.
@@ -68,6 +68,9 @@ export function InlineCell({ label, value, kind, options, display, onSave, class
   if (editing) {
     return (
       <div className={cn('flex items-center gap-1', className)}>
+        {kind === 'date' ? (
+          <DateField value={draft} onChange={setDraft} className="w-44" />
+        ) : (
         <Input
           autoFocus
           aria-label={label}
@@ -78,8 +81,9 @@ export function InlineCell({ label, value, kind, options, display, onSave, class
             if (e.key === 'Enter') commit()
             if (e.key === 'Escape') cancel()
           }}
-          className={cn('h-8', kind === 'date' ? 'w-40' : 'min-w-28')}
+          className="h-8 min-w-28"
         />
+        )}
         <Button size="icon-sm" aria-label={COPY.inline.save} onClick={() => commit()}>
           <Check />
         </Button>

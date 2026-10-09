@@ -259,7 +259,8 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
   // ── Single month — custom caption with month/year selector ────────────────
   const [view, setView] = React.useState<View>("days")
   const [displayMonth, setDisplayMonth] = React.useState<Date>(
-    (props.month as Date | undefined) ?? new Date()
+    // Open on the controlled month, else the selected/default month, else today.
+    (props.month as Date | undefined) ?? (props.defaultMonth as Date | undefined) ?? new Date()
   )
 
   const yearStart  = Math.floor(displayMonth.getFullYear() / 12) * 12

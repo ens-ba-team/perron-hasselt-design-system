@@ -1,10 +1,11 @@
 'use client'
 
 import * as React from 'react'
+import { DatePicker } from '@/components/ui/date-picker'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { COPY } from '@/app/prototype/perron/_shared/copy'
-import { STAFF } from '@/app/prototype/perron/_shared/format'
+import { STAFF, dateToIso, isoToDate } from '@/app/prototype/perron/_shared/format'
 
 // Form building blocks shared by every record drawer.
 // Defined at module level: defining them inside a form component loses focus on re-render.
@@ -78,5 +79,28 @@ export function ChoiceSelect({
         ))}
       </SelectContent>
     </Select>
+  )
+}
+
+// Date field = DS DatePicker (type "input"), stored as an ISO string. Never the browser's native
+// date input: its look and "mm/dd/yyyy" placeholder differ per browser and break the DS.
+// key={value} re-syncs the picker, which only reads its value on mount.
+export function DateField({ id, value, onChange, placeholder, className }: {
+  id?: string
+  value: string
+  onChange: (iso: string) => void
+  placeholder?: string
+  className?: string
+}) {
+  return (
+    <DatePicker
+      key={value}
+      id={id}
+      type="input"
+      value={isoToDate(value)}
+      placeholder={placeholder ?? COPY.common.pickDate}
+      onChange={(d) => onChange(d instanceof Date ? dateToIso(d) : '')}
+      className={className}
+    />
   )
 }

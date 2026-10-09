@@ -16,10 +16,22 @@ export const STAFF: Staff[] = [
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
+// Same format as the DS DatePicker trigger ("MMM d, yyyy"), so lists and fields read alike.
 export function formatDate(iso: string): string {
   if (!iso) return ''
   const [y, m, d] = iso.split('-').map(Number)
-  return `${d} ${MONTHS[m - 1]} ${y}`
+  return `${MONTHS[m - 1]} ${d}, ${y}`
+}
+
+// Dates are stored as ISO strings (YYYY-MM-DD). Local time on purpose: no timezone shift.
+export function isoToDate(iso: string): Date | undefined {
+  if (!iso) return undefined
+  const [y, m, d] = iso.split('-').map(Number)
+  return new Date(y, m - 1, d)
+}
+
+export function dateToIso(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
 }
 
 export function formatMoney(value: number | null): string {

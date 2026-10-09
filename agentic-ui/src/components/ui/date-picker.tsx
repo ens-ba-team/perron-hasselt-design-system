@@ -127,6 +127,7 @@ function DatePicker({
               <CalendarComponent
                 mode="range"
                 selected={range}
+                defaultMonth={range?.from}
                 onSelect={(r: any) => {
                   setRange(r)
                   onChange?.(r)
@@ -139,6 +140,7 @@ function DatePicker({
               <CalendarComponent
                 mode="single"
                 selected={date}
+                defaultMonth={date}
                 onSelect={(d: any) => {
                   setDate(d)
                   onChange?.(d)

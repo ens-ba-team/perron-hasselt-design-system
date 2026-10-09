@@ -10,6 +10,26 @@ Format: newest first. Each entry includes what changed, the migration path, and 
 
 ---
 
+## 2026-10-09 (Perron) — date fields, page sizes, add room
+
+### Fixed — date fields (prototype)
+- All 12 date inputs used the browser's native `<input type="date">` ("mm/dd/yyyy", browser calendar icon), which does not match the DS. Replaced by `DateField` (`_shared/components/form-fields.tsx`) = DS `DatePicker` type "input", value stored as ISO. Covers booking, room and maintenance drawers and inline edit in list cells.
+- `formatDate` now shows `MMM d, yyyy` (e.g. "Oct 8, 2026"), same as the DatePicker trigger, so lists and fields read alike. Was "8 Oct 2026".
+
+### Fixed — DS components
+- `Calendar` (single month) ignored `defaultMonth` and always opened on today's month. Now `month ?? defaultMonth ?? today`. File: `agentic-ui/src/components/ui/calendar.tsx`.
+- `DatePicker` passes the selected date (or range start) as `defaultMonth`, so a 2027 contract date opens on 2027. File: `agentic-ui/src/components/ui/date-picker.tsx`.
+- `calendar.meta.json`, `date-picker.meta.json` changelog updated. (Two pre-existing `no-explicit-any` lint errors in `date-picker.tsx` left as they were.)
+
+### Changed — prototype
+- Rows per page: 20 / 50 / 100 → **10 / 20 / 50**. Default stays 50 (41 rooms on one page).
+- **Rooms: "Add room" button** + create mode in the room drawer (Room name field, required; new room starts Available, Available from today; next ID `RM-1042`). Store: `addRoom` in `rooms/store.ts`.
+
+### Decisions (designer, 2026-10-09)
+7. Rooms can be created. **Not a new decision:** "Create a new room" is in the FigJam Sitemap (`RnN40RUrCANewi4MBP60yU`, node `113:3758`, source of truth). Reason (designer): the client may add a new building later, so the room count is not fixed. The Functional Spec wrongly says "Room: 41 (fixed)" because the 41-unit count was copied without checking the Sitemap. **Open:** fix the Spec (vault first, then `docs/product/`). Building choices (`Perron 19`, `Perron 17`) are also a fixed list today and will need a new value when a building is added.
+
+---
+
 ## 2026-10-09 (Perron) — pagination on every list
 
 ### Added — prototype

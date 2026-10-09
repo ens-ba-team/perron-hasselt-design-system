@@ -23,6 +23,7 @@ interface PerronStore {
   currentStaffId: string
   setCurrentStaffId: (id: string) => void
   updateRoom: (id: string, patch: Partial<Room>) => void
+  addRoom: (r: Omit<Room, 'id'>) => string
   updateTenant: (id: string, patch: Partial<Tenant>) => void
   addTenant: (t: Omit<Tenant, 'id'>) => string
   updateBooking: (id: string, patch: Partial<Booking>) => void

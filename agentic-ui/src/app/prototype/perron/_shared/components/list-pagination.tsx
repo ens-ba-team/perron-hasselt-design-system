@@ -19,7 +19,7 @@ import { COPY } from '@/app/prototype/perron/_shared/copy'
 // Default 50 rows per page so the 41 rooms still fit on one page ("the list is the product").
 // WordPress equivalent: the per-page value in Screen Options.
 
-export const PAGE_SIZES = [20, 50, 100] as const
+export const PAGE_SIZES = [10, 20, 50] as const
 export const DEFAULT_PAGE_SIZE = 50
 
 // Paginates `items`. Goes back to page 1 whenever `resetKey` changes (tab, filter, search, sort).

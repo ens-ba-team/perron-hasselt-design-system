@@ -2,6 +2,8 @@
 
 export const ROOMS_COPY = {
   title: 'Rooms',
+  add: 'Add room',
+  newTitle: 'Add room',
   description: 'Sorted by Available from. Room status sits next to it on purpose: they answer different questions.',
   searchPlaceholder: 'Search rooms',
   detail: {

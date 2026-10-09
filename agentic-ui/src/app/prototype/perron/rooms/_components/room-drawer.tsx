@@ -12,8 +12,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Textarea } from '@/components/ui/textarea'
 import { COPY } from '@/app/prototype/perron/_shared/copy'
+import { DateField } from '@/app/prototype/perron/_shared/components/form-fields'
 import { ROOMS_COPY } from '@/app/prototype/perron/rooms/copy'
-import { formatDate } from '@/app/prototype/perron/_shared/format'
+import { TODAY, formatDate, withoutId } from '@/app/prototype/perron/_shared/format'
 import { type Room } from '@/app/prototype/perron/_shared/types'
 import { BUILDINGS, ROOM_STATUSES, ROOM_TYPES } from '@/app/prototype/perron/rooms/data'
 import { usePerron } from '@/app/prototype/perron/_shared/store'
@@ -63,7 +64,14 @@ function ReferenceCard() {
   )
 }
 
+// A new room: the admin fills every field. Status starts Available, Available from today.
+function emptyRoom(): Room {
+  return { id: '', name: '', building: 'Perron 19', floor: 0, type: 'Standard room', maxOccupancy: 1, monthlyRent: 0, status: 'Available', availableFrom: TODAY, notes: '' }
+}
+
 function RoomRecord({ room, onDone }: { room: Room; onDone: () => void }) {
+  const isNew = !room.id
+  const [submitted, setSubmitted] = React.useState(false)
   const router = useRouter()
   const store = usePerron()
   const [draft, setDraft] = React.useState(room)
@@ -79,10 +87,15 @@ function RoomRecord({ room, onDone }: { room: Room; onDone: () => void }) {
   const roomMaintenance = store.maintenance.filter((m) => m.roomId === room.id)
   const addBooking = () => router.push(recordHref('bookings', NEW, { room: room.id }))
 
+  const nameError = submitted && !draft.name.trim() ? COPY.common.required(C.name) : undefined
+
   const save = (e: React.FormEvent) => {
     e.preventDefault()
-    store.updateRoom(room.id, draft)
-    toast.success(COPY.common.saved, { description: room.name })
+    setSubmitted(true)
+    if (!draft.name.trim()) return
+    if (isNew) store.addRoom(withoutId(draft))
+    else store.updateRoom(room.id, draft)
+    toast.success(COPY.common.saved, { description: draft.name })
     onDone()
   }
 
@@ -91,14 +104,16 @@ function RoomRecord({ room, onDone }: { room: Room; onDone: () => void }) {
       open
       size="lg"
       onClose={onDone}
-      title={`${room.id} · ${room.name}`}
-      description={`${room.building} · ${room.type} · ${C.maxOccupancy} ${room.maxOccupancy}`}
+      title={isNew ? ROOMS_COPY.newTitle : `${room.id} · ${room.name}`}
+      description={isNew ? undefined : `${room.building} · ${room.type} · ${C.maxOccupancy} ${room.maxOccupancy}`}
       footer={
         <>
+          {!isNew && (
           <Button type="button" variant="outline" className="mr-auto" onClick={addBooking}>
             <Plus />
             {ROOMS_COPY.detail.addBooking}
           </Button>
+          )}
           <Button type="button" variant="outline" onClick={onDone}>{COPY.common.cancel}</Button>
           <Button type="submit" form="room-form" disabled={!dirty}>{COPY.common.save}</Button>
         </>
@@ -106,11 +121,17 @@ function RoomRecord({ room, onDone }: { room: Room; onDone: () => void }) {
     >
       <form id="room-form" onSubmit={save} noValidate>
         <DrawerSection title={ROOMS_COPY.detail.fields}>
+          <div className="flex flex-col gap-1.5 sm:col-span-2">
+            <Label htmlFor="name">{C.name}</Label>
+            <Input id="name" value={draft.name} placeholder="P19 – 2.05" onChange={(e) => set('name', e.target.value)}
+              aria-invalid={!!nameError || undefined} />
+            {nameError && <p className="text-xs text-[var(--color-text-invalid)]">{nameError}</p>}
+          </div>
           <SelectField id="status" label={C.status} value={draft.status} options={ROOM_STATUSES}
             onChange={(v) => set('status', v as Room['status'])} />
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="availableFrom">{C.availableFrom}</Label>
-            <Input id="availableFrom" type="date" value={draft.availableFrom} onChange={(e) => set('availableFrom', e.target.value)} />
+            <DateField id="availableFrom" value={draft.availableFrom} onChange={(v) => set('availableFrom', v)} />
           </div>
           <ReferenceCard />
           <SelectField id="building" label={C.building} value={draft.building} options={BUILDINGS}
@@ -134,6 +155,7 @@ function RoomRecord({ room, onDone }: { room: Room; onDone: () => void }) {
         </DrawerSection>
       </form>
 
+      {!isNew && (<>
       <DrawerSection title={ROOMS_COPY.detail.bookings} description={ROOMS_COPY.detail.bookingsHint} className="sm:grid-cols-1">
         {roomBookings.length === 0 ? (
           <p className="text-sm text-[var(--color-text-secondary)]">{ROOMS_COPY.detail.noBookings}</p>
@@ -201,6 +223,7 @@ function RoomRecord({ room, onDone }: { room: Room; onDone: () => void }) {
           </TableFrame>
         )}
       </DrawerSection>
+      </>)}
     </RecordDrawer>
   )
 }
@@ -208,7 +231,9 @@ function RoomRecord({ room, onDone }: { room: Room; onDone: () => void }) {
 // Mounted on the Rooms list. Rooms are a fixed set of 41, so there is no create.
 export function RoomDrawer() {
   const { record, close } = useRecordParam()
+  const { isNew } = useRecordParam()
   const room = usePerron().room(record ?? '')
+  if (isNew) return <RoomRecord key="new" room={emptyRoom()} onDone={close} />
   if (!room) return null
   return <RoomRecord key={JSON.stringify(room)} room={room} onDone={close} />
 }

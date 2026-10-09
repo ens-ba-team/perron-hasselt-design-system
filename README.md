@@ -30,7 +30,7 @@ The design system for **Perron Hasselt Room Management**, a back office for mana
 | Token build (`sd.build.mjs`) | 🔴 Broken upstream. CSS is being patched by hand, see [section 8](#8-technical-notes) |
 | Install | 🟡 Works with `npm ci --legacy-peer-deps` (upstream lockfile conflict) |
 | `next build` | ✅ Passes (fixed 2026-10-08) |
-| Product docs | ✅ BRD, Functional Spec, SOP v0.1 (2026-10-08) in `docs/product/` |
+| Product docs | 🟡 BRD, Functional Spec, SOP v0.1 (2026-10-08) in `docs/product/`. **Behind the prototype:** Spec wrongly says Rooms are fixed at 41 (FigJam Sitemap has "Create a new room"; a new building may be added later), and does not describe the record drawer, ID column or pagination. Update the vault first |
 | Perron prototype | ✅ v1 built: Rooms, Bookings, Tenants, Maintenance + record drawers + pagination on every list. `agentic-ui/src/app/prototype/perron/` (structure and rules in its `README.md`). Merged to `main` |
 | Open questions for dev | 🟡 Q27–Q30 (Functional Spec §9) + **Q31** candidate: public ID prefixes `RM-`/`TN-`/`PH-`/`MT-` need a custom field |
 

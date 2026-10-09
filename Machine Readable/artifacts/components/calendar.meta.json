@@ -324,7 +324,7 @@
     "sourceMarkdown": "Component Markdown/Calendar.md",
     "storyFile": "src/stories/Calendar.stories.tsx",
     "artifactStatus": "ready",
-    "lastAuditDate": "2026-05-28",
+    "lastAuditDate": "2026-10-09",
     "auditRules": "R1–R8",
     "version": "3.0",
     "openQuestions": [],
@@ -347,6 +347,10 @@
         "date": "2026-06-04",
         "change": "Time picker popover corrected to match Figma + system standard: radius radius/md→radius/lg, padding p-2→p-0.5 (2px), column gap gap-2→gap-0.5 (2px). Figma os-time-menu is the source of truth. Also fixed: column item width 40px→48px (w-12), gap between items 0→gap-0.5 (2px).",
         "breaking": false
+      },
+      {
+        "date": "2026-10-09",
+        "change": "Single-month calendar opens on `defaultMonth` (was always today's month). DatePicker passes the selected date as `defaultMonth`."
       }
     ],
     "darkMode": {

@@ -55,14 +55,18 @@ interface RecordDrawerProps {
   description?: React.ReactNode
   /** Footer actions. Put the submit button with form={formId}. */
   footer?: React.ReactNode
-  size?: 'md' | 'lg'
   children: React.ReactNode
 }
 
-export function RecordDrawer({ open, onClose, title, description, footer, size = 'md', children }: RecordDrawerProps) {
+// Width: 560px for every record drawer (designer, 2026-10-12). DS Sheet default is 380px,
+// too narrow for the 2-column Booking and Room forms. Not in Figma yet: add a Sheet
+// "Wide 560" variant there, then move this value into the DS component.
+const DRAWER_WIDTH = 'sm:w-[560px]'
+
+export function RecordDrawer({ open, onClose, title, description, footer, children }: RecordDrawerProps) {
   return (
     <Sheet open={open} onOpenChange={(o) => !o && onClose()}>
-      <SheetContent side="right" className={cn('max-w-none', size === 'lg' ? 'sm:w-[880px]' : 'sm:w-[640px]')}>
+      <SheetContent side="right" className={cn('max-w-none', DRAWER_WIDTH)}>
         <SheetHeader className="border-b border-[var(--color-border-default)]">
           <SheetTitle>{title}</SheetTitle>
           {description && <SheetDescription>{description}</SheetDescription>}

@@ -10,6 +10,22 @@ Format: newest first. Each entry includes what changed, the migration path, and 
 
 ---
 
+## 2026-10-12 (Perron) — drawer width 560px
+
+### Changed — prototype
+- Record drawer width: **560px for every drawer** (was 640px, Room 880px). File: `prototype/perron/_shared/components/record-drawer.tsx` (`DRAWER_WIDTH`); `size` prop removed.
+- Supersedes "Room drawer 880px, others 640px" in the 2026-10-08 entry. Those values were chosen by the agent without a design source (see Decisions).
+
+### Decisions (designer, 2026-10-12)
+8. Keep the drawer (Sheet) for CRUD. A separate edit page per record (closer to the WordPress edit screen) was considered and **parked**, not rejected.
+9. Drawer width 560px. DS Sheet default stays 380px.
+
+### Open
+- **Figma:** add a Sheet "Wide 560" size next to `Side=Horizontal 380`, then move 560px from the prototype into the DS `Sheet` component.
+- Room drawer: the bookings table (6 columns) scrolls horizontally at 560px.
+
+---
+
 ## 2026-10-09 (Perron) — date fields, page sizes, add room
 
 ### Fixed — date fields (prototype)

@@ -102,7 +102,6 @@ function RoomRecord({ room, onDone }: { room: Room; onDone: () => void }) {
   return (
     <RecordDrawer
       open
-      size="lg"
       onClose={onDone}
       title={isNew ? ROOMS_COPY.newTitle : `${room.id} · ${room.name}`}
       description={isNew ? undefined : `${room.building} · ${room.type} · ${C.maxOccupancy} ${room.maxOccupancy}`}

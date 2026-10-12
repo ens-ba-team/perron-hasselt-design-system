@@ -12,18 +12,24 @@ import { cn } from "@/lib/utils"
 // TableCell (<td>):  p-4 · color/surface/default/foreground
 // TableCaption:      color/text/secondary
 
-const Table = React.forwardRef<
-  HTMLTableElement,
-  React.HTMLAttributes<HTMLTableElement>
->(({ className, ...props }, ref) => (
-  <div className="relative w-full overflow-auto">
-    <table
-      ref={ref}
-      className={cn("w-full caption-bottom text-sm", className)}
-      {...props}
-    />
-  </div>
-))
+// `wrapperClassName` styles the scroll container around the table. Give it a bounded height
+// (e.g. "h-full" inside a flex parent) when the header or a column has to stay pinned:
+// sticky positions against this element, so it must be the one that scrolls.
+interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
+  wrapperClassName?: string
+}
+
+const Table = React.forwardRef<HTMLTableElement, TableProps>(
+  ({ className, wrapperClassName, ...props }, ref) => (
+    <div className={cn("relative w-full overflow-auto", wrapperClassName)}>
+      <table
+        ref={ref}
+        className={cn("w-full caption-bottom text-sm", className)}
+        {...props}
+      />
+    </div>
+  )
+)
 Table.displayName = "Table"
 
 const TableHeader = React.forwardRef<

@@ -10,6 +10,238 @@ Format: newest first. Each entry includes what changed, the migration path, and 
 
 ---
 
+## 2026-10-12 (Perron) — product docs back in sync
+
+Full pass over the client-facing documents, so they describe the prototype as it is now. Vault first, then copied to `docs/product/`.
+
+### BRD v0.2
+- Scope: 41 units "of today", **not fixed** — admins add rooms and buildings.
+- C3 / BR20 / BR29: inspection photos are **uploaded**; contracts and ID papers stay on Drive. The GDPR rule covers papers, not room photos.
+- FR-B2: tabs are now **My task** and **This week**.
+- FR-G1b added: ID column first, Actions column last, pagination 10 / 20 / 50 (default 10).
+- FR-G2 / FR-R5 struck through: no inline editing, flagged for client confirmation.
+- My task table and Q28: "7 days before check-out" → "the week the check-out is due".
+- Room entity: Building is extendable.
+
+### SOP v0.2
+- New intro paragraph: how to open a record (ID or Edit icon → side panel); lists are read-only.
+- P1: "Add booking", dates first so the room list can mark booked rooms.
+- P3 / P4: photos are **uploaded to the booking**, not pasted as a Drive link. P4 trigger is "the week the check-out is due".
+- **New P10b**: adding a room, and adding a new building from the room form.
+- P11 weekly check: "Check-outs this month" → **This week**; the deposit row now reads the Ended tab's Deposit status column (the Deposits held tab is gone).
+
+### Functional Spec v0.2
+Already updated earlier today; no further change in this pass.
+
+### Vault
+- `product-knowledge.md`: scale, GDPR split, Building, photo fields, R15, UI principles, Bookings columns and tabs. New **§16** listing every 2026-10-12 decision.
+- `README.md`: §9 open items rewritten (Q27 closed, no Q31, client confirmation needed for inline editing), doc versions bumped.
+
+### Status
+- `README.md` §1 Product docs row: 🟡 → ✅.
+
+---
+
+## 2026-10-12 (Perron) — no inline editing, sticky ID elevation
+
+### Removed — inline editing
+- Lists are now **read-only**. Every field is edited in the record drawer, opened from the ID link or the **Edit** row action. Deleted `_shared/components/inline-cell.tsx` (`InlineCell`, `SingleEditProvider`); `TableFrame` no longer provides an edit context.
+- The cancel-booking confirmation on the Bookings list went with it — it was triggered by the inline status cell. The same dialog still runs inside the booking drawer.
+- Reverses "one cell at a time" from the entry below, decided earlier the same day.
+- ⚠️ **Conflicts with the client brief**, which asks for inline editing (client spec §5; BRD FR-G2 and FR-R5). Recorded as a deviation in the Spec §3 and marked in the BRD. **Needs client confirmation before build.**
+
+### Changed — sticky ID column
+- The ID column and its header now cast `shadow/md` **sideways** (`4px 0 …`), so the pinned column reads as sitting above the columns sliding under it.
+- The **Actions header is no longer pinned sideways**: the label scrolls with the other headers, while the action buttons in each row stay docked right.
+
+### Decisions (designer, 2026-10-12)
+17. No inline editing anywhere. One editing surface: the record drawer. Supersedes decision 12.
+18. Sticky ID column gets elevation; the Actions header does not stay pinned.
+
+### Docs
+- Functional Spec: §3 rewritten (no inline editing + the deviation note), column tables now say "Editable (panel)".
+- BRD: FR-G2 and FR-R5 struck through with the change and a confirmation flag. Vault `README.md` principle updated. Both copied to `docs/product/`.
+
+---
+
+## 2026-10-12 (Perron) — table: 64px rows, sticky header, elevated actions
+
+### Changed — DS component `Table` (`agentic-ui/src/components/ui/table.tsx`)
+- New **`wrapperClassName`** prop for the scroll container around the table. Sticky headers and sticky columns position against that element, so it has to be the one with a bounded height. Without it, a consumer could not make a sticky header work: the wrapper always grew to content height. No visual change by default. `table.meta.json` updated.
+
+### Changed — prototype lists
+- **Row height 64px** (was 48). Supersedes the 48px in the entry below.
+- **Header row is sticky** while the rows scroll, and the ID / Actions headers stay pinned sideways over their sticky columns (`HEAD`, `HEAD_ID`, `HEAD_ACTIONS`).
+- **Actions column now has a visible "Actions" header** (was a screen-reader-only label).
+- **Row actions sit in an elevated pill**: own surface, border and `shadow/md`, so the buttons read as floating above the row instead of blending into it.
+- A list page now fills the viewport and the table scrolls inside its frame; filters, tabs and pagination stay put. `main` became a flex column in `layout.tsx`.
+
+---
+
+## 2026-10-12 (Perron) — list tables, tabs, photos, buildings
+
+### Changed — prototype lists
+- **Rows 48px** (was 49: the DS `TableCell` p-4 was fighting the cell class). Alternating row background (`color/background/subtle`), values in `color/text/secondary`, ID and record name keep the strong colour.
+- **ID column sticky** on the left in all four lists.
+- **Actions column** last, no header label: Edit + View icons, revealed on row hover or keyboard focus, sticky right so it floats over the row. Ended / Cancelled bookings get **View** only.
+- **Inline editing: one cell at a time.** `SingleEditProvider` lives in `TableFrame`, so opening a second cell closes the first. Editing inside a drawer is unchanged.
+- **Rows per page default 10** (was 50). Options unchanged: 10 / 20 / 50.
+- New in `list-parts.tsx`: `ROW`, `CELL_STRONG`, `CELL_ID`, `CELL_ACTIONS`, `RowActions`.
+
+### Changed — Bookings tabs
+| Was | Now |
+|---|---|
+| Check-ins this week · Check-outs this month · My task · Deposits held | **My task** (due this week, assigned to me) · **This week** (due this week, anyone) |
+- `myTask()` now takes the end of the week instead of a 7-day window, and splits into `taskDue()` (what is due) + `myTask()` (my share of it). One definition of "this week" instead of two horizons.
+- Deposits held removed (designer: not needed).
+
+### Changed — forms
+- **Helper text is now an info icon** next to the label, shown on hover or focus. Only `hintBelow` keeps text under a field; the only one left is the overlap instruction on the Room field. Validation errors are unchanged, still under the field.
+- **Check-in / Check-out photos are image uploads** (`ImageField`), two separate fields, with thumbnails and remove. Check-out photos only appear once `Check-out done` = Yes, per the Spec. Contracts and IDs stay a Drive link in "Other" (client spec §6 privacy rule covers ID cards and contracts, not room photos).
+- **Building can be created from the room form** (`CreatableSelect`): pick an existing building or "Add a new building". The list also picks up buildings already used by other rooms. WordPress: ACF Taxonomy field with *Create Terms* — no custom code.
+- Q27 marker removed from the Room field (confirmed in scope).
+
+### Decisions (designer, 2026-10-12)
+12. Inline editing stays, but only one cell at a time. Records also stay editable inside the drawer.
+13. Tabs: My task = assigned to me, This week = team view. Deposits held dropped.
+14. Inspection photos are uploads, two fields. The client's "do not upload" rule applies to ID cards and contracts only.
+15. No Buildings module: a new building is typed into the Building field on a room.
+16. Record IDs in the prototype are mock values. Dev maps them to WordPress post IDs (no Q31).
+
+### Docs
+- **Functional Spec v0.2** (vault, copied to `docs/product/`): rooms not fixed, Building as a taxonomy with Create Terms, photos as Gallery fields + privacy note, list rules (one-cell inline edit, ID column, Actions column, 48px rows, pagination), new §4.3 "My task and This week", Q27 marked in scope, D6 on mock IDs.
+- Vault `README.md` and `product-knowledge.md` updated for the room count and the saved views.
+- Still behind: BRD and SOP (old tabs, fixed room count).
+
+### Open
+- BRD + SOP need the same update as the Spec.
+- `RecordDrawer` is still named "drawer" although it renders a Sheet. Rename when convenient.
+
+---
+
+## 2026-10-12 (Perron) — Sheet: Direction renamed to Size
+
+Designer renamed the Sheet variant property (Perron `98:57748`): **`Direction=560px` → `Size=560px`**. Size options: `380px` (default) · `560px` · `1200px`. Combinations in Figma: `Side=Horizontal` + `Size=380px` / `560px`, `Side=Vertical` + `Size=1200px`. Re-scanned: tokens and values inside the variants are unchanged (fill, title 14 Medium, close 24, horizontal footer, header gap 4).
+- Code: `SheetContent size="default" | "wide"` unchanged. Mapping `380px → default`, `560px → wide`, `1200px → side top/bottom` is documented in `sheet.meta.json` (`variants.Size`). Comments in `sheet.tsx`, `Sheet.stories.tsx`, `record-drawer.tsx` and README §7 now say `Size=560px`.
+- Resolves the "separate `Size` property" item under Open in the entry below. Still open there: the 8px radius question.
+
+---
+
+## 2026-10-12 (Perron) — 560px moved from Drawer to Sheet, Sheet gap 4px
+
+Designer, same day: removed the 560px variant from Drawer, added it to Sheet, and reduced the title-description gap in Sheet. Re-scanned Figma `98:59427` (Sheet) and `74:691` (Drawer), synced both.
+
+### Changed — DS component `Sheet` (`agentic-ui/src/components/ui/sheet.tsx`), Figma `98:57748`
+
+| Part | Was | Now |
+|---|---|---|
+| `SheetHeader` gap (title → description) | `spacing/component/sm` 8px | **`spacing/component/xs` 4px** ⚠️ affects every Sheet |
+| `SheetContent` | one size (380px) | `size`: `default` (380) · **`wide` (560px, Figma `Side=Horizontal, Direction=560px`, 2070:6175)** |
+| wide: fill | — | `color/surface/default` (default size stays `surface/overlay`) |
+| wide: title / description | 16 SemiBold / `text/secondary` | **14 Medium** / `background/default/foreground`; description `background/muted/foreground` |
+| wide: close button | 16px icon, text/secondary | **24×24**, 12px icon, `background/default/foreground` |
+| wide: `SheetFooter` | vertical | **horizontal**, two equal-width buttons (Cancel, then primary) |
+- Implemented with `data-size` on the content and `group-data-[size=wide]/sheet:` variants, so Title / Description / Footer need no extra props.
+- `sheet.meta.json` updated; new story `Sheet › Wide560`.
+- Migration: all Sheets get a tighter header (4px). Wide Sheet titles are smaller (14px).
+
+### Changed — DS component `Drawer` (`agentic-ui/src/components/ui/drawer.tsx`), Figma `74:691`
+- Back to the three Figma variants: Bottom, Right (400px), Responsive. **Removed** `variant="wide"`, `showClose`, `DrawerFooter layout`, and the `Wide560` story (all added earlier today, now in Sheet).
+- Kept: `variant` prop (`bottom` | `right`) so Right no longer needs class overrides; title 14 Medium (still Medium 14 on all three Figma variants).
+- Rule of thumb, from Figma best practice: **Sheet = side panel on desktop; Drawer = mobile panel from the bottom** (vaul: swipe to dismiss, scaled background).
+
+### Changed — Perron prototype
+- `RecordDrawer` uses DS **Sheet** `size="wide"` again (was Drawer `wide`). Footer and title now come from the DS component.
+- Removed the extra `border-b` under the drawer header that the prototype had added: Figma's sheet header has no stroke.
+
+### Decisions (designer, 2026-10-12)
+10. (updated) Record drawers use **Sheet `Direction=560px`**, not Drawer. Supersedes "Drawer 560" below.
+
+### Open
+- ~~Figma names the size as a `Direction` value~~ Done: now `Size` (see entry above).
+- Figma Sheet default (`Side=Horizontal`) has radius 8 on all four corners; code rounds only the exposed edge (left). Not changed, check which is intended.
+
+---
+
+## 2026-10-12 (Perron) — Drawer 560 from Figma, collapsible related records
+
+### Changed — DS component `Drawer` (`agentic-ui/src/components/ui/drawer.tsx`), synced with Perron Figma `74:691`
+
+| Part | Was | Now |
+|---|---|---|
+| `DrawerContent` | Bottom only (`bottom-0` hard-coded); Right story faked it with class overrides | `variant`: `bottom` (74:689) · `right` 400px (74:690) · **`wide` 560px (`Direction=560px`, 2068:93)** |
+| Close button | none | `showClose`, on by default for `wide` (24px, top-right) |
+| `DrawerFooter` | vertical only | `layout`: `vertical` · **`horizontal`** (equal-width buttons, used by 560px) |
+| `DrawerTitle` | 18px SemiBold ("heading/md") | **14px Medium** (Figma label/md on all four variants; code had drifted) |
+- `drawer.meta.json` changelog/exports/notes updated. Stories: `Right` uses `variant="right"`; new `Wide560`.
+- Migration: titles in existing drawers get smaller (14px).
+
+### Changed — Perron prototype
+- `RecordDrawer` now uses DS **Drawer** `variant="wide"` (was `Sheet` + width override). Removes the `DRAWER_WIDTH` override: the 560px lives in the DS component. Props: `direction="right"`, `handleOnly` (dragging inside a form must not close it), `shouldScaleBackground={false}`.
+- Footer = Figma: two equal buttons, Cancel + primary. Room drawer: "Add booking for this room" moved from the footer into the Bookings section.
+- **New `_shared/components/record-accordion.tsx`** (DS `Accordion`, `type="multiple"`): related records as rows (ID link · title · one meta line · chevron), expand for the rest in two columns. Used for the Room drawer's bookings and maintenance and the Tenant drawer's booking history. Replaces 6-column tables that scrolled sideways at 560px. Section titles show the count.
+
+### Decisions (designer, 2026-10-12)
+10. Record drawers use the Figma Drawer `Direction=560px` variant. Supersedes "Sheet + 560px override" from the entry below.
+11. Related records inside a drawer are collapsible rows (designer request). Note: product README says "don't hide behind accordion"; this applies to the record's own fields, which stay fully visible. Only related records (bookings, maintenance, history) collapse.
+
+### Open
+- Figma names the size as a `Direction` value ("560px"). Consider a separate `Size` property (Default 400 / Wide 560) so Direction stays Bottom / Right / Responsive.
+
+---
+
+## 2026-10-12 (Perron) — drawer width 560px
+
+### Changed — prototype
+- Record drawer width: **560px for every drawer** (was 640px, Room 880px). File: `prototype/perron/_shared/components/record-drawer.tsx` (`DRAWER_WIDTH`); `size` prop removed.
+- Supersedes "Room drawer 880px, others 640px" in the 2026-10-08 entry. Those values were chosen by the agent without a design source (see Decisions).
+
+### Decisions (designer, 2026-10-12)
+8. Keep the drawer (Sheet) for CRUD. A separate edit page per record (closer to the WordPress edit screen) was considered and **parked**, not rejected.
+9. Drawer width 560px. DS Sheet default stays 380px.
+
+### Open
+- ~~Figma: add a Sheet "Wide 560" size~~ Done 2026-10-12 as Drawer `Direction=560px` (see entry above).
+- ~~Room drawer table scrolls horizontally~~ Fixed 2026-10-12 with `RecordAccordion`.
+
+---
+
+## 2026-10-09 (Perron) — date fields, page sizes, add room
+
+### Fixed — date fields (prototype)
+- All 12 date inputs used the browser's native `<input type="date">` ("mm/dd/yyyy", browser calendar icon), which does not match the DS. Replaced by `DateField` (`_shared/components/form-fields.tsx`) = DS `DatePicker` type "input", value stored as ISO. Covers booking, room and maintenance drawers and inline edit in list cells.
+- `formatDate` now shows `MMM d, yyyy` (e.g. "Oct 8, 2026"), same as the DatePicker trigger, so lists and fields read alike. Was "8 Oct 2026".
+
+### Fixed — DS components
+- `Calendar` (single month) ignored `defaultMonth` and always opened on today's month. Now `month ?? defaultMonth ?? today`. File: `agentic-ui/src/components/ui/calendar.tsx`.
+- `DatePicker` passes the selected date (or range start) as `defaultMonth`, so a 2027 contract date opens on 2027. File: `agentic-ui/src/components/ui/date-picker.tsx`.
+- `calendar.meta.json`, `date-picker.meta.json` changelog updated. (Two pre-existing `no-explicit-any` lint errors in `date-picker.tsx` left as they were.)
+
+### Changed — prototype
+- Rows per page: 20 / 50 / 100 → **10 / 20 / 50**. Default stays 50 (41 rooms on one page).
+- **Rooms: "Add room" button** + create mode in the room drawer (Room name field, required; new room starts Available, Available from today; next ID `RM-1042`). Store: `addRoom` in `rooms/store.ts`.
+
+### Decisions (designer, 2026-10-09)
+7. Rooms can be created. **Not a new decision:** "Create a new room" is in the FigJam Sitemap (`RnN40RUrCANewi4MBP60yU`, node `113:3758`, source of truth). Reason (designer): the client may add a new building later, so the room count is not fixed. The Functional Spec wrongly says "Room: 41 (fixed)" because the 41-unit count was copied without checking the Sitemap. **Open:** fix the Spec (vault first, then `docs/product/`). Building choices (`Perron 19`, `Perron 17`) are also a fixed list today and will need a new value when a building is added.
+
+---
+
+## 2026-10-09 (Perron) — pagination on every list
+
+### Added — prototype
+- `_shared/components/list-pagination.tsx`: `ListPagination` (DS `Pagination`, pattern With Total + With Changer: Total N items · Prev · pages with ellipsis · Next · rows per page) and `usePaged(items, resetKey)`.
+- Applied to Rooms, Bookings, Tenants, Maintenance. Back to page 1 when tab, filter, search, sort or rows per page change.
+- **Default 50 rows per page** (options 20 / 50 / 100) so the 41 rooms stay on one page ("the list is the product"). WordPress equivalent: Screen Options per-page value.
+- Removed the "N items" count above each table (now in the pagination bar).
+
+### Fixed — DS component `Pagination`
+- `PaginationPrevious` / `PaginationNext` disabled styles used `[aria-disabled=true]:` (invalid Tailwind variant, never applied). Now `aria-disabled:`. File: `agentic-ui/src/components/ui/pagination.tsx`; `pagination.meta.json` changelog updated.
+
+### Status
+- `README.md` §1 Perron prototype row updated, Last checked 2026-10-09.
+
+---
+
 ## 2026-10-08 (Perron) — docs status sync
 
 ### Fixed — stale documentation

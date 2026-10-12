@@ -2,23 +2,21 @@
 
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
-import { SearchLg } from '@untitledui/icons'
+import { Plus, SearchLg } from '@untitledui/icons'
 import { Button } from '@/components/ui/button'
 import { Empty } from '@/components/ui/empty'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { toast } from 'sonner'
 import { COPY } from '@/app/prototype/perron/_shared/copy'
+import { ListPagination, usePaged } from '@/app/prototype/perron/_shared/components/list-pagination'
 import { ROOMS_COPY } from '@/app/prototype/perron/rooms/copy'
 import { formatDate, formatMoney } from '@/app/prototype/perron/_shared/format'
-import { type Room } from '@/app/prototype/perron/_shared/types'
 import { BUILDINGS, ROOM_STATUSES, ROOM_TYPES } from '@/app/prototype/perron/rooms/data'
 import { usePerron } from '@/app/prototype/perron/_shared/store'
-import { InlineCell } from '@/app/prototype/perron/_shared/components/inline-cell'
-import { recordHref } from '@/app/prototype/perron/_shared/components/record-drawer'
+import { NEW, recordHref } from '@/app/prototype/perron/_shared/components/record-drawer'
 import { RoomDrawer } from '@/app/prototype/perron/rooms/_components/room-drawer'
-import { CELL, DevNote, IdLink, PageHeader, SortHead, TableFrame, ViewLinks, compareValues, type SortState } from '@/app/prototype/perron/_shared/components/list-parts'
+import { CELL, CELL_ACTIONS, CELL_ID, CELL_STRONG, DevNote, HEAD_ACTIONS, HEAD_ID, IdLink, PageHeader, ROW, RowActions, SortHead, TableFrame, ViewLinks, compareValues, type SortState } from '@/app/prototype/perron/_shared/components/list-parts'
 
 // Rooms — Functional Spec §3.1
 // Default: all rooms, sorted by Available from ascending. No status filter by default:
@@ -31,7 +29,7 @@ const C = COPY.labels.room
 
 export default function RoomsPage() {
   const router = useRouter()
-  const { rooms, maintenance, updateRoom } = usePerron()
+  const { rooms, maintenance } = usePerron()
   const [view, setView] = React.useState(ALL)
   const [building, setBuilding] = React.useState(ALL)
   const [type, setType] = React.useState(ALL)
@@ -59,11 +57,8 @@ export default function RoomsPage() {
   const visible = filteredExceptView
     .filter((r) => view === ALL || r.status === view)
     .sort((a, b) => compareValues(a[sort.key], b[sort.key], sort.dir) || compareValues(a.name, b.name, 'asc'))
+  const paged = usePaged(visible, `${view}|${building}|${type}|${query}|${sort.key}-${sort.dir}`)
 
-  const save = (r: Room, patch: Partial<Room>) => {
-    updateRoom(r.id, patch)
-    toast.success(COPY.common.saved, { description: r.name })
-  }
 
   const clearFilters = () => {
     setBuilding(ALL)
@@ -75,8 +70,17 @@ export default function RoomsPage() {
   const head = { sort, onSort: setSort }
 
   return (
-    <div className="flex flex-col gap-4 p-6">
-      <PageHeader title={ROOMS_COPY.title} description={ROOMS_COPY.description} />
+    <div className="flex h-full min-h-0 flex-col gap-4 p-6">
+      <PageHeader
+        title={ROOMS_COPY.title}
+        description={ROOMS_COPY.description}
+        action={
+          <Button size="sm" onClick={() => router.push(recordHref('rooms', NEW))}>
+            <Plus />
+            {ROOMS_COPY.add}
+          </Button>
+        }
+      />
 
       <ViewLinks views={views} active={view} onChange={setView} />
 
@@ -113,7 +117,6 @@ export default function RoomsPage() {
             className="pl-9"
           />
         </div>
-        <span className="text-sm text-[var(--color-text-secondary)]">{COPY.common.items(visible.length)}</span>
       </div>
 
       {visible.length === 0 ? (
@@ -124,10 +127,10 @@ export default function RoomsPage() {
         />
       ) : (
         <TableFrame>
-          <Table>
+          <Table wrapperClassName="h-full">
             <TableHeader>
               <TableRow>
-                <SortHead label={C.id} sortKey="id" {...head} />
+                <SortHead label={C.id} sortKey="id" {...head} className={HEAD_ID} />
                 <SortHead label={C.name} sortKey="name" {...head} />
                 <SortHead label={C.building} sortKey="building" {...head} />
                 <SortHead label={C.floor} sortKey="floor" {...head} />
@@ -142,58 +145,35 @@ export default function RoomsPage() {
                     <DevNote q="Q30" text={COPY.dev.q30} />
                   </span>
                 </TableHead>
+              <TableHead className={HEAD_ACTIONS}>{COPY.common.actions}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {visible.map((r) => (
-                <TableRow key={r.id}>
-                  <TableCell className={CELL}>
+              {paged.pageItems.map((r) => (
+                <TableRow key={r.id} className={ROW}>
+                  <TableCell className={CELL_ID}>
                     <IdLink id={r.id} onOpen={() => router.push(recordHref('rooms', r.id))} />
                   </TableCell>
-                  <TableCell className={`${CELL} font-medium`}>{r.name}</TableCell>
-                  <TableCell className={CELL}>
-                    <InlineCell label={C.building} kind="select" value={r.building}
-                      options={BUILDINGS.map((v) => ({ value: v, label: v }))}
-                      onSave={(v) => save(r, { building: v as Room['building'] })} />
-                  </TableCell>
-                  <TableCell className={CELL}>
-                    <InlineCell label={C.floor} kind="number" value={String(r.floor)}
-                      onSave={(v) => save(r, { floor: Number(v) })} />
-                  </TableCell>
-                  <TableCell className={CELL}>
-                    <InlineCell label={C.type} kind="select" value={r.type}
-                      options={ROOM_TYPES.map((v) => ({ value: v, label: v }))}
-                      onSave={(v) => save(r, { type: v as Room['type'] })} />
-                  </TableCell>
-                  <TableCell className={CELL}>
-                    <InlineCell label={C.maxOccupancy} kind="select" value={String(r.maxOccupancy)}
-                      options={[{ value: '1', label: '1' }, { value: '2', label: '2' }]}
-                      onSave={(v) => save(r, { maxOccupancy: Number(v) as 1 | 2 })} />
-                  </TableCell>
-                  <TableCell className={CELL}>
-                    <InlineCell label={C.status} kind="select" value={r.status}
-                      options={ROOM_STATUSES.map((v) => ({ value: v, label: v }))}
-                      onSave={(v) => save(r, { status: v as Room['status'] })} />
-                  </TableCell>
-                  <TableCell className={CELL}>
-                    <InlineCell label={C.availableFrom} kind="date" value={r.availableFrom}
-                      display={formatDate(r.availableFrom)}
-                      onSave={(v) => save(r, { availableFrom: v })} />
-                  </TableCell>
-                  <TableCell className={CELL}>
-                    <InlineCell label={C.monthlyRent} kind="number" value={String(r.monthlyRent)}
-                      display={formatMoney(r.monthlyRent)}
-                      onSave={(v) => save(r, { monthlyRent: Number(v) })} />
-                  </TableCell>
-                  <TableCell className={`${CELL} text-[var(--color-text-secondary)]`}>
-                    {openCount.get(r.id) ?? 0}
-                  </TableCell>
-                </TableRow>
+                  <TableCell className={CELL_STRONG}>{r.name}</TableCell>
+                  <TableCell className={CELL}>{r.building}</TableCell>
+                  <TableCell className={CELL}>{String(r.floor)}</TableCell>
+                  <TableCell className={CELL}>{r.type}</TableCell>
+                  <TableCell className={CELL}>{String(r.maxOccupancy)}</TableCell>
+                  <TableCell className={CELL}>{r.status}</TableCell>
+                  <TableCell className={CELL}>{formatDate(r.availableFrom)}</TableCell>
+                  <TableCell className={CELL}>{formatMoney(r.monthlyRent)}</TableCell>
+                  <TableCell className={CELL}>{openCount.get(r.id) ?? 0}</TableCell>
+                <TableCell className={CELL_ACTIONS}>
+                      <RowActions onView={() => router.push(recordHref('rooms', r.id))} onEdit={() => router.push(recordHref('rooms', r.id))} />
+                    </TableCell>
+                  </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableFrame>
       )}
+
+      {visible.length > 0 && <ListPagination {...paged} />}
 
       <RoomDrawer />
     </div>

@@ -190,3 +190,39 @@ export const ScrollableBody: Story = {
     </Sheet>
   ),
 };
+
+// ─── Wide 560 — Figma "Side=Horizontal, Size=560px" (Perron DS 2070:6175) ─
+// size="wide": 560px, 24px close button, footer with two equal buttons side by side.
+// Used by the Perron prototype for every record drawer.
+
+export const Wide560: Story = {
+  render: () => (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="outline">Open record</Button>
+      </SheetTrigger>
+      <SheetContent side="right" size="wide">
+        <SheetHeader>
+          <SheetTitle>RM-1029 · P19 – 2.04</SheetTitle>
+          <SheetDescription>Perron 19 · Large room · Max occupancy 2</SheetDescription>
+        </SheetHeader>
+        <div className="flex-1 overflow-y-auto p-[var(--spacing-component-lg)] grid grid-cols-2 gap-[var(--spacing-component-lg)] content-start">
+          <div className="flex flex-col gap-[var(--spacing-component-xs)]">
+            <Label htmlFor="w-name">Room name</Label>
+            <Input id="w-name" defaultValue="P19 – 2.04" />
+          </div>
+          <div className="flex flex-col gap-[var(--spacing-component-xs)]">
+            <Label htmlFor="w-rent">Monthly rent (€)</Label>
+            <Input id="w-rent" defaultValue="620" />
+          </div>
+        </div>
+        <SheetFooter>
+          <SheetClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </SheetClose>
+          <Button>Save</Button>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
+  ),
+};

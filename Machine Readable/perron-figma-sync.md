@@ -91,3 +91,15 @@ Follow-up same day: `color/sidebar/accent` → `color/navy/100` (#bfcdda), was `
 ## Sync 2026-10-08 — watermark 20%
 
 `SidebarWatermark` opacity 10% → **20%** (all three Expanded variants of `95:18202`; Collapsed variants have no watermark).
+
+## Sync 2026-10-12 — Drawer
+
+Perron `74:691` now has `Direction=560px` (`2068:93`): 560px, right-anchored, close button, horizontal footer. All variants: title Poppins Medium 14 (code had 18 SemiBold). Synced to `drawer.tsx` (`variant`, `showClose`, footer `layout`). **Synced components so far: Button, Sidebar, Drawer.**
+
+## Sync 2026-10-12 (2) — Sheet 560, Drawer back to 3 variants
+
+Sheet `98:57748`: new `Side=Horizontal, Direction=560px` (2070:6175); text-block gap 8 -> 4 (`spacing/component/xs`). Drawer `74:691`: 560px variant removed, back to Bottom / Right / Responsive. Synced to `sheet.tsx` (`size="wide"`, header gap) and `drawer.tsx`. **Synced components so far: Button, Sidebar, Sheet, Drawer.**
+
+## Sync 2026-10-12 (3) — Sheet property rename
+
+Sheet `98:57748`: property `Direction` renamed to `Size` (380px | 560px | 1200px). Values unchanged. Variant names: `Side=Horizontal, Size=380px`, `Side=Horizontal, Size=560px` (2070:6175), `Side=Vertical, Size=1200px`.

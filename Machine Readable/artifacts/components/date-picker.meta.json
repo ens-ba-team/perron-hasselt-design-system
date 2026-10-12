@@ -170,7 +170,7 @@
     "sourceMarkdown": "Component Markdown/Date-picker.md",
     "storyFile": "src/stories/DatePicker.stories.tsx",
     "artifactStatus": "ready",
-    "lastAuditDate": "2026-05-28",
+    "lastAuditDate": "2026-10-09",
     "auditRules": "R1–R8",
     "version": "3.0",
     "openQuestions": [],
@@ -188,6 +188,10 @@
         "date": "2026-06-03",
         "change": "Trigger icon moved from leading to trailing position.",
         "breaking": false
+      },
+      {
+        "date": "2026-10-09",
+        "change": "Single-month calendar opens on `defaultMonth` (was always today's month). DatePicker passes the selected date as `defaultMonth`."
       }
     ],
     "darkMode": {

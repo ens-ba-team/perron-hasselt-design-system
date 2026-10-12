@@ -1,19 +1,17 @@
 'use client'
 
 import * as React from 'react'
-import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { COPY } from '@/app/prototype/perron/_shared/copy'
 import { TENANTS_COPY } from '@/app/prototype/perron/tenants/copy'
-import { formatDate, withoutId } from '@/app/prototype/perron/_shared/format'
+import { formatDate, formatMoney, withoutId } from '@/app/prototype/perron/_shared/format'
 import { type Tenant } from '@/app/prototype/perron/_shared/types'
 import { usePerron } from '@/app/prototype/perron/_shared/store'
-import { CELL, IdLink, TableFrame } from '@/app/prototype/perron/_shared/components/list-parts'
+import { RecordAccordion } from '@/app/prototype/perron/_shared/components/record-accordion'
 import { DrawerSection, RecordDrawer, recordHref, useRecordParam } from '@/app/prototype/perron/_shared/components/record-drawer'
 
 // Tenant record — Functional Spec §2.2, §3.3.
@@ -23,7 +21,6 @@ const C = COPY.labels.tenant
 const EMPTY: Omit<Tenant, 'id'> = { name: '', phone: '', email: '', university: '', erasmus: false }
 
 function TenantForm({ tenantId, initial, onDone }: { tenantId?: string; initial: Omit<Tenant, 'id'>; onDone: () => void }) {
-  const router = useRouter()
   const store = usePerron()
   const [draft, setDraft] = React.useState(initial)
   const [touched, setTouched] = React.useState(false)
@@ -85,38 +82,24 @@ function TenantForm({ tenantId, initial, onDone }: { tenantId?: string; initial:
       </form>
 
       {tenantId && (
-        <DrawerSection title={TENANTS_COPY.history} description={TENANTS_COPY.historyHint} className="sm:grid-cols-1">
+        <DrawerSection title={`${TENANTS_COPY.history} (${history.length})`} description={TENANTS_COPY.historyHint} className="sm:grid-cols-1">
           {history.length === 0 ? (
             <p className="text-sm text-[var(--color-text-secondary)]">{TENANTS_COPY.noHistory}</p>
           ) : (
-            <TableFrame>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="px-3">{COPY.labels.booking.id}</TableHead>
-                    <TableHead className="px-3">{COPY.labels.booking.room}</TableHead>
-                    <TableHead className="px-3">{COPY.labels.booking.status}</TableHead>
-                    <TableHead className="px-3">{COPY.labels.booking.contractStart}</TableHead>
-                    <TableHead className="px-3">{COPY.labels.booking.contractEnd}</TableHead>
-                    <TableHead className="px-3">{COPY.labels.booking.depositStatus}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {history.map((b) => (
-                    <TableRow key={b.id}>
-                      <TableCell className={CELL}>
-                        <IdLink id={b.id} onOpen={() => router.push(recordHref('bookings', b.id))} />
-                      </TableCell>
-                      <TableCell className={CELL}>{store.room(b.roomId)?.name}</TableCell>
-                      <TableCell className={CELL}>{b.status}</TableCell>
-                      <TableCell className={CELL}>{formatDate(b.contractStart)}</TableCell>
-                      <TableCell className={CELL}>{formatDate(b.contractEnd)}</TableCell>
-                      <TableCell className={CELL}>{b.depositStatus}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableFrame>
+            <RecordAccordion
+              items={history.map((b) => ({
+                id: b.id,
+                href: recordHref('bookings', b.id),
+                title: store.room(b.roomId)?.name ?? '',
+                meta: `${b.status} · ${COPY.labels.booking.contractEnd} ${formatDate(b.contractEnd)}`,
+                details: [
+                  [COPY.labels.booking.contractStart, formatDate(b.contractStart)],
+                  [COPY.labels.booking.contractEnd, formatDate(b.contractEnd)],
+                  [COPY.labels.booking.depositStatus, b.depositStatus],
+                  [COPY.labels.booking.monthlyRent, formatMoney(b.monthlyRent)],
+                ],
+              }))}
+            />
           )}
         </DrawerSection>
       )}

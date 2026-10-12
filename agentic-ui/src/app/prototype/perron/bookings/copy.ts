@@ -6,17 +6,13 @@ export const BOOKINGS_COPY = {
   searchPlaceholder: 'Search ID, tenant or room',
   tabs: {
     all: 'All',
-    checkinsWeek: 'Check-ins this week',
-    checkoutsMonth: 'Check-outs this month',
     myTask: 'My task',
-    depositsHeld: 'Deposits held',
+    thisWeek: 'This week',
   },
   tabHints: {
     all: 'All bookings except Cancelled, newest contract first.',
-    checkinsWeek: (from: string, to: string) => `Check-in date between ${from} and ${to}.`,
-    checkoutsMonth: (month: string) => `Check-out date in ${month}.`,
-    myTask: 'Check-in not done where you are Check-in staff, or check-out due within 7 days where you are Check-out staff.',
-    depositsHeld: 'Deposit status is Held, for any booking status.',
+    myTask: (from: string, to: string) => `Assigned to you and due between ${from} and ${to}: check-in not done, or check-out due.`,
+    thisWeek: (from: string, to: string) => `Everyone's check-ins and check-outs due between ${from} and ${to}.`,
   },
   cancelDialog: {
     title: 'Cancel this booking?',

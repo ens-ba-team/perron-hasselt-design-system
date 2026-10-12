@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { COPY } from '@/app/prototype/perron/_shared/copy'
+import { DateField } from '@/app/prototype/perron/_shared/components/form-fields'
 import { MAINTENANCE_COPY } from '@/app/prototype/perron/maintenance/copy'
 import { STAFF, TODAY, withoutId } from '@/app/prototype/perron/_shared/format'
 import { type Maintenance } from '@/app/prototype/perron/_shared/types'
@@ -70,7 +71,7 @@ function MaintenanceForm({ id, initial, onDone }: { id?: string; initial: Omit<M
           </div>
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="reportedDate">{C.reportedDate}</Label>
-            <Input id="reportedDate" type="date" value={draft.reportedDate} onChange={(e) => set('reportedDate', e.target.value)} />
+            <DateField id="reportedDate" value={draft.reportedDate} onChange={(v) => set('reportedDate', v)} />
           </div>
           <div className="flex flex-col gap-1.5 sm:col-span-2">
             <Label htmlFor="issue">{C.issue}</Label>

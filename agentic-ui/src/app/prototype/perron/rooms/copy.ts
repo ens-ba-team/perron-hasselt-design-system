@@ -2,6 +2,8 @@
 
 export const ROOMS_COPY = {
   title: 'Rooms',
+  add: 'Add room',
+  newTitle: 'Add room',
   description: 'Sorted by Available from. Room status sits next to it on purpose: they answer different questions.',
   searchPlaceholder: 'Search rooms',
   detail: {
@@ -13,6 +15,10 @@ export const ROOMS_COPY = {
     noMaintenance: 'No maintenance logged for this room',
     notes: 'Notes',
     addBooking: 'Add booking for this room',
+    checkoutDone: 'Check-out done',
+    buildingHint: 'Pick a building, or add a new one if Perron opens another address.',
+    addBuilding: 'Add a new building',
+    newBuildingPlaceholder: 'For example Perron 21',
   },
   reference: {
     title: 'Working out Available from',

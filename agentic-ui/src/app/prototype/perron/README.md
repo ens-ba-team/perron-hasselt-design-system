@@ -14,10 +14,11 @@ perron/
     scenarios.ts              Cross-module seed + hard cases, maps seed keys to RM-/TN-/PH-/MT- IDs
     store.tsx                 One Provider composed from module slices
     components/
-      record-drawer.tsx       Shared CRUD pattern: right Sheet, opened by ?record=<id>|new
+      record-drawer.tsx       Shared CRUD pattern: DS Sheet size="wide" (560px, Figma 2070:6175), opened by ?record=<id>|new
+      record-accordion.tsx    Related records inside a drawer: ID + title + one meta line, expand for details
       list-parts.tsx          IdLink, ViewLinks, SortHead, PageHeader, TableFrame, DevNote
-      inline-cell.tsx         Inline edit in list cells
-      form-fields.tsx         Field, ChoiceSelect, asOptions, staffOptions, NONE
+      list-pagination.tsx     ListPagination + usePaged: Total · pages · rows per page (10 / 20 / 50, default 50)
+      form-fields.tsx         Field (hint = info icon), ChoiceSelect, DateField, ImageField, CreatableSelect
       brand.tsx               PerronMark (logo + watermark, from Figma)
   <module>/                   rooms | bookings | tenants | maintenance
     page.tsx                  List screen
@@ -39,6 +40,10 @@ perron/
 | A form control used by several drawers | `_shared/components/form-fields.tsx` |
 | Sidebar look | Figma first, then `src/components/ui/sidebar.tsx` (DS component) |
 
+## Lists
+
+Every list ends with `<ListPagination {...usePaged(visible, resetKey)} />`. `resetKey` must include every tab, filter, search and sort value so the list goes back to page 1 when they change. Rows per page 10 / 20 / 50, default 50, so the 41 rooms fit on one page.
+
 ## Rules
 
 - A module only imports from `_shared/` or its own folder. If two modules need the same thing, move it to `_shared/`.
@@ -49,6 +54,11 @@ perron/
 - Use absolute imports (`@/app/prototype/perron/...`), never `../`.
 - `_` folders are private to Next.js routing: they never become URLs.
 - Every record has one ID (`RM-`, `PH-`, `TN-`, `MT-`) in the first column. The ID is the only link that opens a record.
+- Tables are **read-only**: no inline editing. Editing happens in the record drawer, opened from the ID link or the Edit action.
+- Tables: `ROW` + `CELL` / `CELL_STRONG` / `CELL_ID` / `CELL_ACTIONS` and `HEAD` / `HEAD_ID` / `HEAD_ACTIONS` from `list-parts`. 64px rows, zebra, sticky header, sticky ID column (with a sideways shadow), `RowActions` pill on hover.
+- A list page fills the viewport (`h-full min-h-0`) and passes `wrapperClassName="h-full"` to `Table`, so the table scrolls inside its frame and the header can stay pinned.
+- Helper text goes in `Field`'s `hint` (info icon on hover). Only use `hintBelow` when it must not be missed.
+- Dates: always `DateField` (DS DatePicker), stored as ISO `YYYY-MM-DD`, shown as `MMM d, yyyy`. Never `<Input type="date">`.
 - Mark anything that may need WordPress code with `<DevNote q="Q27" …>` (⚙️).
 
 ## Changelog

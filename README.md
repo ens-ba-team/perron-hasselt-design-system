@@ -18,21 +18,23 @@ The design system for **Perron Hasselt Room Management**, a back office for mana
 
 ## 1. Current status
 
-> **Last checked: 2026-10-08.** This table is the single place that says where things stand. Any change that moves a row must update it in the same commit (see `CHANGELOG.md` for the history).
+> **Last checked: 2026-10-12.** This table is the single place that says where things stand. Any change that moves a row must update it in the same commit (see `CHANGELOG.md` for the history).
 
 | Area | Status |
 |---|---|
 | Brand theme (color) | ✅ Synced Figma ↔ code (Light), incl. sidebar tokens (background `navy/50`, accent `zinc/50`) |
 | Typography | ✅ `font-family/sans` = **Poppins** (Figma ↔ code ↔ Storybook). Mono = Roboto Mono |
-| Components in the Perron Figma file | 🟡 All component pages are in the Perron file. **Synced to code: Button, Sidebar.** The other 34 are not audited yet; their `meta.json` node IDs still point to the Agentic file |
+| Components in the Perron Figma file | 🟡 All component pages are in the Perron file. **Synced to code: Button, Sidebar, Sheet, Drawer.** The other 33 are not audited yet; their `meta.json` node IDs still point to the Agentic file |
 | Components in code | ✅ All 36 components (inherited from Agentic) |
 | **Dark mode** | ⏸ **Out of scope for now.** Don't audit, sync, or design for Dark |
 | Token build (`sd.build.mjs`) | 🔴 Broken upstream. CSS is being patched by hand, see [section 8](#8-technical-notes) |
 | Install | 🟡 Works with `npm ci --legacy-peer-deps` (upstream lockfile conflict) |
 | `next build` | ✅ Passes (fixed 2026-10-08) |
-| Product docs | ✅ BRD, Functional Spec, SOP v0.1 (2026-10-08) in `docs/product/` |
-| Perron prototype | ✅ v1 built: Rooms, Bookings, Tenants, Maintenance + record drawers. `agentic-ui/src/app/prototype/perron/` (structure and rules in its `README.md`). Merged to `main` |
-| Open questions for dev | 🟡 Q27–Q30 (Functional Spec §9) + **Q31** candidate: public ID prefixes `RM-`/`TN-`/`PH-`/`MT-` need a custom field |
+| Product docs | ✅ **BRD, Functional Spec and SOP all v0.2 (2026-10-12)**, in sync with the prototype. Vault is the original; `docs/product/` holds the copies |
+| Perron prototype | ✅ v1 built: Rooms, Bookings, Tenants, Maintenance + record drawers + pagination on every list. `agentic-ui/src/app/prototype/perron/` (structure and rules in its `README.md`). Merged to `main` |
+| Open questions for dev | 🟡 Q28–Q30 (Functional Spec §9). Q27 confirmed in scope 2026-10-12; no Q31 — prototype IDs are mock values, dev maps them to WordPress post IDs |
+
+**New here (human or AI)?** Read [`docs/handoff/2026-10-12-handoff.md`](docs/handoff/2026-10-12-handoff.md) first.
 
 The full Figma ↔ repo comparison lives in [`Machine Readable/perron-figma-sync.md`](Machine%20Readable/perron-figma-sync.md).
 
@@ -143,11 +145,11 @@ Read this before designing or building any Room Management screen. Details: [`do
 ### UI rules for Perron screens
 
 - **Lists are the product.** Main screens are tables. No dashboard.
-- **Inline editing** in the table. No editing in modals.
-- **Nothing hidden behind tabs or accordions** inside a record. Horizontal scroll is better.
+- **One place to edit:** the record's side panel (560px), opened from the ID or the Edit action. Lists are read-only. (Changed 2026-10-12; the client brief asks for inline editing, so this needs their confirmation.)
+- **Nothing hidden behind tabs or accordions** inside a record. Horizontal scroll is better. Related records (a room's bookings, a tenant's history) may collapse — their own fields never do.
 - **Column order is a design tool:** *Room status* sits next to *Available from*; *Contract end* sits next to *Check-out date*.
 - **Rooms list sorts by Available from by default.** Do not default to a status filter.
-- **Tabs on lists** (saved views): status links with counts, plus *Check-ins this week · Check-outs this month · My task* on Bookings.
+- **Tabs on lists** (saved views): status links with counts, plus *My task* and *This week* on Bookings.
 - **No urgency colours.** Status labels are neutral.
 - **Warn, don't hide.** For example, rooms that overlap a new booking are marked and moved down, never removed from the list.
 
@@ -180,7 +182,7 @@ When a design-system default conflicts with a product rule, **the product rule w
 | Read first | `docs/product/Functional Spec …md` (fields, columns, tabs), then [`Prototype-build/prototype-build-skill.md`](Prototype-build/prototype-build-skill.md) |
 | Plan before code | Screen list, component map per screen, mock data in the module's `data.ts`. Then shell → screens → self-audit |
 | Structure | One folder per module (`page.tsx`, `copy.ts`, `data.ts`, `store.ts`, `_components/`) + `_shared/`. See the prototype's `README.md` |
-| CRUD | Record drawer (right `Sheet`) opened by `?record=<ID>`. Inline edit stays on list cells. The record ID (`RM-`, `TN-`, `PH-`, `MT-`) in the first column is the only link to a record |
+| CRUD | Lists are read-only. Record drawer = DS **Sheet** `size="wide"` (560px, Figma `Side=Horizontal, Size=560px` 2070:6175) opened by `?record=<ID>`. Sheet = desktop side panel, Drawer = mobile bottom panel. Related records inside a drawer use `RecordAccordion` (collapsed row, expand for details) instead of wide tables. Inline edit stays on list cells. The record ID (`RM-`, `TN-`, `PH-`, `MT-`) in the first column is the only link to a record |
 | Look | WordPress list table: status links with counts above the table, filters above the table, inline edit in cells |
 | ⚙️ marker | Mark anything that may need custom code in WordPress: **Q27** overlap marker when creating a booking · **Q28** *My task* column on Bookings · **Q29** contract total · **Q30** open maintenance count on Rooms |
 | Nothing automatic | Never animate or simulate a status changing on its own |

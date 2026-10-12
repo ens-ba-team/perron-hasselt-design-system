@@ -16,7 +16,7 @@ import { type Booking, type Room } from '@/app/prototype/perron/_shared/types'
 import { BOOKING_STATUSES, CONTRACT_TYPES, DEPOSIT_STATUSES, TENANT_CONFIRMED, YES_NO, contractTotal, overlapping } from '@/app/prototype/perron/bookings/data'
 import { usePerron } from '@/app/prototype/perron/_shared/store'
 import { CancelBookingDialog } from '@/app/prototype/perron/bookings/_components/cancel-booking-dialog'
-import { ChoiceSelect, Field, asOptions, staffOptions } from '@/app/prototype/perron/_shared/components/form-fields'
+import { ChoiceSelect, DateField, Field, ImageField, asOptions, staffOptions } from '@/app/prototype/perron/_shared/components/form-fields'
 import { DevNote } from '@/app/prototype/perron/_shared/components/list-parts'
 import { DrawerSection, RecordDrawer, recordHref, useRecordParam } from '@/app/prototype/perron/_shared/components/record-drawer'
 
@@ -271,20 +271,17 @@ export function BookingForm({ bookingId, initial, onDone }: { bookingId?: string
           </Field>
         ) : <div className="hidden sm:block" />}
         <Field id="contractStart" label={F.contractStart} error={err('contractStart')}>
-          <Input id="contractStart" type="date" value={draft.contractStart}
-            onChange={(e) => set('contractStart', e.target.value)} onBlur={() => touch('contractStart')}
-            aria-invalid={!!err('contractStart') || undefined} />
+          <DateField id="contractStart" value={draft.contractStart} onChange={(v) => { set('contractStart', v); touch('contractStart') }} />
         </Field>
         <Field id="contractEnd" label={F.contractEnd} error={err('contractEnd')}>
-          <Input id="contractEnd" type="date" value={draft.contractEnd}
-            onChange={(e) => set('contractEnd', e.target.value)} onBlur={() => touch('contractEnd')}
-            aria-invalid={!!err('contractEnd') || undefined} />
+          <DateField id="contractEnd" value={draft.contractEnd} onChange={(v) => { set('contractEnd', v); touch('contractEnd') }} />
         </Field>
         <Field
           id="room"
           className="sm:col-span-2"
-          label={<span className="flex items-center gap-2">{F.room}<DevNote q="Q27" text={COPY.dev.q27} /></span>}
+          label={F.room}
           hint={!draft.contractStart || !draft.contractEnd ? H.datesFirst : undefined}
+          hintBelow
           error={err('roomId')}
         >
           <RoomSelect value={draft.roomId} onChange={(v) => { set('roomId', v); touch('roomId') }}
@@ -312,16 +309,14 @@ export function BookingForm({ bookingId, initial, onDone }: { bookingId?: string
         </Field>
         {draft.depositStatus === 'Returned' && (
           <Field id="depositReturnedDate" label={F.depositReturnedDate} error={err('depositReturnedDate')}>
-            <Input id="depositReturnedDate" type="date" value={draft.depositReturnedDate}
-              onChange={(e) => set('depositReturnedDate', e.target.value)} onBlur={() => touch('depositReturnedDate')}
-              aria-invalid={!!err('depositReturnedDate') || undefined} />
+            <DateField id="depositReturnedDate" value={draft.depositReturnedDate} onChange={(v) => { set('depositReturnedDate', v); touch('depositReturnedDate') }} />
           </Field>
         )}
       </Group>
 
       <Group title={BOOKINGS_COPY.form.groups.checkin}>
         <Field id="checkinDate" label={F.checkinDate} hint={H.checkinDate}>
-          <Input id="checkinDate" type="date" value={draft.checkinDate} onChange={(e) => set('checkinDate', e.target.value)} />
+          <DateField id="checkinDate" value={draft.checkinDate} onChange={(v) => { set('checkinDate', v); touch('checkinDate') }} />
         </Field>
         <Field id="checkinStaff" label={F.checkinStaff}>
           <ChoiceSelect id="checkinStaff" value={draft.checkinStaff} options={staffOptions} placeholder={P.staff}
@@ -338,8 +333,7 @@ export function BookingForm({ bookingId, initial, onDone }: { bookingId?: string
                 onChange={(v) => set('checkinTenantConfirmed', v as Booking['checkinTenantConfirmed'])} />
             </Field>
             <Field id="checkinPhotos" label={F.checkinPhotos} className="sm:col-span-2">
-              <Input id="checkinPhotos" type="url" value={draft.checkinPhotos} placeholder={P.drive}
-                onChange={(e) => set('checkinPhotos', e.target.value)} />
+              <ImageField id="checkinPhotos" value={draft.checkinPhotos} onChange={(v) => set('checkinPhotos', v)} />
             </Field>
           </>
         ) : <div className="hidden sm:block" />}
@@ -347,7 +341,7 @@ export function BookingForm({ bookingId, initial, onDone }: { bookingId?: string
 
       <Group title={BOOKINGS_COPY.form.groups.checkout}>
         <Field id="checkoutDate" label={F.checkoutDate} hint={H.checkoutDate}>
-          <Input id="checkoutDate" type="date" value={draft.checkoutDate} onChange={(e) => set('checkoutDate', e.target.value)} />
+          <DateField id="checkoutDate" value={draft.checkoutDate} onChange={(v) => { set('checkoutDate', v); touch('checkoutDate') }} />
         </Field>
         <Field id="checkoutStaff" label={F.checkoutStaff}>
           <ChoiceSelect id="checkoutStaff" value={draft.checkoutStaff} options={staffOptions} placeholder={P.staff}
@@ -364,8 +358,7 @@ export function BookingForm({ bookingId, initial, onDone }: { bookingId?: string
                 onChange={(v) => set('checkoutTenantConfirmed', v as Booking['checkoutTenantConfirmed'])} />
             </Field>
             <Field id="checkoutPhotos" label={F.checkoutPhotos} className="sm:col-span-2">
-              <Input id="checkoutPhotos" type="url" value={draft.checkoutPhotos} placeholder={P.drive}
-                onChange={(e) => set('checkoutPhotos', e.target.value)} />
+              <ImageField id="checkoutPhotos" value={draft.checkoutPhotos} onChange={(v) => set('checkoutPhotos', v)} />
             </Field>
           </>
         ) : <div className="hidden sm:block" />}

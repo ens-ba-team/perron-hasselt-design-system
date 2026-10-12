@@ -22,6 +22,27 @@
         "Horizontal": "side='right' (default) or side='left'",
         "Vertical": "side='bottom' or side='top'"
       }
+    },
+    "Size": {
+      "type": "enum",
+      "values": [
+        "380px",
+        "560px",
+        "1200px"
+      ],
+      "default": "380px",
+      "intent": {
+        "380px": "Default side panel (Side=Horizontal). Filters, quick edits, settings.",
+        "560px": "Wide side panel (Side=Horizontal only). Record detail/edit forms with two columns. Fill color/surface/default, title 14 Medium, 24px close button, horizontal footer with two equal buttons.",
+        "1200px": "Full-width panel (Side=Vertical only). Bottom/top sheets."
+      },
+      "codeProp": "size (+ side)",
+      "codeValues": {
+        "380px": "size='default' (default), side='right' | 'left'",
+        "560px": "size='wide', side='right' | 'left'",
+        "1200px": "side='bottom' | 'top' (size has no effect)"
+      },
+      "note": "Not every Side x Size combination exists in Figma: Horizontal = 380px | 560px, Vertical = 1200px."
     }
   },
   "componentProperties": {
@@ -185,16 +206,26 @@
     "sourceMarkdown": "Component Markdown/Sheet.md",
     "storyFile": "src/stories/Sheet.stories.tsx",
     "artifactStatus": "ready",
-    "lastAuditDate": "2026-05-28",
+    "lastAuditDate": "2026-10-12",
     "auditRules": "R1–R8",
     "version": "3.0",
     "openQuestions": [],
     "notes": [
       "Sheet and Dialog share the same Radix UI Dialog primitive — the distinction is purely positional.",
-      "Footer button fills are intentional — the parent sets the root fill on each button instance (primary/outline). These fills are required and should not be cleared."
+      "Footer button fills are intentional — the parent sets the root fill on each button instance (primary/outline). These fills are required and should not be cleared.",
+      "Perron Figma (7Gn5GiMiQh1SAaTp9FiwNQ) is the source since 2026-10-12; figmaNodeId may still point to the Agentic file (same id 98:57748)."
     ],
     "knownIssues": [],
-    "changelog": [],
+    "changelog": [
+      {
+        "date": "2026-10-12",
+        "change": "Figma 98:57748: SheetHeader gap 8px -> 4px (spacing/component/xs). New SheetContent `size` default|wide (Figma Side=Horizontal, Direction=560px 2070:6175): 560px, fill surface/default, title 14 Medium, description background/muted/foreground, 24x24 close, horizontal footer (via data-size + group-data variants). Story Wide560."
+      },
+      {
+        "date": "2026-10-12",
+        "change": "Figma renamed the 560px variant property: `Direction=560px` -> `Size=560px` (Size options 380px | 560px | 1200px, next to Side). No visual change. Code prop `size` default|wide unchanged; mapping documented in variants.Size."
+      }
+    ],
     "darkMode": {
       "notes": "No known dark mode differences — all tokens are semantic and mode-aware.",
       "pairedSurfaceRisk": "None identified."

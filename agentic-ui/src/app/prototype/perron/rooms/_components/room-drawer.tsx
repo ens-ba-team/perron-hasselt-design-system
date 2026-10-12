@@ -9,15 +9,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Textarea } from '@/components/ui/textarea'
 import { COPY } from '@/app/prototype/perron/_shared/copy'
+import { CreatableSelect, DateField, Field } from '@/app/prototype/perron/_shared/components/form-fields'
 import { ROOMS_COPY } from '@/app/prototype/perron/rooms/copy'
-import { formatDate } from '@/app/prototype/perron/_shared/format'
+import { TODAY, formatDate, formatMoney, withoutId } from '@/app/prototype/perron/_shared/format'
 import { type Room } from '@/app/prototype/perron/_shared/types'
 import { BUILDINGS, ROOM_STATUSES, ROOM_TYPES } from '@/app/prototype/perron/rooms/data'
 import { usePerron } from '@/app/prototype/perron/_shared/store'
-import { CELL, IdLink, TableFrame } from '@/app/prototype/perron/_shared/components/list-parts'
+import { RecordAccordion } from '@/app/prototype/perron/_shared/components/record-accordion'
 import { DrawerSection, NEW, RecordDrawer, recordHref, useRecordParam } from '@/app/prototype/perron/_shared/components/record-drawer'
 
 // Room record. This is where the admin works out Available from by hand (BR01, BR02):
@@ -27,6 +27,7 @@ import { DrawerSection, NEW, RecordDrawer, recordHref, useRecordParam } from '@/
 const C = COPY.labels.room
 const R = ROOMS_COPY.reference
 const BC = COPY.labels.booking
+const MC = COPY.labels.maintenance
 
 function SelectField({ id, label, value, options, onChange }: {
   id: string; label: string; value: string; options: readonly string[]; onChange: (v: string) => void
@@ -63,7 +64,14 @@ function ReferenceCard() {
   )
 }
 
+// A new room: the admin fills every field. Status starts Available, Available from today.
+function emptyRoom(): Room {
+  return { id: '', name: '', building: 'Perron 19', floor: 0, type: 'Standard room', maxOccupancy: 1, monthlyRent: 0, status: 'Available', availableFrom: TODAY, notes: '' }
+}
+
 function RoomRecord({ room, onDone }: { room: Room; onDone: () => void }) {
+  const isNew = !room.id
+  const [submitted, setSubmitted] = React.useState(false)
   const router = useRouter()
   const store = usePerron()
   const [draft, setDraft] = React.useState(room)
@@ -77,28 +85,30 @@ function RoomRecord({ room, onDone }: { room: Room; onDone: () => void }) {
       return live(a.status) - live(b.status) || b.contractEnd.localeCompare(a.contractEnd)
     })
   const roomMaintenance = store.maintenance.filter((m) => m.roomId === room.id)
+  // Buildings come from the rooms themselves, so a building added on one room is offered on the next.
+  const buildings = [...new Set([...BUILDINGS, ...store.rooms.map((r) => r.building)])]
   const addBooking = () => router.push(recordHref('bookings', NEW, { room: room.id }))
+
+  const nameError = submitted && !draft.name.trim() ? COPY.common.required(C.name) : undefined
 
   const save = (e: React.FormEvent) => {
     e.preventDefault()
-    store.updateRoom(room.id, draft)
-    toast.success(COPY.common.saved, { description: room.name })
+    setSubmitted(true)
+    if (!draft.name.trim()) return
+    if (isNew) store.addRoom(withoutId(draft))
+    else store.updateRoom(room.id, draft)
+    toast.success(COPY.common.saved, { description: draft.name })
     onDone()
   }
 
   return (
     <RecordDrawer
       open
-      size="lg"
       onClose={onDone}
-      title={`${room.id} · ${room.name}`}
-      description={`${room.building} · ${room.type} · ${C.maxOccupancy} ${room.maxOccupancy}`}
+      title={isNew ? ROOMS_COPY.newTitle : `${room.id} · ${room.name}`}
+      description={isNew ? undefined : `${room.building} · ${room.type} · ${C.maxOccupancy} ${room.maxOccupancy}`}
       footer={
         <>
-          <Button type="button" variant="outline" className="mr-auto" onClick={addBooking}>
-            <Plus />
-            {ROOMS_COPY.detail.addBooking}
-          </Button>
           <Button type="button" variant="outline" onClick={onDone}>{COPY.common.cancel}</Button>
           <Button type="submit" form="room-form" disabled={!dirty}>{COPY.common.save}</Button>
         </>
@@ -106,15 +116,33 @@ function RoomRecord({ room, onDone }: { room: Room; onDone: () => void }) {
     >
       <form id="room-form" onSubmit={save} noValidate>
         <DrawerSection title={ROOMS_COPY.detail.fields}>
+          <div className="flex flex-col gap-1.5 sm:col-span-2">
+            <Label htmlFor="name">{C.name}</Label>
+            <Input id="name" value={draft.name} placeholder="P19 – 2.05" onChange={(e) => set('name', e.target.value)}
+              aria-invalid={!!nameError || undefined} />
+            {nameError && <p className="text-xs text-[var(--color-text-invalid)]">{nameError}</p>}
+          </div>
           <SelectField id="status" label={C.status} value={draft.status} options={ROOM_STATUSES}
             onChange={(v) => set('status', v as Room['status'])} />
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="availableFrom">{C.availableFrom}</Label>
-            <Input id="availableFrom" type="date" value={draft.availableFrom} onChange={(e) => set('availableFrom', e.target.value)} />
+            <DateField id="availableFrom" value={draft.availableFrom} onChange={(v) => set('availableFrom', v)} />
           </div>
           <ReferenceCard />
-          <SelectField id="building" label={C.building} value={draft.building} options={BUILDINGS}
-            onChange={(v) => set('building', v as Room['building'])} />
+          <Field
+            id="building"
+            label={C.building}
+            hint={ROOMS_COPY.detail.buildingHint}
+          >
+            <CreatableSelect
+              id="building"
+              value={draft.building}
+              options={buildings}
+              onChange={(v) => set('building', v as Room['building'])}
+              addLabel={ROOMS_COPY.detail.addBuilding}
+              newPlaceholder={ROOMS_COPY.detail.newBuildingPlaceholder}
+            />
+          </Field>
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="floor">{C.floor}</Label>
             <Input id="floor" type="number" value={draft.floor} onChange={(e) => set('floor', Number(e.target.value))} />
@@ -134,73 +162,60 @@ function RoomRecord({ room, onDone }: { room: Room; onDone: () => void }) {
         </DrawerSection>
       </form>
 
-      <DrawerSection title={ROOMS_COPY.detail.bookings} description={ROOMS_COPY.detail.bookingsHint} className="sm:grid-cols-1">
-        {roomBookings.length === 0 ? (
-          <p className="text-sm text-[var(--color-text-secondary)]">{ROOMS_COPY.detail.noBookings}</p>
-        ) : (
-          <TableFrame>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="px-3">{BC.id}</TableHead>
-                  <TableHead className="px-3">{BC.tenant}</TableHead>
-                  <TableHead className="px-3">{BC.status}</TableHead>
-                  <TableHead className="px-3">{BC.contractStart}</TableHead>
-                  <TableHead className="px-3">{BC.contractEnd}</TableHead>
-                  <TableHead className="px-3">{BC.checkoutDate}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {roomBookings.map((b) => (
-                  <TableRow key={b.id}>
-                    <TableCell className={CELL}>
-                      <IdLink id={b.id} onOpen={() => router.push(recordHref('bookings', b.id))} />
-                    </TableCell>
-                    <TableCell className={CELL}>{store.tenant(b.tenantId)?.name}</TableCell>
-                    <TableCell className={CELL}>{b.status}</TableCell>
-                    <TableCell className={CELL}>{formatDate(b.contractStart)}</TableCell>
-                    <TableCell className={`${CELL} font-medium`}>{formatDate(b.contractEnd)}</TableCell>
-                    <TableCell className={CELL}>{formatDate(b.checkoutDate) || COPY.common.none}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableFrame>
-        )}
-      </DrawerSection>
+      {!isNew && (
+        <>
+          <DrawerSection
+            title={`${ROOMS_COPY.detail.bookings} (${roomBookings.length})`}
+            description={ROOMS_COPY.detail.bookingsHint}
+            className="sm:grid-cols-1"
+          >
+            <Button type="button" size="sm" variant="outline" className="w-fit" onClick={addBooking}>
+              <Plus />
+              {ROOMS_COPY.detail.addBooking}
+            </Button>
+            {roomBookings.length === 0 ? (
+              <p className="text-sm text-[var(--color-text-secondary)]">{ROOMS_COPY.detail.noBookings}</p>
+            ) : (
+              <RecordAccordion
+                items={roomBookings.map((b) => ({
+                  id: b.id,
+                  href: recordHref('bookings', b.id),
+                  title: store.tenant(b.tenantId)?.name ?? '',
+                  meta: `${b.status} · ${BC.contractEnd} ${formatDate(b.contractEnd)}`,
+                  details: [
+                    [BC.contractStart, formatDate(b.contractStart)],
+                    [BC.contractEnd, formatDate(b.contractEnd)],
+                    [BC.checkoutDate, formatDate(b.checkoutDate) || COPY.common.none],
+                    [ROOMS_COPY.detail.checkoutDone, b.checkoutDone],
+                    [BC.monthlyRent, formatMoney(b.monthlyRent)],
+                    [BC.depositStatus, b.depositStatus],
+                  ],
+                }))}
+              />
+            )}
+          </DrawerSection>
 
-      <DrawerSection title={ROOMS_COPY.detail.maintenance} className="sm:grid-cols-1">
-        {roomMaintenance.length === 0 ? (
-          <p className="text-sm text-[var(--color-text-secondary)]">{ROOMS_COPY.detail.noMaintenance}</p>
-        ) : (
-          <TableFrame>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="px-3">{COPY.labels.maintenance.id}</TableHead>
-                  <TableHead className="px-3">{COPY.labels.maintenance.issue}</TableHead>
-                  <TableHead className="px-3">{COPY.labels.maintenance.reportedDate}</TableHead>
-                  <TableHead className="px-3">{COPY.labels.maintenance.assignedStaff}</TableHead>
-                  <TableHead className="px-3">{COPY.labels.maintenance.status}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {roomMaintenance.map((m) => (
-                  <TableRow key={m.id}>
-                    <TableCell className={CELL}>
-                      <IdLink id={m.id} onOpen={() => router.push(recordHref('maintenance', m.id))} />
-                    </TableCell>
-                    <TableCell className={CELL}>{m.issue}</TableCell>
-                    <TableCell className={CELL}>{formatDate(m.reportedDate)}</TableCell>
-                    <TableCell className={CELL}>{store.staffName(m.assignedStaff) || COPY.common.none}</TableCell>
-                    <TableCell className={CELL}>{m.status}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableFrame>
-        )}
-      </DrawerSection>
+          <DrawerSection title={`${ROOMS_COPY.detail.maintenance} (${roomMaintenance.length})`} className="sm:grid-cols-1">
+            {roomMaintenance.length === 0 ? (
+              <p className="text-sm text-[var(--color-text-secondary)]">{ROOMS_COPY.detail.noMaintenance}</p>
+            ) : (
+              <RecordAccordion
+                items={roomMaintenance.map((m) => ({
+                  id: m.id,
+                  href: recordHref('maintenance', m.id),
+                  title: m.issue,
+                  meta: m.status,
+                  details: [
+                    [MC.reportedDate, formatDate(m.reportedDate)],
+                    [MC.assignedStaff, store.staffName(m.assignedStaff) || COPY.common.none],
+                    [MC.status, m.status],
+                  ],
+                }))}
+              />
+            )}
+          </DrawerSection>
+        </>
+      )}
     </RecordDrawer>
   )
 }
@@ -208,7 +223,9 @@ function RoomRecord({ room, onDone }: { room: Room; onDone: () => void }) {
 // Mounted on the Rooms list. Rooms are a fixed set of 41, so there is no create.
 export function RoomDrawer() {
   const { record, close } = useRecordParam()
+  const { isNew } = useRecordParam()
   const room = usePerron().room(record ?? '')
+  if (isNew) return <RoomRecord key="new" room={emptyRoom()} onDone={close} />
   if (!room) return null
   return <RoomRecord key={JSON.stringify(room)} room={room} onDone={close} />
 }

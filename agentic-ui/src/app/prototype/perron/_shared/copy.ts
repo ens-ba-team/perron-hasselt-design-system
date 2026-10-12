@@ -21,6 +21,12 @@ export const COPY = {
     save: 'Save',
     cancel: 'Cancel',
     edit: 'Edit',
+    view: 'View',
+    actions: 'Actions',
+    moreInfo: 'More information',
+    remove: 'Remove',
+    selectPhotos: 'Select photos',
+    addPhotos: 'Add more photos',
     back: 'Back',
     search: 'Search',
     none: '—',
@@ -37,6 +43,7 @@ export const COPY = {
     readOnly: 'Read-only',
     required: (field: string) => `${field} is required.`,
     selectRoom: 'Select a room',
+    pickDate: 'Select a date',
     notes: 'Notes',
   },
   dev: {
@@ -97,6 +104,12 @@ export const COPY = {
       status: 'Status',
       actions: 'Actions',
     },
+  },
+  pagination: {
+    total: (n: number) => `Total ${n} ${n === 1 ? 'item' : 'items'}`,
+    perPage: (n: number) => `${n} / page`,
+    perPageLabel: 'Rows per page',
+    page: (n: number) => `Page ${n}`,
   },
   inline: {
     edit: (field: string) => `Edit ${field}`,

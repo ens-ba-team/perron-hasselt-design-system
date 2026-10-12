@@ -109,10 +109,7 @@ export const Right: Story = {
       <DrawerTrigger asChild>
         <Button variant="outline">Open details</Button>
       </DrawerTrigger>
-      <DrawerContent
-        showHandle={false}
-        className="inset-x-auto inset-y-0 right-0 left-auto h-full w-80 rounded-l-[var(--radius-lg)] rounded-r-none border-l border-t-0 border-b-0"
-      >
+      <DrawerContent variant="right">
         <DrawerHeader>
           <DrawerTitle>Project details</DrawerTitle>
           <DrawerDescription>Review metadata and settings for this project.</DrawerDescription>

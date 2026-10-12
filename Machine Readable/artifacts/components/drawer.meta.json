@@ -156,15 +156,21 @@
     "sourceMarkdown": "Component Markdown/Drawer.md",
     "storyFile": "src/stories/Drawer.stories.tsx",
     "artifactStatus": "ready",
-    "lastAuditDate": "2026-05-28",
+    "lastAuditDate": "2026-10-12",
     "auditRules": "R1–R8",
     "version": "3.0",
     "openQuestions": [],
     "notes": [
-      "Examples assume shadcn/Vaul Drawer primitives plus an Agentic DrawerPanel wrapper."
+      "Examples assume shadcn/Vaul Drawer primitives plus an Agentic DrawerPanel wrapper.",
+      "Perron Figma (7Gn5GiMiQh1SAaTp9FiwNQ) is the source since 2026-10-12; figmaNodeId still points to the Agentic file (same id 74:691)."
     ],
     "knownIssues": [],
-    "changelog": [],
+    "changelog": [
+      {
+        "date": "2026-10-12",
+        "change": "Synced with Perron Figma 74:691: DrawerContent `variant` bottom|right|wide (Direction=Bottom 74:689, Right 74:690 400px, 560px 2068:93), `showClose` (default on for wide), DrawerFooter `layout` vertical|horizontal (horizontal = equal-width buttons, Direction=560px). DrawerTitle 18 SemiBold -> 14 Medium (Figma label/md on all variants). New story Wide560; Right story uses variant instead of class overrides."
+      }
+    ],
     "darkMode": {
       "notes": "Container fill uses color/surface/default (Dark: zinc/900) — matches shadcn --card. Previously surface/overlay (zinc/800); changed to align with shadcn card hierarchy.",
       "pairedSurfaceRisk": "None identified."
@@ -174,9 +180,20 @@
     "tsxFile": "src/components/ui/drawer.tsx",
     "packageDeps": [],
     "exports": [
-      "Drawer"
+      "Drawer",
+      "DrawerClose",
+      "DrawerContent",
+      "DrawerDescription",
+      "DrawerFooter",
+      "DrawerHeader",
+      "DrawerOverlay",
+      "DrawerPortal",
+      "DrawerTitle",
+      "DrawerTrigger"
     ],
-    "notes": []
+    "notes": [
+      "Right/wide: pass direction=\"right\" on <Drawer> and variant on <DrawerContent>. For forms use handleOnly so dragging inside fields does not close it."
+    ]
   },
   "storybook": {
     "file": "src/stories/Drawer.stories.tsx",

@@ -24,7 +24,7 @@ The design system for **Perron Hasselt Room Management**, a back office for mana
 |---|---|
 | Brand theme (color) | ✅ Synced Figma ↔ code (Light), incl. sidebar tokens (background `navy/50`, accent `zinc/50`) |
 | Typography | ✅ `font-family/sans` = **Poppins** (Figma ↔ code ↔ Storybook). Mono = Roboto Mono |
-| Components in the Perron Figma file | 🟡 All component pages are in the Perron file. **Synced to code: Button, Sidebar.** The other 34 are not audited yet; their `meta.json` node IDs still point to the Agentic file |
+| Components in the Perron Figma file | 🟡 All component pages are in the Perron file. **Synced to code: Button, Sidebar, Drawer.** The other 33 are not audited yet; their `meta.json` node IDs still point to the Agentic file |
 | Components in code | ✅ All 36 components (inherited from Agentic) |
 | **Dark mode** | ⏸ **Out of scope for now.** Don't audit, sync, or design for Dark |
 | Token build (`sd.build.mjs`) | 🔴 Broken upstream. CSS is being patched by hand, see [section 8](#8-technical-notes) |
@@ -180,7 +180,7 @@ When a design-system default conflicts with a product rule, **the product rule w
 | Read first | `docs/product/Functional Spec …md` (fields, columns, tabs), then [`Prototype-build/prototype-build-skill.md`](Prototype-build/prototype-build-skill.md) |
 | Plan before code | Screen list, component map per screen, mock data in the module's `data.ts`. Then shell → screens → self-audit |
 | Structure | One folder per module (`page.tsx`, `copy.ts`, `data.ts`, `store.ts`, `_components/`) + `_shared/`. See the prototype's `README.md` |
-| CRUD | Record drawer (right `Sheet`, **560px**; DS default 380px, Figma "Wide" size pending) opened by `?record=<ID>`. Inline edit stays on list cells. The record ID (`RM-`, `TN-`, `PH-`, `MT-`) in the first column is the only link to a record |
+| CRUD | Record drawer = DS **Drawer** `variant="wide"` (560px, Figma `Direction=560px` 2068:93) opened by `?record=<ID>`. Related records inside a drawer use `RecordAccordion` (collapsed row, expand for details) instead of wide tables. Inline edit stays on list cells. The record ID (`RM-`, `TN-`, `PH-`, `MT-`) in the first column is the only link to a record |
 | Look | WordPress list table: status links with counts above the table, filters above the table, inline edit in cells |
 | ⚙️ marker | Mark anything that may need custom code in WordPress: **Q27** overlap marker when creating a booking · **Q28** *My task* column on Bookings · **Q29** contract total · **Q30** open maintenance count on Rooms |
 | Nothing automatic | Never animate or simulate a status changing on its own |

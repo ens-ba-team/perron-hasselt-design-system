@@ -2,12 +2,12 @@
 
 import * as React from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet'
+import { Drawer, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
 import { cn } from '@/lib/utils'
 
 // ─── Record drawer: the shared CRUD pattern ───────────────────────────────────
 //
-// Every create / view / edit opens in a right-side Sheet over its list, so the admin
+// Every create / view / edit opens in a right-side Drawer (560px) over its list, so the admin
 // never loses the list context. Inline editing in list cells stays for quick changes.
 //
 // The open record lives in the URL, so any ID can be a real link:
@@ -58,23 +58,26 @@ interface RecordDrawerProps {
   children: React.ReactNode
 }
 
-// Width: 560px for every record drawer (designer, 2026-10-12). DS Sheet default is 380px,
-// too narrow for the 2-column Booking and Room forms. Not in Figma yet: add a Sheet
-// "Wide 560" variant there, then move this value into the DS component.
-const DRAWER_WIDTH = 'sm:w-[560px]'
+// DS Drawer, Figma variant Direction=560px (Perron DS 2068:93): anchored right, 560px,
+// close button, footer with two equal buttons side by side (Cancel, then the primary action).
+// handleOnly: dragging inside the form must not close the drawer.
 
 export function RecordDrawer({ open, onClose, title, description, footer, children }: RecordDrawerProps) {
   return (
-    <Sheet open={open} onOpenChange={(o) => !o && onClose()}>
-      <SheetContent side="right" className={cn('max-w-none', DRAWER_WIDTH)}>
-        <SheetHeader className="border-b border-[var(--color-border-default)]">
-          <SheetTitle>{title}</SheetTitle>
-          {description && <SheetDescription>{description}</SheetDescription>}
-        </SheetHeader>
+    <Drawer direction="right" handleOnly shouldScaleBackground={false} open={open} onOpenChange={(o) => !o && onClose()}>
+      <DrawerContent variant="wide">
+        <DrawerHeader className="border-b border-[var(--color-border-default)] pr-12">
+          <DrawerTitle>{title}</DrawerTitle>
+          {description && <DrawerDescription>{description}</DrawerDescription>}
+        </DrawerHeader>
         <div className="flex-1 overflow-y-auto p-[var(--spacing-component-lg)]">{children}</div>
-        {footer && <SheetFooter className="mt-0 flex-row flex-wrap items-center justify-end">{footer}</SheetFooter>}
-      </SheetContent>
-    </Sheet>
+        {footer && (
+          <DrawerFooter layout="horizontal" className="border-t border-[var(--color-border-default)]">
+            {footer}
+          </DrawerFooter>
+        )}
+      </DrawerContent>
+    </Drawer>
   )
 }
 

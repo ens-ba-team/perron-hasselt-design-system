@@ -15,6 +15,7 @@ export const ROOMS_COPY = {
     noMaintenance: 'No maintenance logged for this room',
     notes: 'Notes',
     addBooking: 'Add booking for this room',
+    checkoutDone: 'Check-out done',
   },
   reference: {
     title: 'Working out Available from',

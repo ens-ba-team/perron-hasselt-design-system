@@ -109,10 +109,7 @@ export const Right: Story = {
       <DrawerTrigger asChild>
         <Button variant="outline">Open details</Button>
       </DrawerTrigger>
-      <DrawerContent
-        showHandle={false}
-        className="inset-x-auto inset-y-0 right-0 left-auto h-full w-80 rounded-l-[var(--radius-lg)] rounded-r-none border-l border-t-0 border-b-0"
-      >
+      <DrawerContent variant="right">
         <DrawerHeader>
           <DrawerTitle>Project details</DrawerTitle>
           <DrawerDescription>Review metadata and settings for this project.</DrawerDescription>
@@ -232,6 +229,42 @@ export const WithForm: Story = {
           <DrawerClose asChild>
             <Button variant="outline" className="w-full">Cancel</Button>
           </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  ),
+};
+
+// ─── Wide 560 — Figma Direction=560px (Perron DS 2068:93) ─────────────────────
+// Right-anchored, 560px, close button, footer with two equal buttons side by side.
+// Used by the Perron prototype for every record drawer.
+
+export const Wide560: Story = {
+  render: () => (
+    <Drawer direction="right" handleOnly shouldScaleBackground={false}>
+      <DrawerTrigger asChild>
+        <Button variant="outline">Open record</Button>
+      </DrawerTrigger>
+      <DrawerContent variant="wide">
+        <DrawerHeader className="pr-12">
+          <DrawerTitle>RM-1029 · P19 – 2.04</DrawerTitle>
+          <DrawerDescription>Perron 19 · Large room · Max occupancy 2</DrawerDescription>
+        </DrawerHeader>
+        <div className="flex-1 overflow-y-auto p-[var(--spacing-component-lg)] grid grid-cols-2 gap-[var(--spacing-component-lg)] content-start">
+          <div className="flex flex-col gap-[var(--spacing-component-xs)]">
+            <Label htmlFor="w-name">Room name</Label>
+            <Input id="w-name" defaultValue="P19 – 2.04" />
+          </div>
+          <div className="flex flex-col gap-[var(--spacing-component-xs)]">
+            <Label htmlFor="w-rent">Monthly rent (€)</Label>
+            <Input id="w-rent" defaultValue="620" />
+          </div>
+        </div>
+        <DrawerFooter layout="horizontal">
+          <DrawerClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DrawerClose>
+          <Button>Save</Button>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

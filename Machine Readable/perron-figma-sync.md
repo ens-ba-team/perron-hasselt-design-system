@@ -91,3 +91,7 @@ Follow-up same day: `color/sidebar/accent` → `color/navy/100` (#bfcdda), was `
 ## Sync 2026-10-08 — watermark 20%
 
 `SidebarWatermark` opacity 10% → **20%** (all three Expanded variants of `95:18202`; Collapsed variants have no watermark).
+
+## Sync 2026-10-12 — Drawer
+
+Perron `74:691` now has `Direction=560px` (`2068:93`): 560px, right-anchored, close button, horizontal footer. All variants: title Poppins Medium 14 (code had 18 SemiBold). Synced to `drawer.tsx` (`variant`, `showClose`, footer `layout`). **Synced components so far: Button, Sidebar, Drawer.**

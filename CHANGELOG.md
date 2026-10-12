@@ -10,6 +10,33 @@ Format: newest first. Each entry includes what changed, the migration path, and 
 
 ---
 
+## 2026-10-12 (Perron) — Drawer 560 from Figma, collapsible related records
+
+### Changed — DS component `Drawer` (`agentic-ui/src/components/ui/drawer.tsx`), synced with Perron Figma `74:691`
+
+| Part | Was | Now |
+|---|---|---|
+| `DrawerContent` | Bottom only (`bottom-0` hard-coded); Right story faked it with class overrides | `variant`: `bottom` (74:689) · `right` 400px (74:690) · **`wide` 560px (`Direction=560px`, 2068:93)** |
+| Close button | none | `showClose`, on by default for `wide` (24px, top-right) |
+| `DrawerFooter` | vertical only | `layout`: `vertical` · **`horizontal`** (equal-width buttons, used by 560px) |
+| `DrawerTitle` | 18px SemiBold ("heading/md") | **14px Medium** (Figma label/md on all four variants; code had drifted) |
+- `drawer.meta.json` changelog/exports/notes updated. Stories: `Right` uses `variant="right"`; new `Wide560`.
+- Migration: titles in existing drawers get smaller (14px).
+
+### Changed — Perron prototype
+- `RecordDrawer` now uses DS **Drawer** `variant="wide"` (was `Sheet` + width override). Removes the `DRAWER_WIDTH` override: the 560px lives in the DS component. Props: `direction="right"`, `handleOnly` (dragging inside a form must not close it), `shouldScaleBackground={false}`.
+- Footer = Figma: two equal buttons, Cancel + primary. Room drawer: "Add booking for this room" moved from the footer into the Bookings section.
+- **New `_shared/components/record-accordion.tsx`** (DS `Accordion`, `type="multiple"`): related records as rows (ID link · title · one meta line · chevron), expand for the rest in two columns. Used for the Room drawer's bookings and maintenance and the Tenant drawer's booking history. Replaces 6-column tables that scrolled sideways at 560px. Section titles show the count.
+
+### Decisions (designer, 2026-10-12)
+10. Record drawers use the Figma Drawer `Direction=560px` variant. Supersedes "Sheet + 560px override" from the entry below.
+11. Related records inside a drawer are collapsible rows (designer request). Note: product README says "don't hide behind accordion"; this applies to the record's own fields, which stay fully visible. Only related records (bookings, maintenance, history) collapse.
+
+### Open
+- Figma names the size as a `Direction` value ("560px"). Consider a separate `Size` property (Default 400 / Wide 560) so Direction stays Bottom / Right / Responsive.
+
+---
+
 ## 2026-10-12 (Perron) — drawer width 560px
 
 ### Changed — prototype
@@ -21,8 +48,8 @@ Format: newest first. Each entry includes what changed, the migration path, and 
 9. Drawer width 560px. DS Sheet default stays 380px.
 
 ### Open
-- **Figma:** add a Sheet "Wide 560" size next to `Side=Horizontal 380`, then move 560px from the prototype into the DS `Sheet` component.
-- Room drawer: the bookings table (6 columns) scrolls horizontally at 560px.
+- ~~Figma: add a Sheet "Wide 560" size~~ Done 2026-10-12 as Drawer `Direction=560px` (see entry above).
+- ~~Room drawer table scrolls horizontally~~ Fixed 2026-10-12 with `RecordAccordion`.
 
 ---
 

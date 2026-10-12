@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { XClose } from "@untitledui/icons"
 import { Drawer as DrawerPrimitive } from "vaul"
 
 import { cn } from "@/lib/utils"
@@ -72,41 +73,73 @@ DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName
 // Direction passed via Vaul root — content class applies radius per direction.
 // Handle-bar (with pill) is rendered for Bottom direction by default.
 // Pass showHandle={false} to hide it for Right/Responsive drawers.
+//
+// variant maps the Figma "Direction" property (component set 74:691):
+//   "bottom" → Direction=Bottom (74:689)  full width, anchored bottom, handle bar
+//   "right"  → Direction=Right  (74:690)  400px, anchored right, rounded-l
+//   "wide"   → Direction=560px  (2068:93) 560px, anchored right, rounded-l, close button
+// For "right" / "wide", also pass direction="right" on <Drawer>.
 
 interface DrawerContentProps
   extends React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content> {
+  variant?: "bottom" | "right" | "wide"
   showHandle?: boolean
+  showClose?: boolean
 }
 
 const DrawerContent = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Content>,
   DrawerContentProps
->(({ className, children, showHandle = true, ...props }, ref) => (
-  <DrawerPortal>
-    <DrawerOverlay />
-    <DrawerPrimitive.Content
-      ref={ref}
-      className={cn(
-        "fixed z-50 flex flex-col",
-        // Bottom direction (default) — slides from bottom, top corners rounded
-        "inset-x-0 bottom-0 rounded-t-[var(--radius-lg)]",
-        // Surface
-        "border border-[var(--color-border-default)]",
-        "bg-[var(--color-surface-default)]",
-        className
-      )}
-      {...props}
-    >
-      {/* handle-bar — Direction=Bottom only */}
-      {showHandle && (
-        <div className="flex items-center justify-center py-[var(--spacing-component-lg)]">
-          <div className="h-2 w-[100px] rounded-full bg-[var(--color-background-muted)]" />
-        </div>
-      )}
-      {children}
-    </DrawerPrimitive.Content>
-  </DrawerPortal>
-))
+>(({ className, children, variant = "bottom", showHandle, showClose, ...props }, ref) => {
+  const isSide = variant !== "bottom"
+  const handle = showHandle ?? !isSide
+  const close = showClose ?? variant === "wide"
+  return (
+    <DrawerPortal>
+      <DrawerOverlay />
+      <DrawerPrimitive.Content
+        ref={ref}
+        className={cn(
+          "fixed z-50 flex flex-col",
+          // Bottom — slides from bottom, top corners rounded
+          !isSide && "inset-x-0 bottom-0 rounded-t-[var(--radius-lg)]",
+          // Right / Wide — anchored right, full height, left corners rounded
+          isSide && "inset-y-0 right-0 h-full max-w-full rounded-l-[var(--radius-lg)] outline-none",
+          variant === "right" && "w-[400px]",
+          variant === "wide" && "w-[560px]",
+          // Surface
+          "border border-[var(--color-border-default)]",
+          "bg-[var(--color-surface-default)]",
+          className
+        )}
+        {...props}
+      >
+        {/* handle-bar — Direction=Bottom only */}
+        {handle && (
+          <div className="flex items-center justify-center py-[var(--spacing-component-lg)]">
+            <div className="h-2 w-[100px] rounded-full bg-[var(--color-background-muted)]" />
+          </div>
+        )}
+        {/* x-close — Direction=560px: 24px, top-right, icon color/background/default/foreground */}
+        {close && (
+          <DrawerPrimitive.Close
+            className={cn(
+              "absolute right-[var(--spacing-component-lg)] top-[var(--spacing-component-lg)]",
+              "flex h-6 w-6 items-center justify-center rounded-[var(--radius-sm)]",
+              "text-[var(--color-background-default-foreground)]",
+              "hover:bg-[var(--color-background-accent)]",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-ring)]"
+            )}
+          >
+            <XClose className="h-3 w-3" />
+            <span className="sr-only">Close</span>
+          </DrawerPrimitive.Close>
+        )}
+        {children}
+      </DrawerPrimitive.Content>
+    </DrawerPortal>
+  )
+})
 DrawerContent.displayName = "DrawerContent"
 
 // ─── DrawerHeader ─────────────────────────────────────────────────────────────
@@ -130,17 +163,18 @@ const DrawerHeader = ({
 DrawerHeader.displayName = "DrawerHeader"
 
 // ─── DrawerFooter ─────────────────────────────────────────────────────────────
-// Layout: VERTICAL (stacked buttons — Figma confirmed).
+// layout "vertical" (Bottom / Right / Responsive): stacked buttons, primary first.
+// layout "horizontal" (Direction=560px): side by side, equal width, outline then primary.
 // Padding: spacing/component/lg (16px). Gap: spacing/component/sm (8px).
-// Order: btn-primary first (top), btn-outline second (bottom).
 
 const DrawerFooter = ({
   className,
+  layout = "vertical",
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) => (
+}: React.HTMLAttributes<HTMLDivElement> & { layout?: "vertical" | "horizontal" }) => (
   <div
     className={cn(
-      "flex flex-col",
+      layout === "vertical" ? "flex flex-col" : "flex flex-row [&>*]:flex-1",
       "p-[var(--spacing-component-lg)]",
       "gap-[var(--spacing-component-sm)]",
       className
@@ -151,7 +185,7 @@ const DrawerFooter = ({
 DrawerFooter.displayName = "DrawerFooter"
 
 // ─── DrawerTitle ──────────────────────────────────────────────────────────────
-// heading/md: 18px / Semi Bold / leading-snug
+// label/md: 14px / Medium / line-height 14 (Figma: all four Direction variants)
 // fill: color/background/default/foreground (not surface/overlay/foreground — see spec)
 
 const DrawerTitle = React.forwardRef<
@@ -161,7 +195,7 @@ const DrawerTitle = React.forwardRef<
   <DrawerPrimitive.Title
     ref={ref}
     className={cn(
-      "text-lg font-semibold leading-snug",
+      "text-sm font-medium leading-none",
       "text-[var(--color-background-default-foreground)]",
       className
     )}

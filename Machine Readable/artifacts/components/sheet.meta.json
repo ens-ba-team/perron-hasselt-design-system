@@ -185,16 +185,22 @@
     "sourceMarkdown": "Component Markdown/Sheet.md",
     "storyFile": "src/stories/Sheet.stories.tsx",
     "artifactStatus": "ready",
-    "lastAuditDate": "2026-05-28",
+    "lastAuditDate": "2026-10-12",
     "auditRules": "R1–R8",
     "version": "3.0",
     "openQuestions": [],
     "notes": [
       "Sheet and Dialog share the same Radix UI Dialog primitive — the distinction is purely positional.",
-      "Footer button fills are intentional — the parent sets the root fill on each button instance (primary/outline). These fills are required and should not be cleared."
+      "Footer button fills are intentional — the parent sets the root fill on each button instance (primary/outline). These fills are required and should not be cleared.",
+      "Perron Figma (7Gn5GiMiQh1SAaTp9FiwNQ) is the source since 2026-10-12; figmaNodeId may still point to the Agentic file (same id 98:57748)."
     ],
     "knownIssues": [],
-    "changelog": [],
+    "changelog": [
+      {
+        "date": "2026-10-12",
+        "change": "Figma 98:57748: SheetHeader gap 8px -> 4px (spacing/component/xs). New SheetContent `size` default|wide (Figma Side=Horizontal, Direction=560px 2070:6175): 560px, fill surface/default, title 14 Medium, description background/muted/foreground, 24x24 close, horizontal footer (via data-size + group-data variants). Story Wide560."
+      }
+    ],
     "darkMode": {
       "notes": "No known dark mode differences — all tokens are semantic and mode-aware.",
       "pairedSurfaceRisk": "None identified."

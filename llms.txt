@@ -2,7 +2,7 @@
 
 > Design system for Perron Hasselt Room Management, forked from the Agentic Design System (shadcn/ui + Tailwind CSS, three-tier tokens, 36 components) and re-themed navy/gold. Read `README.md` first.
 
-**Figma file key (Perron):** `7Gn5GiMiQh1SAaTp9FiwNQ`. All component pages exist; synced to code so far: Button, Sidebar (`95:18202`), Drawer (`74:691`). Status: `README.md` §1.
+**Figma file key (Perron):** `7Gn5GiMiQh1SAaTp9FiwNQ`. All component pages exist; synced to code so far: Button, Sidebar (`95:18202`), Sheet (`98:57748`), Drawer (`74:691`). Status: `README.md` §1.
 **Figma file key (Agentic, legacy):** `YWfTOUTpFZ0BNxHobfUqme`. `component-directory.md` and `meta.json` node IDs still point here.
 **Storybook:** run locally — `cd agentic-ui && npm ci --legacy-peer-deps && npm run storybook` → `http://localhost:6006`
 **Code:** `agentic-ui/` — Next.js + Tailwind v4 + shadcn/ui. All `agentic-ui/...` paths below are relative to the repo root.

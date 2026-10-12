@@ -14,7 +14,7 @@ perron/
     scenarios.ts              Cross-module seed + hard cases, maps seed keys to RM-/TN-/PH-/MT- IDs
     store.tsx                 One Provider composed from module slices
     components/
-      record-drawer.tsx       Shared CRUD pattern: DS Drawer variant "wide" (560px, Figma 2068:93), opened by ?record=<id>|new
+      record-drawer.tsx       Shared CRUD pattern: DS Sheet size="wide" (560px, Figma 2070:6175), opened by ?record=<id>|new
       record-accordion.tsx    Related records inside a drawer: ID + title + one meta line, expand for details
       list-parts.tsx          IdLink, ViewLinks, SortHead, PageHeader, TableFrame, DevNote
       inline-cell.tsx         Inline edit in list cells

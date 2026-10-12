@@ -10,6 +10,42 @@ Format: newest first. Each entry includes what changed, the migration path, and 
 
 ---
 
+## 2026-10-12 (Perron) — 560px moved from Drawer to Sheet, Sheet gap 4px
+
+Designer, same day: removed the 560px variant from Drawer, added it to Sheet, and reduced the title-description gap in Sheet. Re-scanned Figma `98:59427` (Sheet) and `74:691` (Drawer), synced both.
+
+### Changed — DS component `Sheet` (`agentic-ui/src/components/ui/sheet.tsx`), Figma `98:57748`
+
+| Part | Was | Now |
+|---|---|---|
+| `SheetHeader` gap (title → description) | `spacing/component/sm` 8px | **`spacing/component/xs` 4px** ⚠️ affects every Sheet |
+| `SheetContent` | one size (380px) | `size`: `default` (380) · **`wide` (560px, Figma `Side=Horizontal, Direction=560px`, 2070:6175)** |
+| wide: fill | — | `color/surface/default` (default size stays `surface/overlay`) |
+| wide: title / description | 16 SemiBold / `text/secondary` | **14 Medium** / `background/default/foreground`; description `background/muted/foreground` |
+| wide: close button | 16px icon, text/secondary | **24×24**, 12px icon, `background/default/foreground` |
+| wide: `SheetFooter` | vertical | **horizontal**, two equal-width buttons (Cancel, then primary) |
+- Implemented with `data-size` on the content and `group-data-[size=wide]/sheet:` variants, so Title / Description / Footer need no extra props.
+- `sheet.meta.json` updated; new story `Sheet › Wide560`.
+- Migration: all Sheets get a tighter header (4px). Wide Sheet titles are smaller (14px).
+
+### Changed — DS component `Drawer` (`agentic-ui/src/components/ui/drawer.tsx`), Figma `74:691`
+- Back to the three Figma variants: Bottom, Right (400px), Responsive. **Removed** `variant="wide"`, `showClose`, `DrawerFooter layout`, and the `Wide560` story (all added earlier today, now in Sheet).
+- Kept: `variant` prop (`bottom` | `right`) so Right no longer needs class overrides; title 14 Medium (still Medium 14 on all three Figma variants).
+- Rule of thumb, from Figma best practice: **Sheet = side panel on desktop; Drawer = mobile panel from the bottom** (vaul: swipe to dismiss, scaled background).
+
+### Changed — Perron prototype
+- `RecordDrawer` uses DS **Sheet** `size="wide"` again (was Drawer `wide`). Footer and title now come from the DS component.
+- Removed the extra `border-b` under the drawer header that the prototype had added: Figma's sheet header has no stroke.
+
+### Decisions (designer, 2026-10-12)
+10. (updated) Record drawers use **Sheet `Direction=560px`**, not Drawer. Supersedes "Drawer 560" below.
+
+### Open
+- Figma still names the size as a `Direction` value ("560px") on Sheet too. A separate `Size` property (Default 380 / Wide 560) would read better.
+- Figma Sheet default (`Side=Horizontal`) has radius 8 on all four corners; code rounds only the exposed edge (left). Not changed, check which is intended.
+
+---
+
 ## 2026-10-12 (Perron) — Drawer 560 from Figma, collapsible related records
 
 ### Changed — DS component `Drawer` (`agentic-ui/src/components/ui/drawer.tsx`), synced with Perron Figma `74:691`

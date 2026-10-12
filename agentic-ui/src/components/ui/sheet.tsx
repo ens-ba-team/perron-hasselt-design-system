@@ -21,11 +21,17 @@ import { cn } from "@/lib/utils"
 // sheet-header (H layout):
 //   padding: spacing/component/lg (16px) all sides
 //   gap:     spacing/component/md (12px) — between text-block and close button
+//   text-block gap (title → description): spacing/component/xs (4px)   [Figma 98:57706, was 8px]
 //   title:   color/surface/overlay/foreground
 //   description: color/text/secondary
 //
 // sheet-body (SLOT):
 //   padding: spacing/component/lg (16px)
+//
+// size="wide" (Figma Side=Horizontal, Direction=560px — 2070:6175), right/left only:
+//   560px wide · fill color/surface/default (default size: surface/overlay)
+//   title 14 Medium / color/background/default/foreground · description color/background/muted/foreground
+//   close button 24×24, icon 12px · footer HORIZONTAL (two equal-width buttons, outline then primary)
 //
 // sheet-footer (V layout — stacked buttons):
 //   padding:   spacing/component/lg (16px)
@@ -109,25 +115,37 @@ const sheetVariants = cva(
 
 interface SheetContentProps
   extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
-    VariantProps<typeof sheetVariants> {}
+    VariantProps<typeof sheetVariants> {
+  // "wide" = Figma Direction=560px. Title, description and footer adapt through data-size.
+  size?: "default" | "wide"
+}
 
 const SheetContent = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Content>,
   SheetContentProps
->(({ side = "right", className, children, ...props }, ref) => (
+>(({ side = "right", size = "default", className, children, ...props }, ref) => {
+  const wide = size === "wide"
+  return (
   <SheetPortal>
     <SheetOverlay />
     <SheetPrimitive.Content
       ref={ref}
-      className={cn(sheetVariants({ side }), className)}
+      data-size={size}
+      className={cn(
+        sheetVariants({ side }),
+        "group/sheet",
+        wide && "max-w-[560px] bg-[var(--color-surface-default)]",
+        className
+      )}
       {...props}
     >
       {children}
       <SheetPrimitive.Close
         className={cn(
           "absolute right-[var(--spacing-component-md)] top-[var(--spacing-component-md)]",
+          wide && "right-[var(--spacing-component-lg)] top-[var(--spacing-component-lg)] flex h-6 w-6 items-center justify-center",
           "rounded-[var(--radius-sm)]",
-          "text-[var(--color-text-secondary)]",
+          wide ? "text-[var(--color-background-default-foreground)]" : "text-[var(--color-text-secondary)]",
           "opacity-70 transition-opacity hover:opacity-100",
           "focus:outline-none focus:ring-2 focus:ring-[var(--color-ring)]",
           "data-[state=open]:bg-[var(--color-background-accent)]",
@@ -135,18 +153,19 @@ const SheetContent = React.forwardRef<
           "disabled:pointer-events-none",
         )}
       >
-        <XClose className="h-4 w-4" />
+        <XClose className={wide ? "h-3 w-3" : "h-4 w-4"} />
         <span className="sr-only">Close</span>
       </SheetPrimitive.Close>
     </SheetPrimitive.Content>
   </SheetPortal>
-))
+  )
+})
 SheetContent.displayName = SheetPrimitive.Content.displayName
 
 // ─── SheetHeader ──────────────────────────────────────────────────────────────
 // Figma: H layout — [text-block (title + description)] + [close-button]
 // In code: close button is absolute in SheetContent; header holds text-block only.
-// padding: spacing/component/lg · gap: spacing/component/sm (title → description in text-block)
+// padding: spacing/component/lg · gap: spacing/component/xs (title → description in text-block, 4px)
 
 const SheetHeader = ({
   className,
@@ -156,7 +175,7 @@ const SheetHeader = ({
     className={cn(
       "flex flex-col",
       "p-[var(--spacing-component-lg)]",
-      "gap-[var(--spacing-component-sm)]",
+      "gap-[var(--spacing-component-xs)]",
       // Right-pad to leave room for the absolute close button
       "pr-[calc(var(--spacing-component-lg)+2rem)]",
       className
@@ -177,6 +196,8 @@ const SheetFooter = ({
   <div
     className={cn(
       "mt-auto flex flex-col",
+      // wide: two equal-width buttons side by side
+      "group-data-[size=wide]/sheet:flex-row group-data-[size=wide]/sheet:[&>*]:flex-1",
       "border-t border-[var(--color-border-default)]",
       "p-[var(--spacing-component-lg)]",
       "gap-[var(--spacing-component-sm)]",
@@ -199,6 +220,8 @@ const SheetTitle = React.forwardRef<
     className={cn(
       "text-lg font-semibold leading-snug",
       "text-[var(--color-surface-overlay-foreground)]",
+      "group-data-[size=wide]/sheet:text-sm group-data-[size=wide]/sheet:font-medium group-data-[size=wide]/sheet:leading-none",
+      "group-data-[size=wide]/sheet:text-[var(--color-background-default-foreground)]",
       className
     )}
     {...props}
@@ -215,7 +238,11 @@ const SheetDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SheetPrimitive.Description
     ref={ref}
-    className={cn("text-sm text-[var(--color-text-secondary)]", className)}
+    className={cn(
+      "text-sm text-[var(--color-text-secondary)]",
+      "group-data-[size=wide]/sheet:text-[var(--color-background-muted-foreground)]",
+      className
+    )}
     {...props}
   />
 ))

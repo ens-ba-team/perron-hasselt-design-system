@@ -10,6 +10,14 @@ Format: newest first. Each entry includes what changed, the migration path, and 
 
 ---
 
+## 2026-10-12 (Perron) — Sheet: Direction renamed to Size
+
+Designer renamed the Sheet variant property (Perron `98:57748`): **`Direction=560px` → `Size=560px`**. Size options: `380px` (default) · `560px` · `1200px`. Combinations in Figma: `Side=Horizontal` + `Size=380px` / `560px`, `Side=Vertical` + `Size=1200px`. Re-scanned: tokens and values inside the variants are unchanged (fill, title 14 Medium, close 24, horizontal footer, header gap 4).
+- Code: `SheetContent size="default" | "wide"` unchanged. Mapping `380px → default`, `560px → wide`, `1200px → side top/bottom` is documented in `sheet.meta.json` (`variants.Size`). Comments in `sheet.tsx`, `Sheet.stories.tsx`, `record-drawer.tsx` and README §7 now say `Size=560px`.
+- Resolves the "separate `Size` property" item under Open in the entry below. Still open there: the 8px radius question.
+
+---
+
 ## 2026-10-12 (Perron) — 560px moved from Drawer to Sheet, Sheet gap 4px
 
 Designer, same day: removed the 560px variant from Drawer, added it to Sheet, and reduced the title-description gap in Sheet. Re-scanned Figma `98:59427` (Sheet) and `74:691` (Drawer), synced both.
@@ -41,7 +49,7 @@ Designer, same day: removed the 560px variant from Drawer, added it to Sheet, an
 10. (updated) Record drawers use **Sheet `Direction=560px`**, not Drawer. Supersedes "Drawer 560" below.
 
 ### Open
-- Figma still names the size as a `Direction` value ("560px") on Sheet too. A separate `Size` property (Default 380 / Wide 560) would read better.
+- ~~Figma names the size as a `Direction` value~~ Done: now `Size` (see entry above).
 - Figma Sheet default (`Side=Horizontal`) has radius 8 on all four corners; code rounds only the exposed edge (left). Not changed, check which is intended.
 
 ---

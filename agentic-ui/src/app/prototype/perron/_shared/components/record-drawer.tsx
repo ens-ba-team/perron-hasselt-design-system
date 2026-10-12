@@ -58,7 +58,7 @@ interface RecordDrawerProps {
   children: React.ReactNode
 }
 
-// DS Sheet, Figma variant "Side=Horizontal, Direction=560px" (Perron DS 2070:6175): anchored right,
+// DS Sheet, Figma variant "Side=Horizontal, Size=560px" (Perron DS 2070:6175): anchored right,
 // 560px, 24px close button, footer with two equal buttons side by side (Cancel, then the primary
 // action). Sheet is the DS component for a desktop side panel; Drawer is for mobile bottom panels.
 

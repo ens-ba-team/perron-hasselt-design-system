@@ -28,7 +28,7 @@ import { cn } from "@/lib/utils"
 // sheet-body (SLOT):
 //   padding: spacing/component/lg (16px)
 //
-// size="wide" (Figma Side=Horizontal, Direction=560px — 2070:6175), right/left only:
+// size="wide" (Figma Side=Horizontal, Size=560px — 2070:6175), right/left only:
 //   560px wide · fill color/surface/default (default size: surface/overlay)
 //   title 14 Medium / color/background/default/foreground · description color/background/muted/foreground
 //   close button 24×24, icon 12px · footer HORIZONTAL (two equal-width buttons, outline then primary)
@@ -116,7 +116,8 @@ const sheetVariants = cva(
 interface SheetContentProps
   extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
     VariantProps<typeof sheetVariants> {
-  // "wide" = Figma Direction=560px. Title, description and footer adapt through data-size.
+  // "default" = Figma Size=380px (Size=1200px is Side=Vertical, i.e. side top/bottom).
+  // "wide" = Figma Size=560px. Title, description and footer adapt through data-size.
   size?: "default" | "wide"
 }
 

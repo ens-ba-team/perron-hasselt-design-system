@@ -191,7 +191,7 @@ export const ScrollableBody: Story = {
   ),
 };
 
-// ─── Wide 560 — Figma "Side=Horizontal, Direction=560px" (Perron DS 2070:6175) ─
+// ─── Wide 560 — Figma "Side=Horizontal, Size=560px" (Perron DS 2070:6175) ─
 // size="wide": 560px, 24px close button, footer with two equal buttons side by side.
 // Used by the Perron prototype for every record drawer.
 

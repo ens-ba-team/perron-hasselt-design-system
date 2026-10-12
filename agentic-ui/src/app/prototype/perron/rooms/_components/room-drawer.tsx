@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { COPY } from '@/app/prototype/perron/_shared/copy'
-import { DateField } from '@/app/prototype/perron/_shared/components/form-fields'
+import { CreatableSelect, DateField, Field } from '@/app/prototype/perron/_shared/components/form-fields'
 import { ROOMS_COPY } from '@/app/prototype/perron/rooms/copy'
 import { TODAY, formatDate, formatMoney, withoutId } from '@/app/prototype/perron/_shared/format'
 import { type Room } from '@/app/prototype/perron/_shared/types'
@@ -85,6 +85,8 @@ function RoomRecord({ room, onDone }: { room: Room; onDone: () => void }) {
       return live(a.status) - live(b.status) || b.contractEnd.localeCompare(a.contractEnd)
     })
   const roomMaintenance = store.maintenance.filter((m) => m.roomId === room.id)
+  // Buildings come from the rooms themselves, so a building added on one room is offered on the next.
+  const buildings = [...new Set([...BUILDINGS, ...store.rooms.map((r) => r.building)])]
   const addBooking = () => router.push(recordHref('bookings', NEW, { room: room.id }))
 
   const nameError = submitted && !draft.name.trim() ? COPY.common.required(C.name) : undefined
@@ -127,8 +129,20 @@ function RoomRecord({ room, onDone }: { room: Room; onDone: () => void }) {
             <DateField id="availableFrom" value={draft.availableFrom} onChange={(v) => set('availableFrom', v)} />
           </div>
           <ReferenceCard />
-          <SelectField id="building" label={C.building} value={draft.building} options={BUILDINGS}
-            onChange={(v) => set('building', v as Room['building'])} />
+          <Field
+            id="building"
+            label={C.building}
+            hint={ROOMS_COPY.detail.buildingHint}
+          >
+            <CreatableSelect
+              id="building"
+              value={draft.building}
+              options={buildings}
+              onChange={(v) => set('building', v as Room['building'])}
+              addLabel={ROOMS_COPY.detail.addBuilding}
+              newPlaceholder={ROOMS_COPY.detail.newBuildingPlaceholder}
+            />
+          </Field>
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="floor">{C.floor}</Label>
             <Input id="floor" type="number" value={draft.floor} onChange={(e) => set('floor', Number(e.target.value))} />

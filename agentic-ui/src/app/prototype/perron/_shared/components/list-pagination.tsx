@@ -16,11 +16,10 @@ import { COPY } from '@/app/prototype/perron/_shared/copy'
 // Shared pagination for every list screen. DS pattern "With Total" + "With Changer":
 // Total N items · Prev · pages · Next · rows per page.
 //
-// Default 50 rows per page so the 41 rooms still fit on one page ("the list is the product").
-// WordPress equivalent: the per-page value in Screen Options.
+// Default 10 rows per page (designer, 2026-10-12). WordPress equivalent: Screen Options.
 
 export const PAGE_SIZES = [10, 20, 50] as const
-export const DEFAULT_PAGE_SIZE = 50
+export const DEFAULT_PAGE_SIZE = 10
 
 // Paginates `items`. Goes back to page 1 whenever `resetKey` changes (tab, filter, search, sort).
 export function usePaged<T>(items: T[], resetKey: string) {

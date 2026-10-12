@@ -9,7 +9,7 @@
 
 import { STAFF, TODAY } from '@/app/prototype/perron/_shared/format'
 import type { Booking, Maintenance, Room, RoomStatus, Tenant } from '@/app/prototype/perron/_shared/types'
-import { DRIVE, blankBooking, bookingId } from '@/app/prototype/perron/bookings/data'
+import { CHECKOUT_PHOTOS, blankBooking, bookingId } from '@/app/prototype/perron/bookings/data'
 import { buildMaintenance, maintenanceId } from '@/app/prototype/perron/maintenance/data'
 import { buildRooms, roomId } from '@/app/prototype/perron/rooms/data'
 import { INTERNATIONAL, buildTenants, tenantId } from '@/app/prototype/perron/tenants/data'
@@ -139,7 +139,7 @@ function buildSeed(): Seed {
   // Early move-out done: room empty, contract still running
   add(HARD_CASES.earlyMoveOutDone, nextTenant(), {
     contractType: 'Others', otherContractLength: '4 months', contractStart: '2026-09-01', contractEnd: '2026-12-31',
-    checkoutDate: '2026-09-28', checkoutDone: 'Yes', checkoutStaff: 'u2', checkoutPhotos: `${DRIVE}checkout`,
+    checkoutDate: '2026-09-28', checkoutDone: 'Yes', checkoutStaff: 'u2', checkoutPhotos: CHECKOUT_PHOTOS,
     checkoutTenantConfirmed: 'Confirmed', notes: 'Left early. Contract and rent run until 31 Dec.',
   })
   setRoom(HARD_CASES.earlyMoveOutDone, 'Available', '2027-01-01', 'Empty since 28 Sep. Still paid until 31 Dec.')
@@ -163,7 +163,7 @@ function buildSeed(): Seed {
   // Previous booking Ended, deposit still held
   add(HARD_CASES.depositHeldAfterEnd, nextTenant(), {
     status: 'Ended', contractStart: '2025-09-01', contractEnd: '2026-08-31', checkinDate: '2025-09-01',
-    checkoutDate: '2026-08-31', checkoutDone: 'Yes', checkoutPhotos: `${DRIVE}checkout`,
+    checkoutDate: '2026-08-31', checkoutDone: 'Yes', checkoutPhotos: CHECKOUT_PHOTOS,
     checkoutTenantConfirmed: 'Not confirmed', notes: 'Wall damage under discussion. Deposit not returned yet.',
   })
   add(HARD_CASES.depositHeldAfterEnd, nextTenant())
@@ -172,7 +172,7 @@ function buildSeed(): Seed {
   const prevTenant = nextTenant()
   add('p19-1.02', prevTenant, {
     status: 'Ended', contractStart: '2025-09-01', contractEnd: '2026-08-31', checkinDate: '2025-09-01',
-    checkoutDate: '2026-08-30', checkoutDone: 'Yes', checkoutPhotos: `${DRIVE}checkout`,
+    checkoutDate: '2026-08-30', checkoutDone: 'Yes', checkoutPhotos: CHECKOUT_PHOTOS,
     checkoutTenantConfirmed: 'Confirmed', depositStatus: 'Returned', depositReturnedDate: '2026-09-12',
   })
 

@@ -8,15 +8,15 @@ import { cn } from '@/lib/utils'
 // ─── Record drawer: the shared CRUD pattern ───────────────────────────────────
 //
 // Every create / view / edit opens in a right-side Sheet (wide, 560px) over its list, so the admin
-// never loses the list context. Inline editing in list cells stays for quick changes.
+// never loses the list context. Lists are read-only: this panel is the only place to edit.
 //
 // The open record lives in the URL, so any ID can be a real link:
 //   /prototype/perron/bookings?record=PH-463502   view / edit one record
 //   /prototype/perron/bookings?record=new         create
 //   /prototype/perron/bookings?record=new&room=p19-1.01   create with a preset
 //
-// Product rule note: README says "edit in place, no modals". Decided 2026-10-08 by the
-// designer: inline edit stays on lists, full records use this drawer.
+// Product rule note: the client brief asks for inline editing in lists. Decided 2026-10-12 by
+// the designer: lists are read-only and every edit happens here. Needs client confirmation.
 
 export const NEW = 'new'
 

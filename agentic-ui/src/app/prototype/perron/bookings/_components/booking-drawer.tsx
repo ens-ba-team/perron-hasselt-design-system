@@ -16,7 +16,7 @@ import { type Booking, type Room } from '@/app/prototype/perron/_shared/types'
 import { BOOKING_STATUSES, CONTRACT_TYPES, DEPOSIT_STATUSES, TENANT_CONFIRMED, YES_NO, contractTotal, overlapping } from '@/app/prototype/perron/bookings/data'
 import { usePerron } from '@/app/prototype/perron/_shared/store'
 import { CancelBookingDialog } from '@/app/prototype/perron/bookings/_components/cancel-booking-dialog'
-import { ChoiceSelect, DateField, Field, asOptions, staffOptions } from '@/app/prototype/perron/_shared/components/form-fields'
+import { ChoiceSelect, DateField, Field, ImageField, asOptions, staffOptions } from '@/app/prototype/perron/_shared/components/form-fields'
 import { DevNote } from '@/app/prototype/perron/_shared/components/list-parts'
 import { DrawerSection, RecordDrawer, recordHref, useRecordParam } from '@/app/prototype/perron/_shared/components/record-drawer'
 
@@ -279,8 +279,9 @@ export function BookingForm({ bookingId, initial, onDone }: { bookingId?: string
         <Field
           id="room"
           className="sm:col-span-2"
-          label={<span className="flex items-center gap-2">{F.room}<DevNote q="Q27" text={COPY.dev.q27} /></span>}
+          label={F.room}
           hint={!draft.contractStart || !draft.contractEnd ? H.datesFirst : undefined}
+          hintBelow
           error={err('roomId')}
         >
           <RoomSelect value={draft.roomId} onChange={(v) => { set('roomId', v); touch('roomId') }}
@@ -332,8 +333,7 @@ export function BookingForm({ bookingId, initial, onDone }: { bookingId?: string
                 onChange={(v) => set('checkinTenantConfirmed', v as Booking['checkinTenantConfirmed'])} />
             </Field>
             <Field id="checkinPhotos" label={F.checkinPhotos} className="sm:col-span-2">
-              <Input id="checkinPhotos" type="url" value={draft.checkinPhotos} placeholder={P.drive}
-                onChange={(e) => set('checkinPhotos', e.target.value)} />
+              <ImageField id="checkinPhotos" value={draft.checkinPhotos} onChange={(v) => set('checkinPhotos', v)} />
             </Field>
           </>
         ) : <div className="hidden sm:block" />}
@@ -358,8 +358,7 @@ export function BookingForm({ bookingId, initial, onDone }: { bookingId?: string
                 onChange={(v) => set('checkoutTenantConfirmed', v as Booking['checkoutTenantConfirmed'])} />
             </Field>
             <Field id="checkoutPhotos" label={F.checkoutPhotos} className="sm:col-span-2">
-              <Input id="checkoutPhotos" type="url" value={draft.checkoutPhotos} placeholder={P.drive}
-                onChange={(e) => set('checkoutPhotos', e.target.value)} />
+              <ImageField id="checkoutPhotos" value={draft.checkoutPhotos} onChange={(v) => set('checkoutPhotos', v)} />
             </Field>
           </>
         ) : <div className="hidden sm:block" />}

@@ -5,8 +5,8 @@
 |---|---|
 | **Client** | Perron Hasselt, contact: Mina |
 | **Prepared by** | Enosta Product Design |
-| **Version** | 0.1 (draft for client review) |
-| **Date** | 2026-10-08 |
+| **Version** | 0.2 (draft for client review) |
+| **Date** | 2026-10-12 |
 | **Status** | Draft. Awaiting client sign-off |
 | **Source of truth** | FigJam board: https://www.figma.com/board/RnN40RUrCANewi4MBP60yU |
 
@@ -44,13 +44,13 @@ Everything else in the system (tenants, contracts, check-in and check-out, maint
 
 ### 4.1 In scope
 
-- Room records for **41 units**: Perron 19 (29 rooms) and Perron 17 (12 studios)
+- Room records for the **41 units** of today: Perron 19 (29 rooms) and Perron 17 (12 studios). The number is **not fixed**: admins can add rooms, and a new building, without a developer
 - Tenant records, reused when a tenant renews
 - Booking (contract) records: contract dates, rent, deposit, check-in and check-out
 - Maintenance records, linked to a room
-- Lists with filters, sorting, tabs and inline editing
+- Lists with filters, sorting and tabs; records are edited in a side panel
 - Checking for date overlaps when creating a booking
-- Links to documents and photos stored on Google Drive
+- Inspection photos uploaded to the booking; links to contracts and ID documents stored on Google Drive
 
 ### 4.2 Out of scope (Lite version)
 
@@ -77,7 +77,7 @@ Everything else in the system (tenants, contracts, check-in and check-out, maint
 |---|---|
 | C1 | Platform: **WordPress + ACF Pro + Admin Columns Pro**, with no custom code where possible |
 | C2 | **No automation.** The system stores, filters and displays data. It never changes a value an admin entered (see BR01) |
-| C3 | Documents, ID papers and photos stay on **Google Drive**. The system stores only the link. Access is managed outside the system (GDPR) |
+| C3 | **Contracts and ID papers** stay on **Google Drive**; the system stores only the link, because uploaded files get public URLs (GDPR). **Inspection photos are pictures of the room** and are uploaded to the booking |
 | C4 | WordPress revisions are switched on, so earlier values can be restored. Records are never deleted. A booking is set to *Cancelled* instead |
 
 **Read-only computed columns are allowed.** A column may show a value calculated from other fields (for example, the contract total) as long as an admin never types into it and it never overwrites stored data.
@@ -160,7 +160,7 @@ Rule numbers match the *Business Rules* section of the FigJam board.
 | BR17 | **Gap after early move-out.** Between move-out and contract end, the room is empty but still under the old contract and still paid for. It cannot be offered again. *Available from* stays on the contract end date |
 | BR18 | **Overstay.** If a tenant has not left after the contract end, the room stays *Occupied*. The system does not change status by itself. The admin updates it according to the actual move-out |
 | BR19 | **Handover staff.** Check-in and check-out may be handled by two different people. One person may handle many bookings |
-| BR20 | **Inspection photos.** Photos are taken at both check-in and check-out and stored separately, so they can be compared when settling the deposit |
+| BR20 | **Inspection photos.** Photos are taken at both check-in and check-out and **uploaded to the booking** in two separate fields, so they can be compared when settling the deposit |
 | BR21 | **Tenant confirmation.** After the inspection, the staff member records in a dropdown that the tenant agreed with the room condition. Used at both check-in and check-out |
 
 ### 7.6 Deposit
@@ -184,7 +184,7 @@ Rule numbers match the *Business Rules* section of the FigJam board.
 |---|---|
 | BR27 | **Accounts.** Three admin accounts with equal rights. No role-based permissions |
 | BR28 | **Tenants.** Tenants have no account and never access the system |
-| BR29 | **Documents.** Contracts, ID documents and photos are stored on Google Drive. The system stores only the link |
+| BR29 | **Documents.** Contracts and ID documents are stored on Google Drive; the system stores only the link. Inspection photos are the exception and are uploaded (BR20) |
 
 ## 8. Functional requirements
 
@@ -196,7 +196,7 @@ Rule numbers match the *Business Rules* section of the FigJam board.
 | FR-R2 | **Default sort: Available from**, earliest first |
 | FR-R3 | Filter by Building, Type and Room status |
 | FR-R4 | Room status and Available from are placed side by side |
-| FR-R5 | Edit fields inline on the list, without opening a pop-up |
+| FR-R5 | ~~Edit fields inline on the list~~ **Changed 2026-10-12:** edit in the record's side panel, opened from the list. Needs client confirmation |
 | FR-R6 | Create a new room |
 
 ### 8.2 Bookings
@@ -204,7 +204,7 @@ Rule numbers match the *Business Rules* section of the FigJam board.
 | ID | Requirement |
 |---|---|
 | FR-B1 | List columns: Tenant, Room, Contract start, Contract end, Booking status, Check-in date & staff, Check-out date & staff, Monthly rent, Total (read-only) |
-| FR-B2 | Tabs: **Check-ins this week · Check-outs this month · My task** |
+| FR-B2 | Tabs: **My task** (due this week and assigned to me) · **This week** (due this week, anyone's). Replaced *Check-ins this week*, *Check-outs this month* and *Deposits held* on 2026-10-12 |
 | FR-B3 | Create a booking, either new or a renewal for an existing tenant |
 | FR-B4 | When creating a booking, the admin selects a date range and sees all rooms, with overlapping ones marked and placed last (BR04) |
 | FR-B5 | Booking fields: tenant, room, contract type, other contract length (only for *Others*), contract start, contract end, monthly rent, total (read-only), deposit amount, deposit status, deposit returned date (only when *Returned*), check-in date, check-in done, check-in staff, check-in photos, check-in tenant confirmed, check-out date, check-out done, check-out staff, check-out photos, check-out tenant confirmed, document link, notes |
@@ -218,8 +218,8 @@ Rule numbers match the *Business Rules* section of the FigJam board.
 |---|---|---|---|
 | Check-in | Checkin Awaiting | Check-in staff | Check-in done = No |
 | Check-in | Checkin Done | — | Admin sets check-in done = Yes. The booking leaves *My task* until the check-out stage |
-| — | *(not shown)* | — | After check-in, until 7 days before the check-out date |
-| Check-out | Checkout Awaiting | Check-out staff | From 7 days before the **check-out date** |
+| — | *(not shown)* | — | After check-in, until the week the check-out is due |
+| Check-out | Checkout Awaiting | Check-out staff | During the week the **check-out date** falls in |
 | Check-out | Checkout Done | — | Admin sets check-out done = Yes. The booking leaves *My task* |
 
 The 7-day trigger uses the **check-out date**, not the contract end, because tenants may leave early (BR16).
@@ -246,7 +246,8 @@ The 7-day trigger uses the **check-out date**, not the contract end, because ten
 | ID | Requirement |
 |---|---|
 | FR-G1 | Lists are the main screens. There is no separate dashboard |
-| FR-G2 | Inline editing. No pop-ups, except confirming a cancellation |
+| FR-G1b | Lists show an **ID column first** (stays visible while scrolling sideways) and an **Actions column last** (Edit, View). Rows are paginated: 10 / 20 / 50 per page, default 10 |
+| FR-G2 | ~~Inline editing~~ **Changed 2026-10-12:** records are edited in a side panel over the list, not in a pop-up that hides it. Needs client confirmation |
 | FR-G3 | Nothing is hidden behind tabs or accordions inside a record. Horizontal scrolling is preferred |
 | FR-G4 | No colour coding by urgency. Status labels are neutral |
 | FR-G5 | Nothing happens in the background: no scheduled jobs, automatic emails or automatic status changes |
@@ -262,7 +263,7 @@ Staff   1 ── n  Maintenance
 
 | Entity | Fields |
 |---|---|
-| **Room** | Room ID, Room name, Building (Perron 19 / Perron 17), Floor, Type, Max occupancy (1 or 2), Monthly rent, Room status, Available from |
+| **Room** | Room ID, Room name, Building (Perron 19 / Perron 17, **extendable**), Floor, Type, Max occupancy (1 or 2), Monthly rent, Room status, Available from |
 | **Tenant** | Tenant ID, Name, Phone, Email, University, Erasmus (yes/no) |
 | **Booking** | Booking ID, Booking status (Upcoming / Active / Ended / Cancelled), Tenant ID, Room ID, Contract type (6 months / 12 months / Others), Other contract length, Contract start, Contract end, Monthly rent, Deposit, Deposit status (None / Held / Returned), Deposit returned date, Check-in date, Check-in done, Check-in staff, Check-in photos, Check-in tenant confirmed, Check-out date, Check-out done, Check-out staff, Check-out photos, Check-out tenant confirmed, Document, Notes |
 | **Maintenance** | Maintenance ID, Room ID, Issue, Reported date, Staff ID, Status (Open / In progress / Done) |
@@ -295,7 +296,7 @@ Keeping the three apart is what makes early move-out and overstay visible.
 | # | Question | Owner |
 |---|---|---|
 | Q27 | Can the overlap check when creating a booking (BR04) be built without custom code? If not, what is the cost? | Development |
-| Q28 | Can the *My task* column on Bookings change with the date (7 days before check-out) in Admin Columns Pro, or does it need custom code? | Development |
+| Q28 | Can the *My task* and *This week* columns on Bookings change with the date (due this week) in Admin Columns Pro, or do they need custom code? | Development |
 
 ## 12. Glossary
 

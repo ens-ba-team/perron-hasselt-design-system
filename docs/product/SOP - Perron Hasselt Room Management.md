@@ -5,8 +5,8 @@
 |---|---|
 | **For** | The 3 admin accounts (all handover and repair staff) |
 | **Prepared by** | Enosta Product Design |
-| **Version** | 0.1 (draft) |
-| **Date** | 2026-10-08 |
+| **Version** | 0.2 (draft) |
+| **Date** | 2026-10-12 |
 | **Related** | BRD v0.1 · FigJam board https://www.figma.com/board/RnN40RUrCANewi4MBP60yU |
 
 ---
@@ -18,6 +18,8 @@
 So each real-world event below comes with a short checklist. **Do every line.** If you skip one, the lists will show something that is no longer true, and nothing on screen will warn you.
 
 Each checklist says **which record** to open (Booking, Room, Tenant or Maintenance) and **which field** to change.
+
+**How to open a record.** Every list shows an **ID** in the first column. Select the ID, or the **Edit** icon at the end of the row, and the record opens in a panel on the right. The list stays visible behind it. Lists themselves are read-only: you cannot type into a row.
 
 ---
 
@@ -60,7 +62,7 @@ You will need this card in several procedures. *Available from* is the first day
 *When:* a tenant has agreed to rent a room. The contract may not be signed yet.
 
 **1. Check the room is free**
-- [ ] Bookings → **Create booking**. Enter the **contract start** and **contract end**.
+- [ ] Bookings → **Add booking**. Enter the **contract start** and **contract end** first: the room list uses them to mark rooms that are already booked.
 - [ ] Look at the room list. Rooms with an overlapping booking are **marked and shown at the bottom**. Choose a room that is not marked, unless you have agreed a special arrangement.
 
 **2. Tenant**
@@ -75,7 +77,7 @@ You will need this card in several procedures. *Available from* is the first day
 - [ ] Deposit amount (leave empty if none) and **Deposit status**: None or Held
 - [ ] **Check-in date** (planned handover day) and **Check-in staff**
 - [ ] **Check-out date** (planned) and **Check-out staff**, if already known
-- [ ] Document: paste the Google Drive link
+- [ ] Document: paste the Google Drive link to the contract folder
 - [ ] Booking status: **Upcoming**
 
 **4. Room record**
@@ -100,9 +102,9 @@ You will need this card in several procedures. *Available from* is the first day
 *Who:* the **Check-in staff** of the booking. It appears in their **My task** as *Checkin Awaiting*.
 
 **On the Booking**
-- [ ] Do the inspection. Take photos and upload them to Google Drive.
+- [ ] Do the inspection and take photos of the room.
 - [ ] **Check-in done** → Yes
-- [ ] **Check-in photos** → paste the Drive link
+- [ ] **Check-in photos** → select the photos and upload them to the booking
 - [ ] **Check-in tenant confirmed** → Confirmed, once the tenant agrees with the room condition
 - [ ] **Booking status** → **Active**
 
@@ -114,12 +116,12 @@ You will need this card in several procedures. *Available from* is the first day
 
 ## P4. Check-out at the end of the contract
 
-*Who:* the **Check-out staff**. It appears in their **My task** as *Checkout Awaiting* from 7 days before the check-out date.
+*Who:* the **Check-out staff**. It appears in their **My task** as *Checkout Awaiting* during the week the check-out is due.
 
 **On the Booking**
-- [ ] Do the inspection. Take photos and upload them to Google Drive.
+- [ ] Do the inspection and take photos of the room.
 - [ ] **Check-out done** → Yes
-- [ ] **Check-out photos** → paste the Drive link
+- [ ] **Check-out photos** → select the photos and upload them to the booking
 - [ ] **Check-out tenant confirmed** → Confirmed
 - [ ] **Booking status** → **Ended**
 
@@ -210,6 +212,17 @@ You will need this card in several procedures. *Available from* is the first day
 
 ---
 
+## P10b. A new room or a new building
+
+*When:* Perron takes an extra room into rental, or opens another address.
+
+- [ ] Rooms → **Add room**.
+- [ ] **Room name** (for example "P19 – 2.05"), Floor, Type, Max occupancy, Monthly rent.
+- [ ] **Building:** choose one from the list. For a new address, choose **Add a new building** and type the name. It is then available for the next room.
+- [ ] **Room status:** *Available*. **Available from:** the first day you can offer it.
+
+---
+
 ## P11. Weekly check (recommended every Monday, 10 minutes)
 
 Because nothing happens automatically, a quick weekly look catches forgotten steps.
@@ -218,8 +231,8 @@ Because nothing happens automatically, a quick weekly look catches forgotten ste
 |---|---|---|---|
 | Bookings, tab **Active** | Contract end is in the past | A check-out was missed, or the tenant is overstaying | P4 or P6 |
 | Bookings, tab **Upcoming** | Contract start is in the past | A check-in was not recorded, or a cancellation was not recorded | P3 or P7 |
-| Bookings, tab **Check-outs this month** | Check-out date passed, Check-out done = No | Handover not done, or done but not recorded | P4 |
-| Bookings, **Deposit status = Held** | Booking is Ended for more than 30 days | Someone's deposit is still being held | P8 |
+| Bookings, tab **This week** | Check-out date passed, Check-out done = No | Handover not done, or done but not recorded | P4 |
+| Bookings, tab **Ended**, column **Deposit status** | Still *Held* more than 30 days after the contract ended | Someone's deposit is still being held | P8 |
 | Rooms, sorted by **Available from** | Date in the past but status Occupied | Overstay, or a status not updated | Check the room's bookings |
 | Rooms | Status *Available* but there is an Active booking | Room status not updated after check-in | P3 |
 | Maintenance, tab **Open** | Ticket older than 2 weeks | Repair forgotten | Follow up with the assigned person |

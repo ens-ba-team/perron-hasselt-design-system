@@ -16,6 +16,9 @@ export const ROOMS_COPY = {
     notes: 'Notes',
     addBooking: 'Add booking for this room',
     checkoutDone: 'Check-out done',
+    buildingHint: 'Pick a building, or add a new one if Perron opens another address.',
+    addBuilding: 'Add a new building',
+    newBuildingPlaceholder: 'For example Perron 21',
   },
   reference: {
     title: 'Working out Available from',

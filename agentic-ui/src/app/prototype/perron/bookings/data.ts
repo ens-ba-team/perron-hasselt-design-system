@@ -2,7 +2,7 @@
 // Types in _shared/types.ts. Seed bookings are created in _shared/scenarios.ts
 // because every hard case also sets the room it lives in.
 
-import { TODAY, addDays } from '@/app/prototype/perron/_shared/format'
+
 import type { Booking, BookingStatus, ContractType, DepositStatus, TenantConfirmed, YesNo } from '@/app/prototype/perron/_shared/types'
 
 export const BOOKING_STATUSES: BookingStatus[] = ['Upcoming', 'Active', 'Ended', 'Cancelled']
@@ -21,6 +21,11 @@ export function bookingId(index: number): string {
 
 export const DRIVE = 'https://drive.google.com/drive/folders/'
 
+// Inspection photos are uploaded files (ACF Gallery in WordPress). The prototype keeps
+// the file names, separated by "|". Contracts and IDs stay on Drive — see `document`.
+export const CHECKIN_PHOTOS = 'checkin-room-01.jpg|checkin-room-02.jpg|checkin-kitchen.jpg'
+export const CHECKOUT_PHOTOS = 'checkout-room-01.jpg|checkout-room-02.jpg'
+
 export function blankBooking(): Omit<Booking, 'id' | 'tenantId' | 'roomId'> {
   return {
     status: 'Active',
@@ -35,7 +40,7 @@ export function blankBooking(): Omit<Booking, 'id' | 'tenantId' | 'roomId'> {
     checkinDate: '2026-09-01',
     checkinDone: 'Yes',
     checkinStaff: 'u1',
-    checkinPhotos: `${DRIVE}checkin`,
+    checkinPhotos: CHECKIN_PHOTOS,
     checkinTenantConfirmed: 'Confirmed',
     checkoutDate: '',
     checkoutDone: 'No',
@@ -64,11 +69,22 @@ export function contractTotal(b: Pick<Booking, 'monthlyRent' | 'contractStart' |
 
 export type TaskValue = 'Checkin Awaiting' | 'Checkout Awaiting' | ''
 
-// ⚙️ Q28 — Functional Spec §4.3. Display only, compares with today.
-export function myTask(b: Booking, staffId: string): TaskValue {
+// What a booking still needs, regardless of who does it. Display only (⚙️ Q28).
+// Anchored to the current week (designer, 2026-10-12): "My task" and "This week"
+// answer the same question — what has to happen this week — for one person or for everyone.
+export function taskDue(b: Booking, weekTo: string): TaskValue {
   if (b.status === 'Cancelled' || b.checkoutDone === 'Yes') return ''
-  if (b.checkinDone === 'No') return b.checkinStaff === staffId ? 'Checkin Awaiting' : ''
-  if (b.checkoutStaff === staffId && b.checkoutDate && TODAY >= addDays(b.checkoutDate, -7)) return 'Checkout Awaiting'
+  // Check-in first: it must happen before the check-out phase starts.
+  if (b.checkinDone === 'No') return b.checkinDate && b.checkinDate <= weekTo ? 'Checkin Awaiting' : ''
+  if (b.checkoutDate && b.checkoutDate <= weekTo) return 'Checkout Awaiting'
+  return ''
+}
+
+// The logged-in user's share of it: they are the staff for that phase (BR19).
+export function myTask(b: Booking, staffId: string, weekTo: string): TaskValue {
+  const due = taskDue(b, weekTo)
+  if (due === 'Checkin Awaiting') return b.checkinStaff === staffId ? due : ''
+  if (due === 'Checkout Awaiting') return b.checkoutStaff === staffId ? due : ''
   return ''
 }
 

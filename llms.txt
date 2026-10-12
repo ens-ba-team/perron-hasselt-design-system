@@ -20,6 +20,10 @@
 - `agentic-ui/src/app/prototype/perron/README.md`: structure (one folder per module + a shared folder), import rules, where to change what.
 - `CHANGELOG.md`: newest `(Perron)` entries list files, decisions and open items. Read before changing the prototype or tokens.
 
+## Handoff
+
+- `docs/handoff/2026-10-12-handoff.md`: **Start here if you are new to this repo.** Current state, uncommitted work, open items, working rules, and the traps that cost the last agent time.
+
 ## Rules and Process
 
 - `README.md`: **Perron onboarding — read first.** Status, principles, brand (navy base /500, gold base /900), Dark mode out of scope, product-specific component rules.

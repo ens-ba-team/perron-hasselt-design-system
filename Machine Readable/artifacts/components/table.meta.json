@@ -341,7 +341,7 @@
     "sourceMarkdown": "Component Markdown/Table.md",
     "storyFile": "src/stories/Table.stories.tsx",
     "artifactStatus": "ready",
-    "lastAuditDate": "2026-05-28",
+    "lastAuditDate": "2026-10-12",
     "auditRules": "R1–R8",
     "version": "3.0",
     "openQuestions": [],
@@ -349,7 +349,12 @@
       "Table is assembled as a FRAME — there is no single <Table> wrapper component in Figma. In code, use shadcn Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell."
     ],
     "knownIssues": [],
-    "changelog": [],
+    "changelog": [
+      {
+        "date": "2026-10-12",
+        "change": "Table accepts `wrapperClassName` for the scroll container around the table. Needed for sticky headers and sticky columns: sticky positions against that element, so it must be the one with a bounded height (e.g. wrapperClassName=\"h-full\" inside a flex parent). No visual change by default."
+      }
+    ],
     "darkMode": {
       "notes": "No known dark mode differences — all tokens are semantic and mode-aware.",
       "pairedSurfaceRisk": "None identified."
@@ -361,7 +366,9 @@
     "exports": [
       "Table"
     ],
-    "notes": []
+    "notes": [
+      "wrapperClassName styles the <div> around <table>. Leave it out for the default behaviour."
+    ]
   },
   "storybook": {
     "file": "src/stories/Table.stories.tsx",

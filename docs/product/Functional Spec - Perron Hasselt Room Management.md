@@ -5,8 +5,8 @@
 |---|---|
 | **For** | Development team |
 | **Prepared by** | Enosta Product Design |
-| **Version** | 0.1 (draft) |
-| **Date** | 2026-10-08 |
+| **Version** | 0.2 (draft) |
+| **Date** | 2026-10-12 |
 | **Related** | BRD v0.1 (business rules BR01–BR29) · SOP v0.1 (admin procedures P1–P11) · FigJam https://www.figma.com/board/RnN40RUrCANewi4MBP60yU |
 
 ---
@@ -28,7 +28,7 @@
 
 | Post type | Slug | Records | Title |
 |---|---|---|---|
-| Room | `room` | 41 (fixed) | Room name, typed by admin, e.g. "P19 – 2.05" |
+| Room | `room` | 41 today, **not fixed** | Room name, typed by admin, e.g. "P19 – 2.05". Admins can add rooms: Perron may open another building later |
 | Tenant | `tenant` | Grows over time | Full name, typed by admin |
 | Booking | `booking` | Grows over time | ⚙️ See note |
 | Maintenance | `maintenance` | Grows over time | Short issue description, typed by admin |
@@ -57,7 +57,7 @@ No back-references are stored on Room or Tenant. Lists of bookings for a room or
 
 | Label | Field name | ACF type | Required | Choices / default | Notes |
 |---|---|---|---|---|---|
-| Building | `building` | Select | Yes | Perron 19 · Perron 17 | |
+| Building | `building` | **Taxonomy** (or Select with "Create terms" on) | Yes | Perron 19 · Perron 17 | **Admins must be able to add a new building** from the room form, without a developer. ACF Taxonomy field with *Create Terms* enabled. WordPress then provides the term management screen for free |
 | Floor | `floor` | Number | Yes | | |
 | Type | `room_type` | Select | Yes | *list to be supplied by client* | |
 | Max occupancy | `max_occupancy` | Select | Yes | 1 · 2 | BR05 |
@@ -117,7 +117,7 @@ Fields are grouped **visually only** (ACF *Group* or *Message* separators). **Do
 | Check-in date | `checkin_date` | Date picker | No | **No default. Do not pre-fill from contract start** | |
 | Check-in done | `checkin_done` | Select | Yes | No · Yes. Default: No | |
 | Check-in staff | `checkin_staff` | User | No | Single | |
-| Check-in photos | `checkin_photos` | URL | No | Google Drive link | Show if `checkin_done` = Yes |
+| Check-in photos | `checkin_photos` | **Gallery** (image upload) | No | | Show if `checkin_done` = Yes. Photos of the room, uploaded to the media library. See the privacy note below |
 | Check-in tenant confirmed | `checkin_tenant_confirmed` | Select | No | Not confirmed · Confirmed. Default: Not confirmed | Show if `checkin_done` = Yes. **Select, not checkbox** (BR21) |
 
 **Check-out**
@@ -127,7 +127,7 @@ Fields are grouped **visually only** (ACF *Group* or *Message* separators). **Do
 | Check-out date | `checkout_date` | Date picker | No | **No default. Do not pre-fill from contract end** | |
 | Check-out done | `checkout_done` | Select | Yes | No · Yes. Default: No | |
 | Check-out staff | `checkout_staff` | User | No | Single | |
-| Check-out photos | `checkout_photos` | URL | No | Google Drive link | Show if `checkout_done` = Yes |
+| Check-out photos | `checkout_photos` | **Gallery** (image upload) | No | | Show if `checkout_done` = Yes |
 | Check-out tenant confirmed | `checkout_tenant_confirmed` | Select | No | Not confirmed · Confirmed | Show if `checkout_done` = Yes |
 
 **Other**
@@ -136,6 +136,8 @@ Fields are grouped **visually only** (ACF *Group* or *Message* separators). **Do
 |---|---|---|---|
 | Document | `document_url` | URL | No |
 | Notes | `notes` | Textarea | No |
+
+> **Privacy (client spec §6):** the rule "do not upload into WordPress" covers **ID cards and contracts**, because uploaded files get public links. Those stay on Drive and are linked from `document_url`. **Inspection photos are pictures of the room** and are uploaded normally.
 
 > **Why three date layers stay separate:** `contract_*` is legal (money, *Available from*), `*_date` is the planned handover and `*_done` is what actually happened. Never derive one from another. The gap between them is how admins spot early move-out and overstay.
 
@@ -157,14 +159,21 @@ No link to Booking or Tenant (BR26).
 
 General settings for every list:
 
-- **Inline editing on** for every stored field listed below (FR-G2)
+- 🔴 **No inline editing.** Lists are read-only. Every change happens in the record's side panel, opened from the ID link or the **Edit** action
+  > **Deviation from the client spec (decided 2026-10-12).** The original brief says *"Columns support inline editing, so staff can update a room's status without opening it"* (client spec §5), and BRD FR-G2 / FR-R5 repeat it. The design now puts every edit in one place: the record panel. One editing surface is easier to learn, and a half-typed cell can no longer be left unsaved in a list. **Confirm with the client before build** — the BRD still says the opposite
+- **ID column first**, and it stays visible while the table scrolls sideways
+- **Actions column last**, header label **Actions**: **Edit** and **View** icons, revealed when the row is hovered or focused, in a raised container so they are not mistaken for row content. Read-only records (Ended / Cancelled bookings) show **View** only
+- Opening a record (ID link, Edit or View) opens a **side panel (560px)** over the list, not a new page. Fields are editable there too
+- **Header row stays visible** while the rows scroll; the ID and Actions columns stay visible while the table scrolls sideways
+- Row height **64px**. Alternating row background. Values use secondary text colour; the ID and the record name carry the emphasis
+- **Pagination** under every list: total count, page numbers, and rows per page **10 / 20 / 50, default 10**
 - Horizontal scroll is acceptable. Do not drop columns to fit the screen
 - No row colours or coloured badges by urgency (FR-G4). Status columns show plain text
 - Tabs are implemented as **Admin Columns Pro saved segments / list screen views**, or as WordPress `views` links where noted
 
 ### 3.1 Rooms
 
-| # | Column | Source | Inline edit | Sortable | Filter |
+| # | Column | Source | Editable (panel) | Sortable | Filter |
 |---|---|---|---|---|---|
 | 1 | Room name | Title | Yes | Yes | |
 | 2 | Building | `building` | Yes | Yes | **Yes** |
@@ -182,7 +191,7 @@ General settings for every list:
 
 ### 3.2 Bookings
 
-| # | Column | Source | Inline edit | Sortable |
+| # | Column | Source | Editable (panel) | Sortable |
 |---|---|---|---|---|
 | 1 | Tenant | `tenant` | Yes | Yes |
 | 2 | Room | `room` | Yes | Yes |
@@ -206,16 +215,16 @@ General settings for every list:
 |---|---|---|
 | **All** (default) | Not Cancelled | `contract_start` desc |
 | Upcoming · Active · Ended · Cancelled | `booking_status` = value. **Show the count** next to each | |
-| Check-ins this week | `checkin_date` within current week (Mon–Sun) | `checkin_date` asc |
-| Check-outs this month | `checkout_date` within current month | `checkout_date` asc |
-| **My task** | See section 4.3 | `checkin_date` / `checkout_date` asc |
-| Deposits held | `deposit_status` = Held, **any booking status** | `contract_end` asc |
+| **My task** | Due this week **and assigned to me**. See section 4.3 | `checkin_date` asc |
+| **This week** | Due this week, **anyone's**. Same condition without the staff filter | `checkin_date` asc |
 
-> "This week" and "this month" are **filters evaluated when the list loads**. They do not change data, so they comply with BR01.
+> Changed 2026-10-12: "Check-ins this week", "Check-outs this month" and "Deposits held" were removed. My task already covered check-ins and check-outs, so the only thing missing was the team-wide view, which is now **This week**. With 3 admins, one shared weekly view is enough.
+
+> "This week" is a **filter evaluated when the list loads**. It does not change data, so it complies with BR01.
 
 ### 3.3 Tenants
 
-| # | Column | Inline edit |
+| # | Column | Editable (panel) |
 |---|---|---|
 | 1 | Name (title) | Yes |
 | 2 | Phone | Yes |
@@ -228,7 +237,7 @@ Tenant edit screen: show the tenant's **booking history** read-only, from the re
 
 ### 3.4 Maintenance
 
-| # | Column | Source | Inline edit |
+| # | Column | Source | Editable (panel) |
 |---|---|---|---|
 | 1 | Room | `room` | Yes |
 | 2 | Issue | Title | Yes |
@@ -260,21 +269,20 @@ total = booking.monthly_rent × months(contract_start, contract_end)
 - Shown on the Booking list (column 11) and on the Booking edit screen
 - ⚙️ **Q29:** ACF and Admin Columns Pro do not calculate across fields out of the box. It probably needs a small custom column or display-only snippet.
 
-### 4.3 My task (Bookings)
+### 4.3 My task and This week (Bookings)
 
-Shown only to the logged-in user. A booking is in **My task** if one of these rows applies:
+Both answer the same question — **what has to happen this week** — one for the logged-in user, one for everyone. A booking is due when:
 
-| Value | Show to | Condition |
-|---|---|---|
-| **Checkin Awaiting** | `checkin_staff` = me | `checkin_done` = No **and** `booking_status` ≠ Cancelled |
-| **Checkout Awaiting** | `checkout_staff` = me | `checkin_done` = Yes **and** `checkout_done` = No **and** today ≥ `checkout_date` − 7 days |
-| *(not in My task)* | — | `checkout_done` = Yes, or `booking_status` = Cancelled |
+| Value | Condition |
+|---|---|
+| **Checkin Awaiting** | `checkin_done` = No **and** `checkin_date` ≤ end of this week |
+| **Checkout Awaiting** | `checkin_done` = Yes **and** `checkout_done` = No **and** `checkout_date` ≤ end of this week |
+| *(not due)* | `checkout_done` = Yes, or `booking_status` = Cancelled, or the date is later than this week |
 
-Notes:
-- **Two different people.** The check-in phase belongs to `checkin_staff`, the check-out phase to `checkout_staff` (BR19). The tab filter is *checkin_staff = me* **OR** *checkout_staff = me*, then the value decides whether the row shows for that person.
-- **Anchor: `checkout_date`, not `contract_end`**, because tenants may leave early (BR16).
-- If `checkout_date` is empty, the booking does not reach *Checkout Awaiting*. The weekly check (P11) catches contracts ending without a check-out date.
-- **Checkin Done leaves My task immediately.** Once `checkin_done` = Yes, the booking is not shown again until 7 days before `checkout_date`.
+- **This week** shows every due booking. **My task** shows only those where the logged-in user is the staff for that phase: `checkin_staff` for Checkin Awaiting, `checkout_staff` for Checkout Awaiting (BR19).
+- **Week = Monday to Sunday**, the week that contains today. This replaced the earlier "7 days before check-out date": one shared definition of "this week" is easier to explain than two different horizons.
+- Check-in is evaluated first: a booking cannot reach the check-out phase before the tenant has moved in.
+- If `checkout_date` is empty, the booking never reaches *Checkout Awaiting*. The weekly check (P11) catches contracts ending without a check-out date.
 - ⚙️ **Q28:** the condition compares with today's date. Probably needs a custom column or query filter.
 
 ### 4.4 Actions (Maintenance)
@@ -311,9 +319,9 @@ AND E.contract_end   ≥ new.contract_start
 4. **2-person rooms:** mark the room only when the number of overlapping bookings ≥ `max_occupancy`. A 2-person room with one overlapping booking still has a free place, so it shows as *"1 of 2 booked"* and is not pushed down.
 5. The admin can still select a marked room. **No blocking, no validation error.**
 
-⚙️ **Q27:** dynamic filtering of a Post Object field by date range is not standard ACF behaviour. It probably needs the `acf/fields/post_object/query` and `acf/fields/post_object/result` filters (PHP).
+⚙️ **Q27 — confirmed in scope (2026-10-12).** Dynamic filtering of a Post Object field by date range is not standard ACF behaviour and needs the `acf/fields/post_object/query` and `acf/fields/post_object/result` filters (PHP). The design assumes this is built.
 
-**Fallback without code:** a saved Bookings view *"By room, by contract dates"*. The admin checks the room's existing bookings in that view before saving. This is weaker, because it relies on the admin remembering to check.
+**Fallback if it turns out to be too costly:** a saved Bookings view *"By room, by contract dates"*. The admin checks the room's existing bookings in that view before saving. This is weaker, because it relies on the admin remembering to check.
 
 ---
 
@@ -364,11 +372,12 @@ Any of these violates BR01 or was deferred in the BRD:
 
 | # | Item | Probably needs | Fallback without code |
 |---|---|---|---|
-| **Q27** | Overlap marker in the Room selector (section 5) | ACF PHP filters | Admin checks a Bookings view by room before saving |
-| **Q28** | *My task* value and tab with the 7-day date condition (4.3) | Custom column + query filter | Tab filters only on staff = me and done = No, without the 7-day rule |
+| ~~Q27~~ | Overlap marker in the Room selector (section 5) | ACF PHP filters | **Confirmed in scope 2026-10-12.** Build it |
+| **Q28** | *My task* / *This week* value and tabs with the this-week condition (4.3) | Custom column + query filter | Tabs filter only on staff = me and done = No, without the week rule |
 | **Q29** | Contract total column (4.2) | Display-only custom column | Admin calculates by hand. Not recommended |
 | **Q30** | Open maintenance count on Rooms (3.1) | Custom column, or ACP relational count if supported | Admin checks the Maintenance list filtered by room |
 | — | Auto booking title (section 1) | `save_post` title hook | Admin types the title by convention |
+| — | New building added by the admin (section 2.1) | ACF Taxonomy field with *Create Terms* | — |
 | — | Cancel confirmation dialog (section 7) | Small admin JS | SOP P7 |
 | — | Remove *Trash* for bookings (section 6) | Capability change | SOP P7 |
 
@@ -383,5 +392,6 @@ Any of these violates BR01 or was deferred in the BRD:
 | D1 | ~~BR02 wording~~ Resolved 08/10: "last booking". A booking holds the room from creation, so *Available from* is updated in P1 | Closed |
 | D2 | Renewal: closed 08/10. Old booking checks out as normal, new booking starts again with its own check-in (SOP P9) | Closed |
 | D3 | Closed 08/10. *Checkin Done* leaves My task as soon as done = Yes | Closed |
+| D6 | Record IDs shown in the prototype (`RM-`, `TN-`, `PH-`, `MT-`) are **mock values only**. In WordPress use the post ID or whatever fits; no custom field is required | Closed 2026-10-12 |
 | D4 | Room type list. Mock values are fine for wireframes and prototype. Real values are needed before build (select choices, Type filter) and come with the data migration | Before build |
 | D5 | Closed 08/10. English first, Dutch later | Closed |

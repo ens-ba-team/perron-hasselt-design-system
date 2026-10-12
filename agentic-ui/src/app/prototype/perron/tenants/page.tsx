@@ -3,7 +3,6 @@
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { Plus, SearchLg } from '@untitledui/icons'
-import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Empty } from '@/components/ui/empty'
 import { Input } from '@/components/ui/input'
@@ -11,21 +10,18 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { COPY } from '@/app/prototype/perron/_shared/copy'
 import { ListPagination, usePaged } from '@/app/prototype/perron/_shared/components/list-pagination'
 import { TENANTS_COPY } from '@/app/prototype/perron/tenants/copy'
-import type { Tenant } from '@/app/prototype/perron/_shared/types'
 import { usePerron } from '@/app/prototype/perron/_shared/store'
-import { InlineCell } from '@/app/prototype/perron/_shared/components/inline-cell'
 import { NEW, recordHref } from '@/app/prototype/perron/_shared/components/record-drawer'
 import { TenantDrawer } from '@/app/prototype/perron/tenants/_components/tenant-drawer'
-import { CELL, IdLink, PageHeader, TableFrame } from '@/app/prototype/perron/_shared/components/list-parts'
+import { CELL, CELL_ACTIONS, CELL_ID, CELL_STRONG, HEAD, HEAD_ACTIONS, HEAD_ID, IdLink, PageHeader, ROW, RowActions, TableFrame } from '@/app/prototype/perron/_shared/components/list-parts'
 
 // Tenants — Functional Spec §3.3. Bookings column is read-only, counted from the bookings.
 
 const C = COPY.labels.tenant
-const yesNo = [{ value: 'Yes', label: TENANTS_COPY.yes }, { value: 'No', label: TENANTS_COPY.no }]
 
 export default function TenantsPage() {
   const router = useRouter()
-  const { tenants, bookings, updateTenant } = usePerron()
+  const { tenants, bookings } = usePerron()
   const [query, setQuery] = React.useState('')
 
   const bookingCount = React.useMemo(() => {
@@ -39,13 +35,9 @@ export default function TenantsPage() {
     .sort((a, b) => a.name.localeCompare(b.name))
   const paged = usePaged(visible, query)
 
-  const save = (t: Tenant, patch: Partial<Tenant>) => {
-    updateTenant(t.id, patch)
-    toast.success(COPY.common.saved, { description: t.name })
-  }
 
   return (
-    <div className="flex flex-col gap-4 p-6">
+    <div className="flex h-full min-h-0 flex-col gap-4 p-6">
       <PageHeader
         title={TENANTS_COPY.title}
         action={
@@ -69,42 +61,35 @@ export default function TenantsPage() {
           primaryAction={<Button onClick={() => setQuery('')}>{COPY.common.clearFilters}</Button>} />
       ) : (
         <TableFrame>
-          <Table>
+          <Table wrapperClassName="h-full">
             <TableHeader>
               <TableRow>
-                <TableHead className="px-3">{C.id}</TableHead>
-                <TableHead className="px-3">{C.name}</TableHead>
-                <TableHead className="px-3">{C.phone}</TableHead>
-                <TableHead className="px-3">{C.email}</TableHead>
-                <TableHead className="px-3">{C.university}</TableHead>
-                <TableHead className="px-3">{C.erasmus}</TableHead>
-                <TableHead className="px-3">{C.bookings}</TableHead>
+                <TableHead className={HEAD_ID}>{C.id}</TableHead>
+                <TableHead className={HEAD}>{C.name}</TableHead>
+                <TableHead className={HEAD}>{C.phone}</TableHead>
+                <TableHead className={HEAD}>{C.email}</TableHead>
+                <TableHead className={HEAD}>{C.university}</TableHead>
+                <TableHead className={HEAD}>{C.erasmus}</TableHead>
+                <TableHead className={HEAD}>{C.bookings}</TableHead>
+              <TableHead className={HEAD_ACTIONS}>{COPY.common.actions}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {paged.pageItems.map((t) => (
-                <TableRow key={t.id}>
-                  <TableCell className={CELL}>
+                <TableRow key={t.id} className={ROW}>
+                  <TableCell className={CELL_ID}>
                     <IdLink id={t.id} onOpen={() => router.push(recordHref('tenants', t.id))} />
                   </TableCell>
-                  <TableCell className={CELL}>
-                    <InlineCell label={C.name} kind="text" value={t.name} onSave={(v) => save(t, { name: v })} />
-                  </TableCell>
-                  <TableCell className={CELL}>
-                    <InlineCell label={C.phone} kind="text" value={t.phone} onSave={(v) => save(t, { phone: v })} />
-                  </TableCell>
-                  <TableCell className={CELL}>
-                    <InlineCell label={C.email} kind="text" value={t.email} onSave={(v) => save(t, { email: v })} />
-                  </TableCell>
-                  <TableCell className={CELL}>
-                    <InlineCell label={C.university} kind="text" value={t.university} onSave={(v) => save(t, { university: v })} />
-                  </TableCell>
-                  <TableCell className={CELL}>
-                    <InlineCell label={C.erasmus} kind="select" value={t.erasmus ? 'Yes' : 'No'} options={yesNo}
-                      onSave={(v) => save(t, { erasmus: v === 'Yes' })} />
-                  </TableCell>
-                  <TableCell className={`${CELL} text-[var(--color-text-secondary)]`}>{bookingCount.get(t.id) ?? 0}</TableCell>
-                </TableRow>
+                  <TableCell className={CELL_STRONG}>{t.name}</TableCell>
+                  <TableCell className={CELL}>{t.phone}</TableCell>
+                  <TableCell className={CELL}>{t.email}</TableCell>
+                  <TableCell className={CELL}>{t.university}</TableCell>
+                  <TableCell className={CELL}>{t.erasmus ? 'Yes' : 'No'}</TableCell>
+                  <TableCell className={CELL}>{bookingCount.get(t.id) ?? 0}</TableCell>
+                <TableCell className={CELL_ACTIONS}>
+                      <RowActions onView={() => router.push(recordHref('tenants', t.id))} onEdit={() => router.push(recordHref('tenants', t.id))} />
+                    </TableCell>
+                  </TableRow>
               ))}
             </TableBody>
           </Table>

@@ -10,6 +10,115 @@ Format: newest first. Each entry includes what changed, the migration path, and 
 
 ---
 
+## 2026-10-12 (Perron) — product docs back in sync
+
+Full pass over the client-facing documents, so they describe the prototype as it is now. Vault first, then copied to `docs/product/`.
+
+### BRD v0.2
+- Scope: 41 units "of today", **not fixed** — admins add rooms and buildings.
+- C3 / BR20 / BR29: inspection photos are **uploaded**; contracts and ID papers stay on Drive. The GDPR rule covers papers, not room photos.
+- FR-B2: tabs are now **My task** and **This week**.
+- FR-G1b added: ID column first, Actions column last, pagination 10 / 20 / 50 (default 10).
+- FR-G2 / FR-R5 struck through: no inline editing, flagged for client confirmation.
+- My task table and Q28: "7 days before check-out" → "the week the check-out is due".
+- Room entity: Building is extendable.
+
+### SOP v0.2
+- New intro paragraph: how to open a record (ID or Edit icon → side panel); lists are read-only.
+- P1: "Add booking", dates first so the room list can mark booked rooms.
+- P3 / P4: photos are **uploaded to the booking**, not pasted as a Drive link. P4 trigger is "the week the check-out is due".
+- **New P10b**: adding a room, and adding a new building from the room form.
+- P11 weekly check: "Check-outs this month" → **This week**; the deposit row now reads the Ended tab's Deposit status column (the Deposits held tab is gone).
+
+### Functional Spec v0.2
+Already updated earlier today; no further change in this pass.
+
+### Vault
+- `product-knowledge.md`: scale, GDPR split, Building, photo fields, R15, UI principles, Bookings columns and tabs. New **§16** listing every 2026-10-12 decision.
+- `README.md`: §9 open items rewritten (Q27 closed, no Q31, client confirmation needed for inline editing), doc versions bumped.
+
+### Status
+- `README.md` §1 Product docs row: 🟡 → ✅.
+
+---
+
+## 2026-10-12 (Perron) — no inline editing, sticky ID elevation
+
+### Removed — inline editing
+- Lists are now **read-only**. Every field is edited in the record drawer, opened from the ID link or the **Edit** row action. Deleted `_shared/components/inline-cell.tsx` (`InlineCell`, `SingleEditProvider`); `TableFrame` no longer provides an edit context.
+- The cancel-booking confirmation on the Bookings list went with it — it was triggered by the inline status cell. The same dialog still runs inside the booking drawer.
+- Reverses "one cell at a time" from the entry below, decided earlier the same day.
+- ⚠️ **Conflicts with the client brief**, which asks for inline editing (client spec §5; BRD FR-G2 and FR-R5). Recorded as a deviation in the Spec §3 and marked in the BRD. **Needs client confirmation before build.**
+
+### Changed — sticky ID column
+- The ID column and its header now cast `shadow/md` **sideways** (`4px 0 …`), so the pinned column reads as sitting above the columns sliding under it.
+- The **Actions header is no longer pinned sideways**: the label scrolls with the other headers, while the action buttons in each row stay docked right.
+
+### Decisions (designer, 2026-10-12)
+17. No inline editing anywhere. One editing surface: the record drawer. Supersedes decision 12.
+18. Sticky ID column gets elevation; the Actions header does not stay pinned.
+
+### Docs
+- Functional Spec: §3 rewritten (no inline editing + the deviation note), column tables now say "Editable (panel)".
+- BRD: FR-G2 and FR-R5 struck through with the change and a confirmation flag. Vault `README.md` principle updated. Both copied to `docs/product/`.
+
+---
+
+## 2026-10-12 (Perron) — table: 64px rows, sticky header, elevated actions
+
+### Changed — DS component `Table` (`agentic-ui/src/components/ui/table.tsx`)
+- New **`wrapperClassName`** prop for the scroll container around the table. Sticky headers and sticky columns position against that element, so it has to be the one with a bounded height. Without it, a consumer could not make a sticky header work: the wrapper always grew to content height. No visual change by default. `table.meta.json` updated.
+
+### Changed — prototype lists
+- **Row height 64px** (was 48). Supersedes the 48px in the entry below.
+- **Header row is sticky** while the rows scroll, and the ID / Actions headers stay pinned sideways over their sticky columns (`HEAD`, `HEAD_ID`, `HEAD_ACTIONS`).
+- **Actions column now has a visible "Actions" header** (was a screen-reader-only label).
+- **Row actions sit in an elevated pill**: own surface, border and `shadow/md`, so the buttons read as floating above the row instead of blending into it.
+- A list page now fills the viewport and the table scrolls inside its frame; filters, tabs and pagination stay put. `main` became a flex column in `layout.tsx`.
+
+---
+
+## 2026-10-12 (Perron) — list tables, tabs, photos, buildings
+
+### Changed — prototype lists
+- **Rows 48px** (was 49: the DS `TableCell` p-4 was fighting the cell class). Alternating row background (`color/background/subtle`), values in `color/text/secondary`, ID and record name keep the strong colour.
+- **ID column sticky** on the left in all four lists.
+- **Actions column** last, no header label: Edit + View icons, revealed on row hover or keyboard focus, sticky right so it floats over the row. Ended / Cancelled bookings get **View** only.
+- **Inline editing: one cell at a time.** `SingleEditProvider` lives in `TableFrame`, so opening a second cell closes the first. Editing inside a drawer is unchanged.
+- **Rows per page default 10** (was 50). Options unchanged: 10 / 20 / 50.
+- New in `list-parts.tsx`: `ROW`, `CELL_STRONG`, `CELL_ID`, `CELL_ACTIONS`, `RowActions`.
+
+### Changed — Bookings tabs
+| Was | Now |
+|---|---|
+| Check-ins this week · Check-outs this month · My task · Deposits held | **My task** (due this week, assigned to me) · **This week** (due this week, anyone) |
+- `myTask()` now takes the end of the week instead of a 7-day window, and splits into `taskDue()` (what is due) + `myTask()` (my share of it). One definition of "this week" instead of two horizons.
+- Deposits held removed (designer: not needed).
+
+### Changed — forms
+- **Helper text is now an info icon** next to the label, shown on hover or focus. Only `hintBelow` keeps text under a field; the only one left is the overlap instruction on the Room field. Validation errors are unchanged, still under the field.
+- **Check-in / Check-out photos are image uploads** (`ImageField`), two separate fields, with thumbnails and remove. Check-out photos only appear once `Check-out done` = Yes, per the Spec. Contracts and IDs stay a Drive link in "Other" (client spec §6 privacy rule covers ID cards and contracts, not room photos).
+- **Building can be created from the room form** (`CreatableSelect`): pick an existing building or "Add a new building". The list also picks up buildings already used by other rooms. WordPress: ACF Taxonomy field with *Create Terms* — no custom code.
+- Q27 marker removed from the Room field (confirmed in scope).
+
+### Decisions (designer, 2026-10-12)
+12. Inline editing stays, but only one cell at a time. Records also stay editable inside the drawer.
+13. Tabs: My task = assigned to me, This week = team view. Deposits held dropped.
+14. Inspection photos are uploads, two fields. The client's "do not upload" rule applies to ID cards and contracts only.
+15. No Buildings module: a new building is typed into the Building field on a room.
+16. Record IDs in the prototype are mock values. Dev maps them to WordPress post IDs (no Q31).
+
+### Docs
+- **Functional Spec v0.2** (vault, copied to `docs/product/`): rooms not fixed, Building as a taxonomy with Create Terms, photos as Gallery fields + privacy note, list rules (one-cell inline edit, ID column, Actions column, 48px rows, pagination), new §4.3 "My task and This week", Q27 marked in scope, D6 on mock IDs.
+- Vault `README.md` and `product-knowledge.md` updated for the room count and the saved views.
+- Still behind: BRD and SOP (old tabs, fixed room count).
+
+### Open
+- BRD + SOP need the same update as the Spec.
+- `RecordDrawer` is still named "drawer" although it renders a Sheet. Rename when convenient.
+
+---
+
 ## 2026-10-12 (Perron) — Sheet: Direction renamed to Size
 
 Designer renamed the Sheet variant property (Perron `98:57748`): **`Direction=560px` → `Size=560px`**. Size options: `380px` (default) · `560px` · `1200px`. Combinations in Figma: `Side=Horizontal` + `Size=380px` / `560px`, `Side=Vertical` + `Size=1200px`. Re-scanned: tokens and values inside the variants are unchanged (fill, title 14 Medium, close 24, horizontal footer, header gap 4).

@@ -44,7 +44,7 @@ const NAV = [
 function PrototypeBar() {
   const { currentStaffId, setCurrentStaffId } = usePerron()
   return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-[var(--color-border-default)] bg-[var(--color-background-muted)] px-6 py-2 text-xs text-[var(--color-text-secondary)]">
+    <div className="shrink-0 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-[var(--color-border-default)] bg-[var(--color-background-muted)] px-6 py-2 text-xs text-[var(--color-text-secondary)]">
       <div className="flex items-center gap-2">
         <Label htmlFor="perron-staff" className="text-xs">{COPY.app.signedInAs}</Label>
         <Select value={currentStaffId} onValueChange={setCurrentStaffId}>
@@ -102,9 +102,13 @@ function Shell({ children }: { children: React.ReactNode }) {
             <PerronMark className="h-[245px] w-[201px]" />
           </SidebarWatermark>
         </Sidebar>
-        <main className="min-w-0 flex-1 overflow-y-auto">
+        {/* Column layout: the prototype bar is fixed, the page below it owns its own scrolling,
+            so a list can pin its table header while the rows scroll. */}
+        <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
           <PrototypeBar />
-          <React.Suspense>{children}</React.Suspense>
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            <React.Suspense>{children}</React.Suspense>
+          </div>
         </main>
       </SidebarProvider>
     </div>

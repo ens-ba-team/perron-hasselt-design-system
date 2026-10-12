@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { ChevronDown, ChevronSelectorVertical, ChevronUp } from '@untitledui/icons'
+import { ChevronDown, ChevronSelectorVertical, ChevronUp, Edit05, Eye } from '@untitledui/icons'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { TableHead } from '@/components/ui/table'
@@ -91,7 +91,7 @@ export function SortHead<K extends string>({
   const Icon = !active ? ChevronSelectorVertical : sort.dir === 'asc' ? ChevronUp : ChevronDown
   return (
     <TableHead
-      className={cn('whitespace-nowrap px-3', className)}
+      className={cn(HEAD, className)}
       aria-sort={active ? (sort.dir === 'asc' ? 'ascending' : 'descending') : undefined}
     >
       <span className="inline-flex items-center gap-1">
@@ -141,17 +141,78 @@ export function PageHeader({
   )
 }
 
-// Bordered, horizontally scrollable wrapper. Never drop columns to fit (FR-G1).
+// Bounded box for the table. The DS Table's own wrapper does the scrolling (pass
+// wrapperClassName="h-full"), because sticky headers and columns position against it.
+// Never drop columns to fit (FR-G1).
 export function TableFrame({ children }: { children: React.ReactNode }) {
   return (
-    <div className="overflow-x-auto rounded-[var(--radius-base)] border border-[var(--color-border-default)] bg-[var(--color-surface-default)]">
+    <div className="min-h-0 flex-1 overflow-hidden rounded-[var(--radius-base)] border border-[var(--color-border-default)] bg-[var(--color-surface-default)]">
       {children}
     </div>
   )
 }
 
-// Compact cell padding so 41 rooms nearly fit one screen.
-export const CELL = 'px-3 py-1.5 whitespace-nowrap'
+// ─── Table header classes ─────────────────────────────────────────────────────
+// The header row stays pinned while the body scrolls; the ID and Actions headers also
+// stay pinned sideways, so they sit above their sticky columns.
+
+// First column: stays visible while the table scrolls sideways, and casts shadow/md
+// sideways so it reads as sitting above the columns sliding underneath it.
+const STICKY_SHADOW = 'shadow-[4px_0_6px_-1px_rgb(0_0_0/0.1),2px_0_4px_-2px_rgb(0_0_0/0.1)]'
+
+export const HEAD = 'sticky top-0 z-20 whitespace-nowrap px-3 bg-[var(--color-surface-raised)]'
+export const HEAD_ID = cn(HEAD, 'left-0 z-30', STICKY_SHADOW)
+// Not pinned sideways (designer, 2026-10-12): the label scrolls away with the other headers,
+// only the action buttons themselves stay docked to the right edge.
+export const HEAD_ACTIONS = cn(HEAD, 'text-right')
+
+// ─── Table row and cell classes ───────────────────────────────────────────────
+// Row: 48px, zebra striping, `group/row` so the sticky Actions cell can react to hover.
+// Sticky cells use bg-inherit so they pick up the row's zebra or hover colour.
+
+export const ROW = cn(
+  'group/row h-16',
+  'bg-[var(--color-surface-default)] even:bg-[var(--color-background-subtle)]',
+  'hover:bg-[var(--color-background-accent)]',
+)
+
+// Values read as supporting text; the ID and the record name carry the emphasis.
+// py-0 cancels the DS TableCell's p-4 so the row is exactly 64px (designer, 2026-10-12).
+export const CELL = 'px-3 py-0 h-16 whitespace-nowrap text-[var(--color-text-secondary)]'
+export const CELL_STRONG = 'px-3 py-0 h-16 whitespace-nowrap font-medium text-[var(--color-surface-default-foreground)]'
+
+export const CELL_ID = cn(CELL, 'sticky left-0 z-20 bg-inherit', STICKY_SHADOW)
+
+// ─── Row actions ──────────────────────────────────────────────────────────────
+// Last column, sticky right, revealed on row hover or keyboard focus. It floats over
+// the row's content so no horizontal space is reserved for it.
+// Read-only records (Ended / Cancelled bookings) only get "View".
+
+export function RowActions({ onView, onEdit }: { onView: () => void; onEdit?: () => void }) {
+  return (
+    <div
+      className={cn(
+        // Elevated pill: shadow/md plus its own surface, so the buttons never blend into the row.
+        'flex items-center gap-1 rounded-[var(--radius-md)] p-1',
+        'border border-[var(--color-border-default)] bg-[var(--color-surface-default)]',
+        'shadow-[var(--shadow-md)]',
+        'opacity-0 transition-opacity',
+        'group-hover/row:opacity-100 focus-within:opacity-100',
+      )}
+    >
+      {onEdit && (
+        <Button size="icon-sm" variant="ghost" aria-label={COPY.common.edit} onClick={onEdit}>
+          <Edit05 />
+        </Button>
+      )}
+      <Button size="icon-sm" variant="ghost" aria-label={COPY.common.view} onClick={onView}>
+        <Eye />
+      </Button>
+    </div>
+  )
+}
+
+export const CELL_ACTIONS = cn(CELL, 'sticky right-0 z-20 bg-inherit')
 
 // ─── Record ID link ───────────────────────────────────────────────────────────
 // The ONE way to open a record: its ID, in the first column. Names are plain text,

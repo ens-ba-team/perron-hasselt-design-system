@@ -144,9 +144,8 @@ export function PageHeader({
 // Bounded box for the table. The DS Table's own wrapper does the scrolling (pass
 // wrapperClassName="h-full"), because sticky headers and columns position against it.
 // Never drop columns to fit (FR-G1).
-// It also marks the scroll container with data-scrolled-x once the table is scrolled
-// sideways, so the sticky ID column can show its edge only when there is something
-// sliding underneath it.
+// It also marks the scroll container with data-scrolled-x once the table has been scrolled
+// sideways, so the sticky ID column shows its edge only when columns are sliding under it.
 export function TableFrame({ children }: { children: React.ReactNode }) {
   const frame = React.useRef<HTMLDivElement>(null)
 
@@ -154,7 +153,11 @@ export function TableFrame({ children }: { children: React.ReactNode }) {
     const scroller = frame.current?.querySelector<HTMLElement>('.overflow-auto')
     if (!scroller) return
     const sync = () => {
+      const max = scroller.scrollWidth - scroller.clientWidth
       scroller.toggleAttribute('data-scrolled-x', scroller.scrollLeft > 0)
+      // At the end of the row there is nothing left to overlap, so the Actions column is
+      // fully in view and its buttons stop being a hover-only overlay.
+      scroller.toggleAttribute('data-scrolled-end', max <= 0 || scroller.scrollLeft >= max - 1)
     }
     sync()
     scroller.addEventListener('scroll', sync, { passive: true })
@@ -180,18 +183,27 @@ export function TableFrame({ children }: { children: React.ReactNode }) {
 // The header row stays pinned while the body scrolls; the ID and Actions headers also
 // stay pinned sideways, so they sit above their sticky columns.
 
-// First column: stays visible while the table scrolls sideways, and casts shadow/md
-// sideways so it reads as sitting above the columns sliding underneath it.
-// The border is the hard edge the eye needs; the shadow only adds depth under it. Both
-// appear only once the table is actually scrolled sideways (data-scrolled-x on the
-// scroll container, set by TableFrame) — at rest the column is just the first column.
-const STICKY_SHADOW = cn(
-  'border-r border-transparent transition-shadow',
-  '[[data-scrolled-x]_&]:border-[var(--color-border-default)]',
-  '[[data-scrolled-x]_&]:shadow-[4px_0_6px_-1px_rgb(0_0_0/0.1),2px_0_4px_-2px_rgb(0_0_0/0.1)]',
-)
+// First column: stays visible while the table scrolls sideways. Once it does, the
+// .sticky-col-edge rule in globals.css draws its edge — a 1px rule plus shadow/md — so
+// the column reads as sitting above the ones sliding underneath it. At scrollLeft 0
+// nothing is hidden yet, so the edge stays off and it is just the first column.
+const STICKY_SHADOW = 'sticky-col-edge'
 
-export const HEAD = 'sticky top-0 z-20 whitespace-nowrap px-3 bg-[var(--color-surface-raised)]'
+// Every table here opts out of collapsed borders. In a collapsed table the browser ignores
+// z-index on cells, so a sticky header is painted over by the text of the rows passing
+// under it and a sticky column cannot cast an edge. Separated borders cost us the row
+// border — a border on <tr> is only drawn when borders collapse — so the cells carry it.
+export const TABLE = 'border-separate border-spacing-0'
+
+const ROW_RULE = 'border-b border-[var(--color-border-default)]'
+
+// Layering: the header (z-20, z-30 for its sticky ID cell) sits above the body's sticky
+// cells (z-10). On a tie the later element in the DOM wins, which is the body — so the
+// pinned ID and Actions cells would ride over the header as rows scroll under it.
+export const HEAD = cn(
+  'sticky top-0 z-20 whitespace-nowrap px-3 bg-[var(--color-surface-raised)]',
+  ROW_RULE,
+)
 export const HEAD_ID = cn(HEAD, 'left-0 z-30', STICKY_SHADOW)
 // Not pinned sideways (designer, 2026-10-12): the label scrolls away with the other headers,
 // only the action buttons themselves stay docked to the right edge.
@@ -209,26 +221,40 @@ export const ROW = cn(
 
 // Values read as supporting text; the ID and the record name carry the emphasis.
 // py-0 cancels the DS TableCell's p-4 so the row is exactly 64px (designer, 2026-10-12).
-export const CELL = 'px-3 py-0 h-16 whitespace-nowrap text-[var(--color-text-secondary)]'
-export const CELL_STRONG = 'px-3 py-0 h-16 whitespace-nowrap font-medium text-[var(--color-surface-default-foreground)]'
+// The last row drops its rule: TableFrame's own border already closes the table.
+const CELL_BASE = cn('px-3 py-0 h-16 whitespace-nowrap', ROW_RULE, '[tr:last-child>&]:border-b-0')
 
-export const CELL_ID = cn(CELL, 'sticky left-0 z-20 bg-inherit', STICKY_SHADOW)
+export const CELL = cn(CELL_BASE, 'text-[var(--color-text-secondary)]')
+export const CELL_STRONG = cn(CELL_BASE, 'font-medium text-[var(--color-surface-default-foreground)]')
+
+export const CELL_ID = cn(CELL, 'sticky left-0 z-10 bg-inherit', STICKY_SHADOW)
 
 // ─── Row actions ──────────────────────────────────────────────────────────────
-// Last column, sticky right, revealed on row hover or keyboard focus. It floats over
-// the row's content so no horizontal space is reserved for it.
+// Last column, sticky right. Two states, by how far the table is scrolled:
+//
+//   mid-scroll  — the column sits over cells that are still sliding past, so the buttons
+//                 appear on hover or keyboard focus only, as an elevated pill that reads
+//                 clearly against whatever is underneath it.
+//   at the end  — the column is fully in view and covers nothing, so every row shows its
+//                 buttons, flat: no pill, since there is nothing to lift them off.
+//
 // Read-only records (Ended / Cancelled bookings) only get "View".
 
 export function RowActions({ onView, onEdit }: { onView: () => void; onEdit?: () => void }) {
   return (
     <div
       className={cn(
-        // Elevated pill: shadow/md plus its own surface, so the buttons never blend into the row.
         'flex items-center gap-1 rounded-[var(--radius-md)] p-1',
+        // Elevated pill: shadow/md plus its own surface, so the buttons never blend into the row.
         'border border-[var(--color-border-default)] bg-[var(--color-surface-default)]',
         'shadow-[var(--shadow-md)]',
         'opacity-0 transition-opacity',
         'group-hover/row:opacity-100 focus-within:opacity-100',
+        // At the end of the row: always visible, and flat — it is its own column now.
+        '[[data-scrolled-end]_&]:opacity-100',
+        '[[data-scrolled-end]_&]:border-transparent',
+        '[[data-scrolled-end]_&]:bg-transparent',
+        '[[data-scrolled-end]_&]:shadow-none',
       )}
     >
       {onEdit && (
@@ -243,12 +269,12 @@ export function RowActions({ onView, onEdit }: { onView: () => void; onEdit?: ()
   )
 }
 
-// Transparent until the row is hovered or focused: the cell keeps its place in the
-// column order (so at full right scroll the buttons land at the end of the row), but
-// it never paints over the cells sliding underneath it while idle.
+// Transparent while idle: the cell keeps its place in the column order, so at full right
+// scroll the buttons land at the end of the row, but it never paints over the cells
+// sliding underneath it until the row is actually hovered or focused.
 export const CELL_ACTIONS = cn(
   CELL,
-  'sticky right-0 z-20 bg-transparent',
+  'sticky right-0 z-10 bg-transparent',
   'group-hover/row:bg-inherit [&:has(:focus-visible)]:bg-inherit',
 )
 

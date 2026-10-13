@@ -16,7 +16,7 @@ import { BUILDINGS, ROOM_STATUSES, ROOM_TYPES } from '@/app/prototype/perron/roo
 import { usePerron } from '@/app/prototype/perron/_shared/store'
 import { NEW, recordHref } from '@/app/prototype/perron/_shared/components/record-drawer'
 import { RoomDrawer } from '@/app/prototype/perron/rooms/_components/room-drawer'
-import { CELL, CELL_ACTIONS, CELL_ID, CELL_STRONG, DevNote, HEAD_ACTIONS, HEAD_ID, IdLink, PageHeader, ROW, RowActions, SortHead, TableFrame, ViewLinks, compareValues, type SortState } from '@/app/prototype/perron/_shared/components/list-parts'
+import { CELL, CELL_ACTIONS, CELL_ID, CELL_STRONG, DevNote, HEAD, HEAD_ACTIONS, HEAD_ID, IdLink, PageHeader, ROW, RowActions, SortHead, TABLE, TableFrame, ViewLinks, compareValues, type SortState } from '@/app/prototype/perron/_shared/components/list-parts'
 
 // Rooms — Functional Spec §3.1
 // Default: all rooms, sorted by Available from ascending. No status filter by default:
@@ -127,7 +127,7 @@ export default function RoomsPage() {
         />
       ) : (
         <TableFrame>
-          <Table wrapperClassName="h-full">
+          <Table wrapperClassName="h-full" className={TABLE}>
             <TableHeader>
               <TableRow>
                 <SortHead label={C.id} sortKey="id" {...head} className={HEAD_ID} />
@@ -139,7 +139,7 @@ export default function RoomsPage() {
                 <SortHead label={C.status} sortKey="status" {...head} />
                 <SortHead label={C.availableFrom} sortKey="availableFrom" {...head} />
                 <SortHead label={C.monthlyRent} sortKey="monthlyRent" {...head} />
-                <TableHead className="whitespace-nowrap px-3">
+                <TableHead className={HEAD}>
                   <span className="inline-flex items-center gap-1.5">
                     {C.openMaintenance}
                     <DevNote q="Q30" text={COPY.dev.q30} />

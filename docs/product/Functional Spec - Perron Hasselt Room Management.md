@@ -276,10 +276,11 @@ total = booking.monthly_rent × months(contract_start, contract_end)
 - For *Others* contracts, use the same calculation
 - Shown on the Booking list (column 11) and on the Booking edit screen
 - ⚙️ **Q29 — closed 2026-10-13.** ACF and Admin Columns Pro do not calculate across fields out of the box,
-  but the developer confirmed they can supply the total as a **disabled field**. One detail is still open:
-  whether that field stores the value. BR10 says the total is **not stored** — if it is, BR10 and section 10
-  need updating, and a `save_post`-style hook has to recalculate it whenever `monthly_rent`, `contract_start`
-  or `contract_end` changes. Without that, a stored total goes stale and silently disagrees with rent × months.
+  but the developer confirmed they can supply the total as a **disabled field**. That field does **not store**
+  the value (designer, 2026-10-13): it stays display only, computed as rent × months, which is what BR10 and
+  section 10 already say. So neither needs updating, and no `save_post`-style hook is needed to recalculate it
+  when `monthly_rent`, `contract_start` or `contract_end` changes — a stored total could go stale and silently
+  disagree with rent × months, which is the reason not to store it.
 
 ### 4.3 My task and This week (Bookings)
 
@@ -295,7 +296,11 @@ Both answer the same question — **what has to happen this week** — one for t
 - **Week = Monday to Sunday**, the week that contains today. This replaced the earlier "7 days before check-out date": one shared definition of "this week" is easier to explain than two different horizons.
 - Check-in is evaluated first: a booking cannot reach the check-out phase before the tenant has moved in.
 - If `checkout_date` is empty, the booking never reaches *Checkout Awaiting*. The weekly check (P11) catches contracts ending without a check-out date.
-- ⚙️ **Q28:** the condition compares with today's date. Probably needs a custom column or query filter.
+- ⚙️ **Q28 — closed 2026-10-13.** The rule above stands as written: tracking starts when the booking exists
+  and ends when it is done, with no contract state gating it. Gating on `booking_status` = Active was
+  considered and rejected — a booking is Upcoming until the tenant moves in, so *Checkin Awaiting* would
+  never be reachable, and the status is entered by hand. The comparison with today's date still probably
+  needs a custom column or query filter; if that proves expensive, the developer proposes the change then.
 
 ### 4.4 Actions (Maintenance)
 
@@ -385,9 +390,9 @@ Any of these violates BR01 or was deferred in the BRD:
 | # | Item | Probably needs | Fallback without code |
 |---|---|---|---|
 | ~~Q27~~ | Overlap marker in the Room selector (section 5) | ACF PHP filters | **Confirmed in scope 2026-10-12.** Build it |
-| **Q28** | *My task* / *This week* value and tabs with the this-week condition (4.3) | Custom column + query filter | Tabs filter only on staff = me and done = No, without the week rule |
-| ~~Q29~~ | Contract total column (4.2) | ~~Display-only custom column~~ | **Closed 2026-10-13: the developer can provide it as a disabled field.** Remaining detail: does that field **store** the value? BR10 and section 10 say the total is not stored, so if it is stored both need updating and something must recalculate it when the rent or the contract dates change |
-| **Q30** | Open maintenance count on Rooms (3.1) | ACP relational count if supported, otherwise a custom column | Admin checks the Maintenance list filtered by room, one room at a time. **Confirmed wanted 2026-10-13, so dropping the column is not the fallback** — but it is non-blocking (BR25), so it is the first thing to cut if the cost is high |
+| ~~Q28~~ | *My task* / *This week* value and tabs with the this-week condition (4.3) | Custom column + query filter | **Closed 2026-10-13: the rule in 4.3 stands, unchanged.** Tracking starts when the booking exists and ends when it is done — no contract state gates it. Gating on `booking_status` = Active was considered and rejected: a booking is Upcoming until the tenant moves in, so *Checkin Awaiting* would never be reachable. If the date comparison turns out to be expensive, the developer proposes the change then |
+| ~~Q29~~ | Contract total column (4.2) | ~~Display-only custom column~~ | **Closed 2026-10-13: the developer can provide it as a disabled field.** **The field does not store the value (designer, 2026-10-13)** — it stays computed and display only, as BR10 and section 10 already describe, so neither needs updating and nothing has to recalculate it when the rent or the contract dates change |
+| ~~Q30~~ | Open maintenance count on Rooms (3.1) | **ACP relational count (designer, 2026-10-13)** | **Closed 2026-10-13.** The column is wanted, and the relational count is the way to build it — the "otherwise a custom column" alternative is dropped. Still non-blocking (BR25), so it is the first thing to cut if the cost is high; the fallback is the admin checking the Maintenance list filtered by room |
 | — | Auto booking title (section 1) | `save_post` title hook | Admin types the title by convention |
 | — | New building added by the admin (section 2.1) | ACF Taxonomy field with *Create Terms* | — |
 | — | Cancel confirmation dialog (section 7) | Small admin JS | SOP P7 |

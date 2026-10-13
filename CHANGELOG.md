@@ -10,6 +10,64 @@ Format: newest first. Each entry includes what changed, the migration path, and 
 
 ---
 
+## 2026-10-13 (Perron) — Q28, Q29, Q30 closed
+
+The last three open dev questions are decided; none is open any more. The ⚙️ markers stay on all three: they say "may need custom code in WordPress", which is still true — what has gone is the uncertainty about *what the thing should do*. Implementation is the developer's call, and if one turns out to be expensive they propose the change then.
+
+### Decided
+- **Q28 — *My task* keeps today's rule.** Tracking starts when the booking exists and runs until it is done: `Cancelled` and completed check-outs are out, everything else is in, measured against this week (Spec §4.3, unchanged). "Tracked once the contract is confirmed" describes what the model already does — a booking is the confirmed contract; there is no draft state, and `booking_status` defaults to Upcoming on creation.
+  - Considered and rejected: gating on `booking_status` = **Active**. It would remove **Checkin Awaiting** altogether, since a booking is Upcoming until the tenant moves in — the prototype's own check-in case (`checkinThisWeek`, PH-463504) is Upcoming. `booking_status` is also entered by hand (Spec §90), so it would make the task list depend on an admin remembering to change a field.
+- **Q29 — contract Total is display only, and not stored.** Q29 was already closed earlier today ("the developer can provide it as a disabled field"), leaving one detail open: does that field *store* the value? It does not. The total stays computed from monthly rent × whole months, which is what BR10 and §10 already say, so neither needs changing and nothing has to recalculate it when the rent or the dates move. The client may ask for something else at review; that is a later change, not an open question now.
+- **Q30 — open maintenance count on Rooms: relational count.** The column was confirmed wanted earlier today; this settles the implementation, dropping the "otherwise a custom column" alternative. It stays non-blocking (BR25).
+
+### Decisions (designer, 2026-10-13)
+21. *My task* / *This week* track every booking that is not Cancelled or already checked out. No contract state gates them.
+22. Contract Total is display only.
+23. Open maintenance per room is a relational count, not a hand-written custom column.
+
+### Docs
+- Functional Spec: §9 table rows for Q28–Q30 now record the decision instead of the question; the inline ⚙️ notes in §3.1, §4.2 and §4.3 follow.
+- BRD: Q28 row in the open-questions table and risk RK4 updated.
+- Repo `README.md` §1: *Open questions for dev* row 🟡 → ✅.
+- Vault `product-knowledge.md`: Q28 row and §16 note.
+- `docs/handoff/2026-10-12-handoff.md` left as it was — it records where things stood that day.
+
+---
+
+## 2026-10-13 (Perron) — tables: separated borders, scroll-aware column edge and row actions
+
+Three table faults with one root cause between them. Reported by the designer from the Bookings list; fixed in `_shared/components/list-parts.tsx` for all four lists at once.
+
+### Changed — ⚠️ breaking: every prototype `<Table>` needs `TABLE`
+- New export **`TABLE`** (`border-separate border-spacing-0`), applied to the `<Table>` on all four list pages. **A prototype table without it renders wrong**, and not obviously so.
+- Why: in a collapsed table the browser ignores `z-index` on cells. The sticky header was painted over by the *text* of the rows passing under it, and the sticky ID column could cast neither a border nor a shadow — a border on a collapsed-table cell belongs to the table and scrolls away with it. Both were verified directly: a 4px solid-red `box-shadow` on the sticky cell did not paint at all.
+- Consequence: a border on `<tr>` is only drawn when borders collapse, so **the cells now carry the row rule** (`CELL`, `CELL_STRONG`, `HEAD`); the last row drops it, since `TableFrame` closes the table.
+- Layering is now explicit: header `z-20` (`z-30` for its ID cell) above the body's sticky cells at `z-10`. On a tie the later DOM element wins, which is the body — the pinned ID and Actions cells used to ride over the header.
+
+### Fixed — header cells that were never sticky
+- `HeadWithNote` (Bookings, Q29 / Q28), the Open maintenance header (Rooms, Q30) and the Actions header (Maintenance) hardcoded their own classes instead of `HEAD`, so they were `position: static` with no background: they scrolled away and let rows show through. All three now use `HEAD`.
+- These three were the hand-written header cells, the ones not going through `SortHead` — that is how they slipped past.
+
+### Changed — sticky ID column edge
+- The edge (border + `shadow/md`) now appears **only once the table is scrolled sideways**, and is gone at rest: with nothing hidden there is nothing to separate. `TableFrame` sets `data-scrolled-x` on the scroll container; `.sticky-col-edge` in `globals.css` reads it.
+- It is drawn by a child of the cell, not by `border-right` or `box-shadow` on the cell itself — see the reason above.
+
+### Changed — row actions, two states
+- **Mid-scroll**: unchanged — hover or keyboard focus only, as an elevated pill. The Actions cell is now transparent while idle, so the cells under it stay readable; it used to paint over them on every row, hovered or not.
+- **At the end of the row** (`data-scrolled-end`): the column is fully in view and covers nothing, so **every row shows its buttons, flat** — no pill, nothing to lift them off.
+
+### Decisions (designer, 2026-10-13)
+19. The sticky column's edge is shown only while the table is scrolled sideways.
+20. Row actions are a hover-only overlay mid-scroll, and permanent and flat once the table is scrolled to the end of the row.
+
+### Files
+`_shared/components/list-parts.tsx` · `app/globals.css` · `bookings/`, `rooms/`, `tenants/`, `maintenance/page.tsx` · prototype `README.md`
+
+### Open
+- The Actions header still does not pin sideways (decision 18, 2026-10-12). Unchanged here; worth a look now that the rest of the header behaves.
+
+---
+
 ## 2026-10-13 (Perron) — repo is the single source; drift checks now read prose
 
 A review found **nine documentation drifts that every existing check passed**, because all five checks read

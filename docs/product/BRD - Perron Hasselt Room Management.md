@@ -288,7 +288,7 @@ Keeping the three apart is what makes early move-out and overstay visible.
 | RK1 | Admin forgets to update *Available from* after a cancellation | Room looks unavailable, rent is lost | Rule BR15. Recalculation step listed in the cancellation procedure |
 | RK2 | A multi-step action is left half done (for example status updated but date not), because nothing is automated | Lists show outdated status | Related fields placed side by side. Status counts on each list |
 | RK3 | Overstaying tenant appears in an "offerable" filter | Room offered while still occupied | Room status shown next to *Available from* |
-| RK4 | Some requirements may need custom code (Q28, Q29, Q30) | Cost or scope change | Development to confirm before build. Q27 confirmed in scope 2026-10-12 |
+| RK4 | Some requirements may need custom code (Q28, Q29, Q30) | Cost or scope change | **All four questions closed: Q27 confirmed in scope 2026-10-12, Q28–Q30 decided 2026-10-13.** What each feature should do is settled; how to build it is the developer's call, and if one proves expensive they propose the change then |
 | RK5 | No log of who changed what (3 equal accounts) | Hard to trace mistakes | WordPress revisions switched on |
 
 ## 11. Open questions
@@ -296,9 +296,9 @@ Keeping the three apart is what makes early move-out and overstay visible.
 | # | Question | Owner |
 |---|---|---|
 | ~~Q27~~ | ~~Can the overlap check when creating a booking (BR04) be built without custom code?~~ **Closed 2026-10-12: confirmed in scope.** It needs ACF PHP filters and the design assumes it is built | — |
-| Q28 | Can the *My task* and *This week* columns on Bookings change with the date (due this week) in Admin Columns Pro, or do they need custom code? | Development |
-| ~~Q29~~ | ~~Can the contract *Total* column be computed without custom code?~~ **Closed 2026-10-13: the developer can provide it as a disabled field.** One detail still to confirm: whether that field **stores** the value. BR10 says the total is not stored, so if it is stored, BR10 and section 10 need updating and something must recalculate it when the rent or the contract dates change | Development (detail only) |
-| Q30 | Can the *Open maintenance* count on the Rooms list (one count of related maintenance records per room) be computed in Admin Columns Pro, or does it need a custom column? The column is wanted (confirmed 2026-10-13) so staff can see what needs fixing while scanning the list. It is **non-blocking**: per BR25 maintenance never changes *Room status* or *Available from*, so if the cost is high this is the first thing to cut | Development |
+| ~~Q28~~ | ~~Can the *My task* and *This week* columns on Bookings change with the date (due this week) in Admin Columns Pro, or do they need custom code?~~ **Closed 2026-10-13: the rule is unchanged.** A booking is tracked from the moment it exists until it is done; no contract state gates it. Gating on booking status *Active* was considered and rejected — a booking is *Upcoming* until the tenant moves in, so the check-in task would never appear | — |
+| ~~Q29~~ | ~~Can the contract *Total* column be computed without custom code?~~ **Closed 2026-10-13: the developer can provide it as a disabled field, and that field does not store the value.** The total stays display only, computed as rent × months — which is what BR10 and section 10 already say, so neither needs updating and nothing has to recalculate it when the rent or the contract dates change | — |
+| ~~Q30~~ | ~~Can the *Open maintenance* count on the Rooms list be computed in Admin Columns Pro, or does it need a custom column?~~ **Closed 2026-10-13: it is a relational count.** The column is wanted so staff can see what needs fixing while scanning the list. It stays **non-blocking**: per BR25 maintenance never changes *Room status* or *Available from*, so if the cost is high this is still the first thing to cut | — |
 
 ## 12. Glossary
 

@@ -16,7 +16,7 @@ import { MAINTENANCE_STATUSES } from '@/app/prototype/perron/maintenance/data'
 import { usePerron } from '@/app/prototype/perron/_shared/store'
 import { MaintenanceDrawer } from '@/app/prototype/perron/maintenance/_components/maintenance-drawer'
 import { NEW, recordHref } from '@/app/prototype/perron/_shared/components/record-drawer'
-import { CELL, CELL_ACTIONS, CELL_ID, CELL_STRONG, HEAD, HEAD_ACTIONS, HEAD_ID, IdLink, PageHeader, ROW, RowActions, TableFrame, ViewLinks } from '@/app/prototype/perron/_shared/components/list-parts'
+import { CELL, CELL_ACTIONS, CELL_ID, CELL_STRONG, HEAD, HEAD_ACTIONS, HEAD_ID, IdLink, PageHeader, ROW, RowActions, TABLE, TableFrame, ViewLinks } from '@/app/prototype/perron/_shared/components/list-parts'
 
 // Maintenance — Functional Spec §3.4, §4.4
 // Tabs Open · In progress · Done with counts, default Open.
@@ -69,7 +69,7 @@ export default function MaintenancePage() {
           primaryAction={<Button onClick={() => setQuery('')}>{COPY.common.clearFilters}</Button>} />
       ) : (
         <TableFrame>
-          <Table wrapperClassName="h-full">
+          <Table wrapperClassName="h-full" className={TABLE}>
             <TableHeader>
               <TableRow>
                 <TableHead className={HEAD_ID}>{C.id}</TableHead>
@@ -78,7 +78,7 @@ export default function MaintenancePage() {
                 <TableHead className={HEAD}>{C.reportedDate}</TableHead>
                 <TableHead className={HEAD}>{C.assignedStaff}</TableHead>
                 <TableHead className={HEAD}>{C.status}</TableHead>
-                <TableHead className="px-3" title={MAINTENANCE_COPY.actionsHint}>{C.actions}</TableHead>
+                <TableHead className={HEAD} title={MAINTENANCE_COPY.actionsHint}>{C.actions}</TableHead>
               <TableHead className={HEAD_ACTIONS}>{COPY.common.actions}</TableHead>
               </TableRow>
             </TableHeader>

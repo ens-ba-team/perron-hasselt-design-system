@@ -13,7 +13,7 @@ import { TENANTS_COPY } from '@/app/prototype/perron/tenants/copy'
 import { usePerron } from '@/app/prototype/perron/_shared/store'
 import { NEW, recordHref } from '@/app/prototype/perron/_shared/components/record-drawer'
 import { TenantDrawer } from '@/app/prototype/perron/tenants/_components/tenant-drawer'
-import { CELL, CELL_ACTIONS, CELL_ID, CELL_STRONG, HEAD, HEAD_ACTIONS, HEAD_ID, IdLink, PageHeader, ROW, RowActions, TableFrame } from '@/app/prototype/perron/_shared/components/list-parts'
+import { CELL, CELL_ACTIONS, CELL_ID, CELL_STRONG, HEAD, HEAD_ACTIONS, HEAD_ID, IdLink, PageHeader, ROW, RowActions, TABLE, TableFrame } from '@/app/prototype/perron/_shared/components/list-parts'
 
 // Tenants — Functional Spec §3.3. Bookings column is read-only, counted from the bookings.
 
@@ -61,7 +61,7 @@ export default function TenantsPage() {
           primaryAction={<Button onClick={() => setQuery('')}>{COPY.common.clearFilters}</Button>} />
       ) : (
         <TableFrame>
-          <Table wrapperClassName="h-full">
+          <Table wrapperClassName="h-full" className={TABLE}>
             <TableHeader>
               <TableRow>
                 <TableHead className={HEAD_ID}>{C.id}</TableHead>

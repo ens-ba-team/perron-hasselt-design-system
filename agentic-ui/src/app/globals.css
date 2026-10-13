@@ -87,6 +87,34 @@
   --sidebar-ring: var(--color-sidebar-ring);
 }
 
+/* Edge of a sticky table column (list-parts: CELL_ID / HEAD_ID), shown only once the
+   scroll container carries data-scrolled-x — at rest nothing is hidden, so there is
+   nothing to separate.
+
+   It has to be a child of the cell, not border-right or box-shadow on the cell itself:
+   the table collapses its borders, and in a collapsed table a cell's own border belongs
+   to the table and z-index on the cell is ignored, so both the border and any shadow are
+   painted over by the row backgrounds. The cell's *content* does stack above the columns
+   sliding under it, so an absolutely positioned child paints where a shadow could not. */
+.sticky-col-edge::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--color-border-default);
+  box-shadow:
+    4px 0 6px -1px rgb(0 0 0 / 0.1),
+    2px 0 4px -2px rgb(0 0 0 / 0.1);
+  opacity: 0;
+  transition: opacity 150ms ease;
+  pointer-events: none;
+}
+[data-scrolled-x] .sticky-col-edge::after {
+  opacity: 1;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

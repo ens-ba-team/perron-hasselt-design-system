@@ -33,9 +33,9 @@
   },
   "openQuestions": {
     "Q27": "confirmed-in-scope-2026-10-12",
-    "Q28": "open",
-    "Q29": "closed-2026-10-13-disabled-field-storage-detail-open",
-    "Q30": "open",
+    "Q28": "closed-2026-10-13-rule-unchanged",
+    "Q29": "closed-2026-10-13-display-only-not-stored",
+    "Q30": "closed-2026-10-13-relational-count",
     "Q31": "does-not-exist"
   },
   "prototype": {

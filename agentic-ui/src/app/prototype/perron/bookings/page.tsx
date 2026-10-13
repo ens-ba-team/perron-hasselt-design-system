@@ -16,7 +16,7 @@ import { BOOKING_STATUSES, contractTotal, myTask, taskDue } from '@/app/prototyp
 import { usePerron } from '@/app/prototype/perron/_shared/store'
 import { BookingDrawer } from '@/app/prototype/perron/bookings/_components/booking-drawer'
 import { NEW, recordHref } from '@/app/prototype/perron/_shared/components/record-drawer'
-import { CELL, CELL_ACTIONS, CELL_ID, CELL_STRONG, DevNote, HEAD_ACTIONS, HEAD_ID, IdLink, PageHeader, ROW, RowActions, SortHead, TableFrame, ViewLinks, compareValues, type SortState } from '@/app/prototype/perron/_shared/components/list-parts'
+import { CELL, CELL_ACTIONS, CELL_ID, CELL_STRONG, DevNote, HEAD, HEAD_ACTIONS, HEAD_ID, IdLink, PageHeader, ROW, RowActions, SortHead, TABLE, TableFrame, ViewLinks, compareValues, type SortState } from '@/app/prototype/perron/_shared/components/list-parts'
 
 // Bookings — Functional Spec §3.2
 // Contract end sits directly next to Check-out date so early move-out and overstay are visible.
@@ -143,7 +143,7 @@ export default function BookingsPage() {
         />
       ) : (
         <TableFrame>
-          <Table wrapperClassName="h-full">
+          <Table wrapperClassName="h-full" className={TABLE}>
             <TableHeader>
               <TableRow>
                 <SortHead label={C.id} sortKey="id" {...head} className={HEAD_ID} />
@@ -207,7 +207,7 @@ export default function BookingsPage() {
 
 function HeadWithNote({ label, q, text }: { label: string; q: string; text: string }) {
   return (
-    <TableHead className="whitespace-nowrap px-3">
+    <TableHead className={HEAD}>
       <span className="inline-flex items-center gap-1.5">
         {label}
         <DevNote q={q} text={text} />

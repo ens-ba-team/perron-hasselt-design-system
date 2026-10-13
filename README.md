@@ -33,7 +33,7 @@ The design system for **Perron Hasselt Room Management**, a back office for mana
 | `next build` | ✅ Passes (fixed 2026-10-08) |
 | Product docs | ✅ **BRD, Functional Spec and SOP all v0.2 (2026-10-12)**, in sync with the prototype. **Canonical here in [`docs/product/`](docs/product/)** (decided 2026-10-13) — the only copies; edit them in this repo. Vietnamese digest: [`docs/discovery/onboarding-vi.md`](docs/discovery/onboarding-vi.md) |
 | Perron prototype | ✅ v1 built: Rooms, Bookings, Tenants, Maintenance + record drawers + pagination on every list. `agentic-ui/src/app/prototype/perron/` (structure and rules in its `README.md`). Merged to `main` |
-| Open questions for dev | 🟡 Q28–Q30 (Functional Spec §9). Q27 confirmed in scope 2026-10-12; no Q31 — prototype IDs are mock values, dev maps them to WordPress post IDs |
+| Open questions for dev | ✅ **None open.** Q27 confirmed in scope 2026-10-12; Q28 (rule unchanged), Q29 (display only, not stored) and Q30 (relational count) closed 2026-10-13 — see Functional Spec §9. The ⚙️ markers stay: they flag code WordPress will not give us by configuration, not undecided behaviour. No Q31 — prototype IDs are mock values, dev maps them to WordPress post IDs |
 
 The designer's Obsidian vault is **the learning space only** (`product-knowledge.md`, `session-log.md`) —
 it holds no product documents and nothing in it is an input here. Its old copies are stubs pointing back.

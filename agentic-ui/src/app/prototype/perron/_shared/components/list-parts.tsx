@@ -141,9 +141,10 @@ export function PageHeader({
   )
 }
 
-// Bounded box for the table. The DS Table's own wrapper does the scrolling (pass
-// wrapperClassName="h-full"), because sticky headers and columns position against it.
-// Never drop columns to fit (FR-G1).
+// Bounded box for the table. It keeps its intrinsic height when the current page has
+// only a few rows, then flex-shrinks to the remaining viewport height when the rows no
+// longer fit. The DS Table's own wrapper does the scrolling (pass wrapperClassName="h-full"),
+// because sticky headers and columns position against it. Never drop columns to fit (FR-G1).
 // It also marks the scroll container with data-scrolled-x once the table has been scrolled
 // sideways, so the sticky ID column shows its edge only when columns are sliding under it.
 export function TableFrame({ children }: { children: React.ReactNode }) {
@@ -172,7 +173,7 @@ export function TableFrame({ children }: { children: React.ReactNode }) {
   return (
     <div
       ref={frame}
-      className="min-h-0 flex-1 overflow-hidden rounded-[var(--radius-base)] border border-[var(--color-border-default)] bg-[var(--color-surface-default)]"
+      className="min-h-0 shrink overflow-hidden rounded-[var(--radius-base)] border border-[var(--color-border-default)] bg-[var(--color-surface-default)]"
     >
       {children}
     </div>

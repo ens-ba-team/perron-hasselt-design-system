@@ -62,14 +62,14 @@ export function contractMonths(start: string, end: string): number {
   return Math.max(0, (ey - sy) * 12 + (em - sm) + 1)
 }
 
-// ⚙️ Q29 — display only
+// Confirmed display-only contract total.
 export function contractTotal(b: Pick<Booking, 'monthlyRent' | 'contractStart' | 'contractEnd'>): number {
   return b.monthlyRent * contractMonths(b.contractStart, b.contractEnd)
 }
 
 export type TaskValue = 'Checkin Awaiting' | 'Checkout Awaiting' | ''
 
-// What a booking still needs, regardless of who does it. Display only (⚙️ Q28).
+// What a booking still needs, regardless of who does it. Display only.
 // Anchored to the current week (designer, 2026-10-12): "My task" and "This week"
 // answer the same question — what has to happen this week — for one person or for everyone.
 export function taskDue(b: Booking, weekTo: string): TaskValue {
@@ -88,7 +88,7 @@ export function myTask(b: Booking, staffId: string, weekTo: string): TaskValue {
   return ''
 }
 
-// ⚙️ Q27 — Functional Spec §5. Overlapping bookings on a room for a new contract period.
+// Functional Spec §5. Overlapping bookings on a room for a new contract period.
 export function overlapping(bookings: Booking[], roomIdValue: string, start: string, end: string, ignoreId?: string): Booking[] {
   if (!start || !end) return []
   return bookings.filter(

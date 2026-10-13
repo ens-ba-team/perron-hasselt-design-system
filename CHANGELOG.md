@@ -10,6 +10,25 @@ Format: newest first. Each entry includes what changed, the migration path, and 
 
 ---
 
+## 2026-10-13 (Perron) — short tables hug their rows; resolved Q markers removed
+
+### Changed
+- `TableFrame` now keeps the intrinsic table height for short result sets. When the table no longer fits the remaining viewport, the frame flex-shrinks and the existing inner table wrapper scrolls, preserving the sticky header and columns.
+- Removed the visible Q28, Q29 and Q30 badges from Bookings and Rooms, plus the Q29 badge in the booking drawer. Q27–Q30 are settled decisions; their confirmed behaviour remains in the prototype and their implementation history remains in the product docs.
+- Removed the unused Q27–Q30 tooltip copy and restated prototype comments as confirmed behaviour.
+
+### Files
+`_shared/components/list-parts.tsx` · `_shared/copy.ts` · `rooms/page.tsx` · `bookings/page.tsx` · `bookings/data.ts` · `bookings/_components/booking-drawer.tsx` · prototype `README.md` · repo `README.md`
+
+### Decisions (designer, 2026-10-13)
+24. A short table's border hugs its header and rows. A long table remains bounded by the viewport and scrolls internally.
+25. Confirmed Q27–Q30 decisions do not show decision badges in the product UI.
+
+### Open
+- None.
+
+---
+
 ## 2026-10-13 (Perron) — Q28, Q29, Q30 closed
 
 The last three open dev questions are decided; none is open any more. The ⚙️ markers stay on all three: they say "may need custom code in WordPress", which is still true — what has gone is the uncertainty about *what the thing should do*. Implementation is the developer's call, and if one turns out to be expensive they propose the change then.

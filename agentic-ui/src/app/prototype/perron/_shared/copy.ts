@@ -48,10 +48,6 @@ export const COPY = {
   },
   dev: {
     label: (q: string) => `⚙️ ${q}`,
-    q27: 'Q27: marking overlapping rooms in the Room field probably needs ACF PHP filters. Fallback: admin checks the Bookings list by room.',
-    q28: 'Q28: My task compares dates with today. Probably needs a custom column and query filter.',
-    q29: 'Q29: Total = Monthly rent × months. Display only, probably needs a custom column.',
-    q30: 'Q30: count of open maintenance per room. Custom column or ACP relational count.',
     cancelDialog: 'Confirmation dialog needs a small admin JS snippet. Fallback: SOP P7.',
     autoTitle: 'Booking title: typed by admin, or a small save_post hook. Dev to decide.',
   },

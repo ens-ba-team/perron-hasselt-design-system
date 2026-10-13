@@ -3,7 +3,7 @@
 // because every hard case also sets the room it lives in.
 
 
-import type { Booking, BookingStatus, ContractType, DepositStatus, TenantConfirmed, YesNo } from '@/app/prototype/perron/_shared/types'
+import type { Booking, BookingStatus, ContractType, DepositStatus, TaskStatus, TenantConfirmed, YesNo } from '@/app/prototype/perron/_shared/types'
 
 export const BOOKING_STATUSES: BookingStatus[] = ['Upcoming', 'Active', 'Ended', 'Cancelled']
 export const CONTRACT_TYPES: ContractType[] = ['6 months', '12 months', 'Others']
@@ -67,7 +67,7 @@ export function contractTotal(b: Pick<Booking, 'monthlyRent' | 'contractStart' |
   return b.monthlyRent * contractMonths(b.contractStart, b.contractEnd)
 }
 
-export type TaskValue = 'Checkin Awaiting' | 'Checkout Awaiting' | ''
+export type TaskValue = TaskStatus | ''
 
 // What a booking still needs, regardless of who does it. Display only.
 // Anchored to the current week (designer, 2026-10-12): "My task" and "This week"

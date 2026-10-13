@@ -14,6 +14,7 @@ import { BOOKINGS_COPY } from '@/app/prototype/perron/bookings/copy'
 import { formatDate, formatMoney, withoutId } from '@/app/prototype/perron/_shared/format'
 import { type Booking, type Room } from '@/app/prototype/perron/_shared/types'
 import { BOOKING_STATUSES, CONTRACT_TYPES, DEPOSIT_STATUSES, TENANT_CONFIRMED, YES_NO, contractTotal, overlapping } from '@/app/prototype/perron/bookings/data'
+import { MoneyValue } from '@/app/prototype/perron/_shared/components/money-value'
 import { usePerron } from '@/app/prototype/perron/_shared/store'
 import { CancelBookingDialog } from '@/app/prototype/perron/bookings/_components/cancel-booking-dialog'
 import { ChoiceSelect, DateField, Field, ImageField, asOptions, staffOptions } from '@/app/prototype/perron/_shared/components/form-fields'
@@ -288,13 +289,18 @@ export function BookingForm({ bookingId, initial, onDone }: { bookingId?: string
             start={draft.contractStart} end={draft.contractEnd} ignoreId={bookingId} invalid={!!err('roomId')} />
         </Field>
         <Field id="monthlyRent" label={F.monthlyRent} error={err('monthlyRent')}
-          hint={room ? `${COPY.labels.room.monthlyRent} ${room.name}: ${formatMoney(room.monthlyRent)}` : undefined}>
+          hint={room ? <>{COPY.labels.room.monthlyRent} {room.name}: <MoneyValue value={room.monthlyRent} /></> : undefined}>
           <Input id="monthlyRent" type="number" min={0} value={draft.monthlyRent || ''}
             onChange={(e) => set('monthlyRent', Number(e.target.value))} onBlur={() => touch('monthlyRent')}
             aria-invalid={!!err('monthlyRent') || undefined} />
         </Field>
         <Field id="total" label={F.total} hint={H.total}>
-          <Input id="total" readOnly value={formatMoney(contractTotal(draft)) || ''} className="bg-[var(--color-background-muted)]" />
+          <Input
+            id="total"
+            readOnly
+            value={formatMoney(contractTotal(draft)) || ''}
+            className="bg-[var(--color-background-muted)] font-semibold text-[var(--color-surface-default-foreground)]"
+          />
         </Field>
       </Group>
 

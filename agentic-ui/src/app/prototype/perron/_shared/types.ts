@@ -13,6 +13,7 @@ export type DepositStatus = 'None' | 'Held' | 'Returned'
 export type YesNo = 'No' | 'Yes'
 export type TenantConfirmed = 'Not confirmed' | 'Confirmed'
 export type MaintenanceStatus = 'Open' | 'In progress' | 'Done'
+export type TaskStatus = 'Checkin Awaiting' | 'Checkout Awaiting'
 
 export interface Staff {
   id: string

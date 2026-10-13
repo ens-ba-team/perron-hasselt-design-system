@@ -249,7 +249,8 @@ The 7-day trigger uses the **check-out date**, not the contract end, because ten
 | FR-G1b | Lists show an **ID column first** (stays visible while scrolling sideways) and an **Actions column last** (Edit, View). Rows are paginated: 10 / 20 / 50 per page, default 10 |
 | FR-G2 | ~~Inline editing~~ **Changed 2026-10-12:** records are edited in a side panel over the list, not in a pop-up that hides it. Needs client confirmation |
 | FR-G3 | Nothing is hidden behind tabs or accordions inside a record. Horizontal scrolling is preferred |
-| FR-G4 | No colour coding by urgency. Status labels are neutral |
+| FR-G4 | Read-only status values use coloured Badge pills for faster scanning. Colours identify states consistently; they do not rank urgency |
+| FR-G4b | Read-only monetary values, including monthly rent and contract total, use semibold default-foreground text for easier scanning. Editable money fields remain standard inputs |
 | FR-G5 | Nothing happens in the background: no scheduled jobs, automatic emails or automatic status changes |
 
 ## 9. Data model

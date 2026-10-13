@@ -13,12 +13,14 @@ import { Textarea } from '@/components/ui/textarea'
 import { COPY } from '@/app/prototype/perron/_shared/copy'
 import { CreatableSelect, DateField, Field } from '@/app/prototype/perron/_shared/components/form-fields'
 import { ROOMS_COPY } from '@/app/prototype/perron/rooms/copy'
-import { TODAY, formatDate, formatMoney, withoutId } from '@/app/prototype/perron/_shared/format'
+import { TODAY, formatDate, withoutId } from '@/app/prototype/perron/_shared/format'
 import { type Room } from '@/app/prototype/perron/_shared/types'
 import { BUILDINGS, ROOM_STATUSES, ROOM_TYPES } from '@/app/prototype/perron/rooms/data'
 import { usePerron } from '@/app/prototype/perron/_shared/store'
 import { RecordAccordion } from '@/app/prototype/perron/_shared/components/record-accordion'
 import { DrawerSection, NEW, RecordDrawer, recordHref, useRecordParam } from '@/app/prototype/perron/_shared/components/record-drawer'
+import { StatusBadge } from '@/app/prototype/perron/_shared/components/status-badge'
+import { MoneyValue } from '@/app/prototype/perron/_shared/components/money-value'
 
 // Room record. This is where the admin works out Available from by hand (BR01, BR02):
 // the quick reference card and the room's own bookings sit right next to the field.
@@ -181,14 +183,19 @@ function RoomRecord({ room, onDone }: { room: Room; onDone: () => void }) {
                   id: b.id,
                   href: recordHref('bookings', b.id),
                   title: store.tenant(b.tenantId)?.name ?? '',
-                  meta: `${b.status} · ${BC.contractEnd} ${formatDate(b.contractEnd)}`,
+                  meta: (
+                    <>
+                      <StatusBadge value={b.status} />
+                      <span>{BC.contractEnd} {formatDate(b.contractEnd)}</span>
+                    </>
+                  ),
                   details: [
                     [BC.contractStart, formatDate(b.contractStart)],
                     [BC.contractEnd, formatDate(b.contractEnd)],
                     [BC.checkoutDate, formatDate(b.checkoutDate) || COPY.common.none],
-                    [ROOMS_COPY.detail.checkoutDone, b.checkoutDone],
-                    [BC.monthlyRent, formatMoney(b.monthlyRent)],
-                    [BC.depositStatus, b.depositStatus],
+                    [ROOMS_COPY.detail.checkoutDone, <StatusBadge key="checkout" value={b.checkoutDone} />],
+                    [BC.monthlyRent, <MoneyValue key="rent" value={b.monthlyRent} />],
+                    [BC.depositStatus, <StatusBadge key="deposit" value={b.depositStatus} />],
                   ],
                 }))}
               />
@@ -204,11 +211,11 @@ function RoomRecord({ room, onDone }: { room: Room; onDone: () => void }) {
                   id: m.id,
                   href: recordHref('maintenance', m.id),
                   title: m.issue,
-                  meta: m.status,
+                  meta: <StatusBadge value={m.status} />,
                   details: [
                     [MC.reportedDate, formatDate(m.reportedDate)],
                     [MC.assignedStaff, store.staffName(m.assignedStaff) || COPY.common.none],
-                    [MC.status, m.status],
+                    [MC.status, <StatusBadge key="status" value={m.status} />],
                   ],
                 }))}
               />

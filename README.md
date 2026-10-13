@@ -154,7 +154,7 @@ Read this before designing or building any Room Management screen. Details: [`do
 
 - **Lists are the product.** Main screens are tables. No dashboard.
 - **One place to edit:** the record's side panel (560px), opened from the ID or the Edit action. Lists are read-only. (Changed 2026-10-12; the client brief asks for inline editing, so this needs their confirmation.)
-- **Nothing hidden behind tabs or accordions** inside a record. Horizontal scroll is better. Related records (a room's bookings, a tenant's history) may collapse — their own fields never do.
+- **Required-now fields stay visible** inside a record. In Booking creation, optional and required-later groups may collapse to keep the long workflow scannable; editing opens groups that already contain data, and validation opens the group containing an error. Related records may also collapse.
 - **Column order is a design tool:** *Room status* sits next to *Available from*; *Contract end* sits next to *Check-out date*.
 - **Rooms list sorts by Available from by default.** Do not default to a status filter.
 - **Tabs on lists** (saved views): status links with counts, plus *My task* and *This week* on Bookings.
@@ -169,7 +169,7 @@ When a design-system default conflicts with a product rule, **the product rule w
 | Component | How to use it in Perron |
 |---|---|
 | `Table` | The main screen. **Read-only** — no inline edit. Row actions (Edit / View) open the record |
-| `Tabs`, `Accordion` | Only for list tabs (saved views). Never to hide fields or columns |
+| `Tabs`, `Accordion` | Tabs are for saved list views. Accordion disclosures are allowed for optional and required-later drawer groups; required-now fields stay visible |
 | `Dialog`, `Sheet`, `Drawer` | `Sheet` (wide, 560px) is where every record is created, viewed and edited, so the list stays visible behind it. Never a `Dialog` that hides the list — `AlertDialog` only for heavy confirmations (cancelling a booking) |
 | `Badge` | Use a coloured Pill for read-only status values. Keep one shared mapping per state and use colour to identify the state, not to rank urgency |
 | `Toast` | Only to confirm an action the user just took. Never for reminders |

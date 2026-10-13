@@ -10,6 +10,53 @@ Format: newest first. Each entry includes what changed, the migration path, and 
 
 ---
 
+## 2026-10-13 (Perron) — enhanced Booking drawer workflow
+
+### Changed
+- Rebuilt the Booking create/edit drawer around the existing Sheet, Card, Accordion, Badge, Combobox, Select, DatePicker, Input, Textarea and Button components.
+- Added shared `FormSection` and `RequiredLabel` components. They map section spacing, borders, typography, icons, requirement labels and disclosure behaviour to existing DS tokens and components.
+- Required-now groups (Booking details, Contract & room) stay visible. Deposit, Check-in & check-out, and Documents & notes are disclosures; edits open groups containing data, and validation opens a group containing an error.
+- Preserved all confirmed field logic: Others → Other contract length; Returned → Deposit returned date; Done = Yes → tenant confirmation and inspection photos; handover dates remain independent from contract dates; overlap markers remain non-blocking.
+- Room selection stays disabled until both contract dates exist, matching the existing dates-first overlap rule.
+- Aligned the shared inspection image field with the confirmed drawer design: label and `0 / 8` counter share one row; the empty state is compact and icon-free; helper copy states JPG/PNG, 10 MB per image, and 8 images per inspection. Attachment rows retain real local file metadata, Remove, and Add another image actions.
+- Removed the derived booking Title row and its development marker from the drawer. Booking ID remains the only metadata row above the form.
+- Grouped always-open form sections into subtle token-backed containers. Collapsible sections keep their flat closed state and gain the same background container only while expanded; every section title now uses a clear 16px heading style. Dividers remain visible between groups in both states.
+- Scoped accordion rotation to the disclosure chevron so leading section icons keep a fixed orientation when sections expand or collapse.
+- Normalised the staff combobox label line-height and field gap to the shared form-field rhythm, aligning Check-in/Check-out date and staff controls on the same rows.
+
+### Files
+`_shared/components/form-section.tsx` · `_shared/components/form-fields.tsx` · `_shared/copy.ts` · `bookings/_components/booking-drawer.tsx` · `bookings/copy.ts` · prototype `README.md` · repo `README.md` · BRD · Functional Spec
+
+### Decisions (designer, 2026-10-13)
+28. The Booking drawer prioritises required-now work and may collapse optional or required-later groups without changing the underlying field logic.
+
+---
+
+## 2026-10-13 (Perron) — Rooms drawer aligned with the Booking UI
+
+### Changed
+- Added the shared `RecordMetaCard` and used it for Booking ID and Room ID metadata.
+- Rebuilt the Rooms drawer with the shared 16px `FormSection` containers: Room details, Availability, optional Notes, related Bookings and related Maintenance.
+- Preserved all Room rules: every value remains manual, Available from remains independent from status and anchored to contract end, buildings remain creatable, related records remain relationship-derived, and only Room name retains the existing save-time validation.
+- Kept the Available from reference steps in place and retained all related-record links, status badges, monetary emphasis and Add booking behaviour.
+- Added context-preserving nested drawers. Add booking inside Room, related Booking inside Room/Tenant, and related Maintenance inside Room now keep the parent list URL and drawer mounted; Save, Cancel and Close return to the parent context.
+- Aligned the Room Booking and Maintenance summaries with matching descriptions, empty states and right-aligned History link actions. History intentionally navigates to a bookmarkable room-prefiltered Bookings or Maintenance list; the destination prefills its existing search field with the room value and uses an All view that retains completed/cancelled history. No separate room-filter control is rendered.
+- Expanded Maintenance search to match issue text, maintenance ID, Room ID and room name; the search placeholder now makes room lookup discoverable.
+- Reworked related-record summaries into a two-row hierarchy: ID, record name and disclosure chevron on the first row; status and the primary date on the second. Room bookings use Contract end and room maintenance uses Reported date.
+- Normalised every list's Edit/View action group to a fixed-width, right-aligned column so compact tables no longer stretch the controls apart. Renamed Maintenance's status-derived `Received`/`Fixing` column from **Actions** to **My task**, reserving **Actions** for the Edit/View controls.
+- Aligned related-record summaries on a shared two-column grid: ID and status occupy the first column, while name and primary date share the second column. The columns use the DS `spacing/component/2xl` token (32px), so name and Contract end/Reported date begin at exactly the same horizontal position.
+- Added a counted **My task** view to Maintenance after the three status views. It combines the logged-in user's assigned Open and In progress issues, excludes Done, keeps Open as the default, and respects the current search or room-history search.
+
+### Files
+`_shared/components/form-section.tsx` · `_shared/components/list-parts.tsx` · `_shared/components/record-accordion.tsx` · `_shared/components/record-drawer.tsx` · `_shared/copy.ts` · `bookings/page.tsx` · `bookings/_components/booking-drawer.tsx` · `maintenance/page.tsx` · `maintenance/_components/maintenance-drawer.tsx` · `rooms/_components/room-drawer.tsx` · `rooms/copy.ts` · `tenants/_components/tenant-drawer.tsx` · prototype `README.md` · BRD · Functional Spec
+
+### Decisions (designer, 2026-10-13)
+29. Rooms adopts the Booking drawer's metadata, container, heading and field-spacing patterns without changing Room business logic.
+30. Drawer-launched child actions never replace the parent module route; the child closes back to the still-mounted parent drawer.
+31. History is a list-level navigation exception to decision 30: it leaves the drawer and opens the related module prefiltered by Room ID.
+
+---
+
 ## 2026-10-13 (Perron) — monetary values emphasised
 
 ### Changed

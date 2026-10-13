@@ -3,9 +3,9 @@
 export const MAINTENANCE_COPY = {
   title: 'Maintenance',
   add: 'Add issue',
-  searchPlaceholder: 'Search issues',
-  actions: { Open: 'Received', 'In progress': 'Fixing' } as Record<string, string>,
-  actionsHint: 'Shown only on issues assigned to you.',
+  searchPlaceholder: 'Search issues or rooms',
+  myTask: { Open: 'Received', 'In progress': 'Fixing' } as Record<string, string>,
+  myTaskHint: 'Shown only on issues assigned to you.',
   newTitle: 'Add issue',
   newIssuePlaceholder: 'Short description, for example Shower drain blocked',
   save: 'Save issue',

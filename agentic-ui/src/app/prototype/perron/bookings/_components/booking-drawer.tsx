@@ -2,11 +2,11 @@
 
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
+import { CheckSquare, CreditCard01, FileCheck02, FolderCheck, HomeLine } from '@untitledui/icons'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { ComboboxField } from '@/components/ui/combobox'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { COPY } from '@/app/prototype/perron/_shared/copy'
@@ -15,14 +15,15 @@ import { formatDate, formatMoney, withoutId } from '@/app/prototype/perron/_shar
 import { type Booking, type Room } from '@/app/prototype/perron/_shared/types'
 import { BOOKING_STATUSES, CONTRACT_TYPES, DEPOSIT_STATUSES, TENANT_CONFIRMED, YES_NO, contractTotal, overlapping } from '@/app/prototype/perron/bookings/data'
 import { MoneyValue } from '@/app/prototype/perron/_shared/components/money-value'
+import { FormSection, RequiredLabel } from '@/app/prototype/perron/_shared/components/form-section'
 import { usePerron } from '@/app/prototype/perron/_shared/store'
 import { CancelBookingDialog } from '@/app/prototype/perron/bookings/_components/cancel-booking-dialog'
 import { ChoiceSelect, DateField, Field, ImageField, asOptions, staffOptions } from '@/app/prototype/perron/_shared/components/form-fields'
-import { DevNote } from '@/app/prototype/perron/_shared/components/list-parts'
-import { DrawerSection, RecordDrawer, recordHref, useRecordParam } from '@/app/prototype/perron/_shared/components/record-drawer'
+import { RecordDrawer, RecordMetaCard, recordHref, useRecordParam } from '@/app/prototype/perron/_shared/components/record-drawer'
 
 // Booking edit screen — Functional Spec §2.3, §5, §7
-// Groups are visual only. No tabs, no accordions: nothing hidden.
+// Required-now fields stay visible. Optional and operational-later groups use the shared
+// FormSection disclosure pattern so creation stays short without changing field logic.
 // Contract dates sit ABOVE the Room field so the confirmed overlap marker can work (BR04).
 // Check-in / Check-out dates are never pre-filled from the contract.
 
@@ -60,15 +61,6 @@ export function emptyDraft(roomId = ''): BookingDraft {
     notes: '',
   }
 }
-
-// ─── Field helpers (module level: defining them inside the form loses focus) ──
-
-
-
-function Group({ title, children }: { title: string; children: React.ReactNode }) {
-  return <DrawerSection title={title}>{children}</DrawerSection>
-}
-
 
 // ─── Room selector with overlap marker ────────────────────────────────────────
 
@@ -117,6 +109,7 @@ function RoomSelect({
   invalid?: boolean
 }) {
   const choices = useRoomChoices(start, end, ignoreId)
+  const datesReady = Boolean(start && end)
   const open = choices.filter((c) => !c.pushedDown)
   const marked = choices.filter((c) => c.pushedDown)
   const selected = choices.find((c) => c.room.id === value)
@@ -132,9 +125,9 @@ function RoomSelect({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <Select value={value || undefined} onValueChange={onChange}>
+      <Select value={value || undefined} onValueChange={onChange} disabled={!datesReady}>
         <SelectTrigger id="room" aria-invalid={invalid || undefined}>
-          <SelectValue placeholder={P.room}>{selected?.room.name}</SelectValue>
+          <SelectValue placeholder={datesReady ? P.room : P.roomDatesFirst}>{selected?.room.name}</SelectValue>
         </SelectTrigger>
         <SelectContent className="max-h-96">
           <SelectGroup>{open.map(renderItem)}</SelectGroup>
@@ -146,8 +139,40 @@ function RoomSelect({
           )}
         </SelectContent>
       </Select>
-      {selected?.marker && <p className="text-xs text-[var(--color-text-secondary)]">{selected.marker}</p>}
+      {!datesReady ? (
+        <p className="text-xs text-[var(--color-text-secondary)]">{H.datesFirst}</p>
+      ) : (
+        selected?.marker && <p className="text-xs text-[var(--color-text-secondary)]">{selected.marker}</p>
+      )}
     </div>
+  )
+}
+
+function StaffCombobox({
+  id,
+  label,
+  value,
+  onChange,
+}: {
+  id: string
+  label: string
+  value: string
+  onChange: (value: string) => void
+}) {
+  const choices = staffOptions.filter((option) => option.value)
+  const selected = choices.find((option) => option.value === value)
+
+  return (
+    <ComboboxField
+      id={id}
+      type="search"
+      label={label}
+      placeholder={P.staff}
+      options={choices.map((option) => ({ value: option.label, label: option.label }))}
+      value={selected?.label}
+      onValueChange={(next) => onChange(choices.find((option) => option.label === next)?.value ?? '')}
+      className="gap-1.5 [&_label]:leading-none"
+    />
   )
 }
 
@@ -156,11 +181,16 @@ function RoomSelect({
 export function BookingForm({ bookingId, initial, onDone }: { bookingId?: string; initial: BookingDraft; onDone: () => void }) {
   const router = useRouter()
   const store = usePerron()
+  const isNew = !bookingId
   const [draft, setDraft] = React.useState<BookingDraft>(initial)
   const [submitted, setSubmitted] = React.useState(false)
   const [touched, setTouched] = React.useState<Record<string, boolean>>({})
   const [confirmCancel, setConfirmCancel] = React.useState(false)
-  const isNew = !bookingId
+  const [openSections, setOpenSections] = React.useState({
+    deposit: !isNew && (initial.deposit !== null || initial.depositStatus !== 'None'),
+    handover: !isNew && Boolean(initial.checkinDate || initial.checkinStaff || initial.checkinDone === 'Yes' || initial.checkoutDate || initial.checkoutStaff || initial.checkoutDone === 'Yes'),
+    documents: !isNew && Boolean(initial.document || initial.notes),
+  })
 
   const set = <K extends keyof BookingDraft>(key: K, value: BookingDraft[K]) => setDraft((d) => ({ ...d, [key]: value }))
   const touch = (key: string) => setTouched((t) => ({ ...t, [key]: true }))
@@ -180,8 +210,6 @@ export function BookingForm({ bookingId, initial, onDone }: { bookingId?: string
   if (draft.depositStatus === 'Returned' && !draft.depositReturnedDate) errors.depositReturnedDate = E.returnedDate
   const err = (key: keyof BookingDraft) => (show(key) ? errors[key] : undefined)
 
-  const title = room && tenant && draft.contractStart ? `${room.name.split(' – ')[1]} – ${tenant.name} – ${draft.contractStart}` : ''
-
   const persist = () => {
     if (isNew) {
       store.addBooking(draft)
@@ -200,7 +228,10 @@ export function BookingForm({ bookingId, initial, onDone }: { bookingId?: string
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
     setSubmitted(true)
-    if (Object.keys(errors).length > 0) return
+    if (Object.keys(errors).length > 0) {
+      if (errors.depositReturnedDate) setOpenSections((sections) => ({ ...sections, deposit: true }))
+      return
+    }
     if (!isNew && draft.status === 'Cancelled' && initial.status !== 'Cancelled') {
       setConfirmCancel(true)
       return
@@ -213,7 +244,7 @@ export function BookingForm({ bookingId, initial, onDone }: { bookingId?: string
       open
       onClose={onDone}
       title={isNew ? BOOKINGS_COPY.form.newTitle : `${BOOKINGS_COPY.form.editTitle} ${bookingId}`}
-      description={isNew ? BOOKINGS_COPY.form.history : BOOKINGS_COPY.form.noDelete}
+      description={isNew ? BOOKINGS_COPY.form.createDescription : BOOKINGS_COPY.form.noDelete}
       footer={
         <>
           <Button type="button" variant="outline" onClick={onDone}>{COPY.common.cancel}</Button>
@@ -222,31 +253,24 @@ export function BookingForm({ bookingId, initial, onDone }: { bookingId?: string
       }
     >
     <form id="booking-form" onSubmit={submit} noValidate className="flex flex-col">
-      <div className="grid grid-cols-1 gap-4 pb-5 sm:grid-cols-[11rem_1fr]">
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="bookingId">{BOOKINGS_COPY.form.idField}</Label>
-          <Input id="bookingId" readOnly value={bookingId ?? ''} placeholder={BOOKINGS_COPY.form.idPending}
-            className="bg-[var(--color-background-muted)] font-mono" title={BOOKINGS_COPY.form.idHint} />
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="title" className="flex items-center gap-2">
-            {BOOKINGS_COPY.form.titleField}
-            <DevNote q="Title" text={COPY.dev.autoTitle} />
-          </Label>
-          <Input id="title" readOnly value={title} placeholder={BOOKINGS_COPY.form.titleHint} />
-        </div>
-      </div>
+      <RecordMetaCard
+        label={BOOKINGS_COPY.form.idField}
+        description={BOOKINGS_COPY.form.idHint}
+        value={bookingId ?? BOOKINGS_COPY.form.idPending}
+      />
 
-      <Group title={BOOKINGS_COPY.form.groups.identity}>
-        <Field id="status" label={F.status}>
-          <ChoiceSelect id="status" value={draft.status} options={asOptions(BOOKING_STATUSES)}
-            onChange={(v) => set('status', v as Booking['status'])} />
-        </Field>
-        <div onBlur={() => touch('tenantId')}>
+      <FormSection
+        id="booking-details"
+        icon={<HomeLine />}
+        title={BOOKINGS_COPY.form.groups.identity}
+        requirement="required-now"
+        description={BOOKINGS_COPY.form.groupDescriptions.identity}
+      >
+        <div className="sm:col-span-2" onBlur={() => touch('tenantId')}>
           <ComboboxField
             id="tenant"
             type="search"
-            label={F.tenant}
+            label={`${F.tenant} *`}
             placeholder={P.tenant}
             // DS bug: ComboboxField shows `value` in the input, not `label`. Use the name as value
             // and map back to the id until the DS component is fixed.
@@ -257,38 +281,41 @@ export function BookingForm({ bookingId, initial, onDone }: { bookingId?: string
           />
           {err('tenantId') && <p className="mt-1.5 text-xs text-[var(--color-text-invalid)]">{err('tenantId')}</p>}
         </div>
-      </Group>
-
-      <Group title={BOOKINGS_COPY.form.groups.contract}>
-        <Field id="contractType" label={F.contractType}>
+        <Field id="status" label={<RequiredLabel>{F.status}</RequiredLabel>}>
+          <ChoiceSelect id="status" value={draft.status} options={asOptions(BOOKING_STATUSES)}
+            onChange={(v) => set('status', v as Booking['status'])} />
+        </Field>
+        <Field id="contractType" label={<RequiredLabel>{F.contractType}</RequiredLabel>}>
           <ChoiceSelect id="contractType" value={draft.contractType} options={asOptions(CONTRACT_TYPES)}
             onChange={(v) => set('contractType', v as Booking['contractType'])} />
         </Field>
-        {draft.contractType === 'Others' ? (
-          <Field id="otherContractLength" label={F.otherContractLength} error={err('otherContractLength')}>
+        {draft.contractType === 'Others' && (
+          <Field id="otherContractLength" className="sm:col-span-2" label={<RequiredLabel>{F.otherContractLength}</RequiredLabel>} error={err('otherContractLength')}>
             <Input id="otherContractLength" value={draft.otherContractLength} placeholder={P.otherLength}
               onChange={(e) => set('otherContractLength', e.target.value)} onBlur={() => touch('otherContractLength')}
               aria-invalid={!!err('otherContractLength') || undefined} />
           </Field>
-        ) : <div className="hidden sm:block" />}
-        <Field id="contractStart" label={F.contractStart} error={err('contractStart')}>
+        )}
+      </FormSection>
+
+      <FormSection
+        id="contract-room"
+        icon={<FileCheck02 />}
+        title={BOOKINGS_COPY.form.groups.contract}
+        requirement="required-now"
+        description={BOOKINGS_COPY.form.groupDescriptions.contract}
+      >
+        <Field id="contractStart" label={<RequiredLabel>{F.contractStart}</RequiredLabel>} error={err('contractStart')}>
           <DateField id="contractStart" value={draft.contractStart} onChange={(v) => { set('contractStart', v); touch('contractStart') }} />
         </Field>
-        <Field id="contractEnd" label={F.contractEnd} error={err('contractEnd')}>
+        <Field id="contractEnd" label={<RequiredLabel>{F.contractEnd}</RequiredLabel>} error={err('contractEnd')}>
           <DateField id="contractEnd" value={draft.contractEnd} onChange={(v) => { set('contractEnd', v); touch('contractEnd') }} />
         </Field>
-        <Field
-          id="room"
-          className="sm:col-span-2"
-          label={F.room}
-          hint={!draft.contractStart || !draft.contractEnd ? H.datesFirst : undefined}
-          hintBelow
-          error={err('roomId')}
-        >
+        <Field id="room" className="sm:col-span-2" label={<RequiredLabel>{F.room}</RequiredLabel>} error={err('roomId')}>
           <RoomSelect value={draft.roomId} onChange={(v) => { set('roomId', v); touch('roomId') }}
             start={draft.contractStart} end={draft.contractEnd} ignoreId={bookingId} invalid={!!err('roomId')} />
         </Field>
-        <Field id="monthlyRent" label={F.monthlyRent} error={err('monthlyRent')}
+        <Field id="monthlyRent" label={<RequiredLabel>{F.monthlyRent}</RequiredLabel>} error={err('monthlyRent')}
           hint={room ? <>{COPY.labels.room.monthlyRent} {room.name}: <MoneyValue value={room.monthlyRent} /></> : undefined}>
           <Input id="monthlyRent" type="number" min={0} value={draft.monthlyRent || ''}
             onChange={(e) => set('monthlyRent', Number(e.target.value))} onBlur={() => touch('monthlyRent')}
@@ -302,82 +329,107 @@ export function BookingForm({ bookingId, initial, onDone }: { bookingId?: string
             className="bg-[var(--color-background-muted)] font-semibold text-[var(--color-surface-default-foreground)]"
           />
         </Field>
-      </Group>
+      </FormSection>
 
-      <Group title={BOOKINGS_COPY.form.groups.deposit}>
+      <FormSection
+        id="deposit"
+        icon={<CreditCard01 />}
+        title={BOOKINGS_COPY.form.groups.deposit}
+        requirement="optional"
+        collapsible
+        open={openSections.deposit}
+        onOpenChange={(open) => setOpenSections((sections) => ({ ...sections, deposit: open }))}
+      >
         <Field id="deposit" label={F.deposit} hint={H.emptyDeposit}>
           <Input id="deposit" type="number" min={0} value={draft.deposit ?? ''}
             onChange={(e) => set('deposit', e.target.value === '' ? null : Number(e.target.value))} />
         </Field>
-        <Field id="depositStatus" label={F.depositStatus}>
+        <Field id="depositStatus" label={<RequiredLabel>{F.depositStatus}</RequiredLabel>}>
           <ChoiceSelect id="depositStatus" value={draft.depositStatus} options={asOptions(DEPOSIT_STATUSES)}
             onChange={(v) => set('depositStatus', v as Booking['depositStatus'])} />
         </Field>
         {draft.depositStatus === 'Returned' && (
-          <Field id="depositReturnedDate" label={F.depositReturnedDate} error={err('depositReturnedDate')}>
+          <Field id="depositReturnedDate" label={<RequiredLabel>{F.depositReturnedDate}</RequiredLabel>} error={err('depositReturnedDate')}>
             <DateField id="depositReturnedDate" value={draft.depositReturnedDate} onChange={(v) => { set('depositReturnedDate', v); touch('depositReturnedDate') }} />
           </Field>
         )}
-      </Group>
+      </FormSection>
 
-      <Group title={BOOKINGS_COPY.form.groups.checkin}>
-        <Field id="checkinDate" label={F.checkinDate} hint={H.checkinDate}>
-          <DateField id="checkinDate" value={draft.checkinDate} onChange={(v) => { set('checkinDate', v); touch('checkinDate') }} />
-        </Field>
-        <Field id="checkinStaff" label={F.checkinStaff}>
-          <ChoiceSelect id="checkinStaff" value={draft.checkinStaff} options={staffOptions} placeholder={P.staff}
-            onChange={(v) => set('checkinStaff', v)} />
-        </Field>
-        <Field id="checkinDone" label={F.checkinDone}>
-          <ChoiceSelect id="checkinDone" value={draft.checkinDone} options={asOptions(YES_NO)}
-            onChange={(v) => set('checkinDone', v as Booking['checkinDone'])} />
-        </Field>
-        {draft.checkinDone === 'Yes' ? (
-          <>
-            <Field id="checkinTenantConfirmed" label={F.checkinTenantConfirmed}>
-              <ChoiceSelect id="checkinTenantConfirmed" value={draft.checkinTenantConfirmed} options={asOptions(TENANT_CONFIRMED)}
-                onChange={(v) => set('checkinTenantConfirmed', v as Booking['checkinTenantConfirmed'])} />
+      <FormSection
+        id="handover"
+        icon={<CheckSquare />}
+        title={BOOKINGS_COPY.form.groups.handover}
+        requirement="required-later"
+        collapsible
+        open={openSections.handover}
+        onOpenChange={(open) => setOpenSections((sections) => ({ ...sections, handover: open }))}
+        className="sm:grid-cols-1"
+      >
+        <div className="flex flex-col gap-[var(--spacing-component-lg)]">
+          <h4 className="text-base font-semibold text-[var(--color-surface-default-foreground)]">{BOOKINGS_COPY.form.groups.checkin}</h4>
+          <div className="grid grid-cols-1 gap-[var(--spacing-component-lg)] sm:grid-cols-2">
+            <Field id="checkinDate" label={F.checkinDate} hint={H.checkinDate}>
+              <DateField id="checkinDate" value={draft.checkinDate} onChange={(v) => { set('checkinDate', v); touch('checkinDate') }} />
             </Field>
-            <Field id="checkinPhotos" label={F.checkinPhotos} className="sm:col-span-2">
-              <ImageField id="checkinPhotos" value={draft.checkinPhotos} onChange={(v) => set('checkinPhotos', v)} />
+            <StaffCombobox id="checkinStaff" label={F.checkinStaff} value={draft.checkinStaff} onChange={(v) => set('checkinStaff', v)} />
+            <Field id="checkinDone" label={<RequiredLabel>{F.checkinDone}</RequiredLabel>}>
+              <ChoiceSelect id="checkinDone" value={draft.checkinDone} options={asOptions(YES_NO)}
+                onChange={(v) => set('checkinDone', v as Booking['checkinDone'])} />
             </Field>
-          </>
-        ) : <div className="hidden sm:block" />}
-      </Group>
+            {draft.checkinDone === 'Yes' && (
+              <>
+                <Field id="checkinTenantConfirmed" label={F.checkinTenantConfirmed}>
+                  <ChoiceSelect id="checkinTenantConfirmed" value={draft.checkinTenantConfirmed} options={asOptions(TENANT_CONFIRMED)}
+                    onChange={(v) => set('checkinTenantConfirmed', v as Booking['checkinTenantConfirmed'])} />
+                </Field>
+                <ImageField id="checkinPhotos" label={F.checkinPhotos} className="sm:col-span-2"
+                  value={draft.checkinPhotos} onChange={(v) => set('checkinPhotos', v)} />
+              </>
+            )}
+          </div>
+        </div>
 
-      <Group title={BOOKINGS_COPY.form.groups.checkout}>
-        <Field id="checkoutDate" label={F.checkoutDate} hint={H.checkoutDate}>
-          <DateField id="checkoutDate" value={draft.checkoutDate} onChange={(v) => { set('checkoutDate', v); touch('checkoutDate') }} />
-        </Field>
-        <Field id="checkoutStaff" label={F.checkoutStaff}>
-          <ChoiceSelect id="checkoutStaff" value={draft.checkoutStaff} options={staffOptions} placeholder={P.staff}
-            onChange={(v) => set('checkoutStaff', v)} />
-        </Field>
-        <Field id="checkoutDone" label={F.checkoutDone}>
-          <ChoiceSelect id="checkoutDone" value={draft.checkoutDone} options={asOptions(YES_NO)}
-            onChange={(v) => set('checkoutDone', v as Booking['checkoutDone'])} />
-        </Field>
-        {draft.checkoutDone === 'Yes' ? (
-          <>
-            <Field id="checkoutTenantConfirmed" label={F.checkoutTenantConfirmed}>
-              <ChoiceSelect id="checkoutTenantConfirmed" value={draft.checkoutTenantConfirmed} options={asOptions(TENANT_CONFIRMED)}
-                onChange={(v) => set('checkoutTenantConfirmed', v as Booking['checkoutTenantConfirmed'])} />
+        <div className="flex flex-col gap-[var(--spacing-component-lg)] border-t border-[var(--color-border-default)] pt-[var(--spacing-component-lg)]">
+          <h4 className="text-base font-semibold text-[var(--color-surface-default-foreground)]">{BOOKINGS_COPY.form.groups.checkout}</h4>
+          <div className="grid grid-cols-1 gap-[var(--spacing-component-lg)] sm:grid-cols-2">
+            <Field id="checkoutDate" label={F.checkoutDate} hint={H.checkoutDate}>
+              <DateField id="checkoutDate" value={draft.checkoutDate} onChange={(v) => { set('checkoutDate', v); touch('checkoutDate') }} />
             </Field>
-            <Field id="checkoutPhotos" label={F.checkoutPhotos} className="sm:col-span-2">
-              <ImageField id="checkoutPhotos" value={draft.checkoutPhotos} onChange={(v) => set('checkoutPhotos', v)} />
+            <StaffCombobox id="checkoutStaff" label={F.checkoutStaff} value={draft.checkoutStaff} onChange={(v) => set('checkoutStaff', v)} />
+            <Field id="checkoutDone" label={<RequiredLabel>{F.checkoutDone}</RequiredLabel>}>
+              <ChoiceSelect id="checkoutDone" value={draft.checkoutDone} options={asOptions(YES_NO)}
+                onChange={(v) => set('checkoutDone', v as Booking['checkoutDone'])} />
             </Field>
-          </>
-        ) : <div className="hidden sm:block" />}
-      </Group>
+            {draft.checkoutDone === 'Yes' && (
+              <>
+                <Field id="checkoutTenantConfirmed" label={F.checkoutTenantConfirmed}>
+                  <ChoiceSelect id="checkoutTenantConfirmed" value={draft.checkoutTenantConfirmed} options={asOptions(TENANT_CONFIRMED)}
+                    onChange={(v) => set('checkoutTenantConfirmed', v as Booking['checkoutTenantConfirmed'])} />
+                </Field>
+                <ImageField id="checkoutPhotos" label={F.checkoutPhotos} className="sm:col-span-2"
+                  value={draft.checkoutPhotos} onChange={(v) => set('checkoutPhotos', v)} />
+              </>
+            )}
+          </div>
+        </div>
+      </FormSection>
 
-      <Group title={BOOKINGS_COPY.form.groups.other}>
+      <FormSection
+        id="documents"
+        icon={<FolderCheck />}
+        title={BOOKINGS_COPY.form.groups.other}
+        requirement="optional"
+        collapsible
+        open={openSections.documents}
+        onOpenChange={(open) => setOpenSections((sections) => ({ ...sections, documents: open }))}
+      >
         <Field id="document" label={F.document} className="sm:col-span-2">
           <Input id="document" type="url" value={draft.document} placeholder={P.drive} onChange={(e) => set('document', e.target.value)} />
         </Field>
         <Field id="notes" label={F.notes} className="sm:col-span-2">
           <Textarea id="notes" value={draft.notes} onChange={(e) => set('notes', e.target.value)} />
         </Field>
-      </Group>
+      </FormSection>
 
       <CancelBookingDialog
         booking={confirmCancel && bookingId ? { ...draft, id: bookingId } : null}

@@ -22,7 +22,7 @@ import { DrawerSection, RecordDrawer, useRecordParam } from '@/app/prototype/per
 const C = COPY.labels.maintenance
 const NONE = '__none'
 
-function MaintenanceForm({ id, initial, onDone }: { id?: string; initial: Omit<Maintenance, 'id'>; onDone: () => void }) {
+export function MaintenanceForm({ id, initial, onDone }: { id?: string; initial: Omit<Maintenance, 'id'>; onDone: () => void }) {
   const { rooms, addMaintenance, updateMaintenance } = usePerron()
   const [draft, setDraft] = React.useState(initial)
   const [submitted, setSubmitted] = React.useState(false)

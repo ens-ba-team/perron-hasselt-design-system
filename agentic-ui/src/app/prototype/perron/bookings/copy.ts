@@ -11,6 +11,7 @@ export const BOOKINGS_COPY = {
   },
   tabHints: {
     all: 'All bookings except Cancelled, newest contract first.',
+    roomHistory: 'All booking history for this room, including Cancelled.',
     myTask: (from: string, to: string) => `Assigned to you and due between ${from} and ${to}: check-in not done, or check-out due.`,
     thisWeek: (from: string, to: string) => `Everyone's check-ins and check-outs due between ${from} and ${to}.`,
   },
@@ -28,18 +29,22 @@ export const BOOKINGS_COPY = {
   form: {
     newTitle: 'Add booking',
     editTitle: 'Edit booking',
-    titleField: 'Title',
+    createDescription: 'Create the booking now. Operational details can be completed later.',
     idField: 'Booking ID',
     idHint: 'WordPress post ID. Assigned on save, read-only.',
     idPending: 'Assigned on save',
-    titleHint: 'Convention: Room – Tenant – Start date',
     groups: {
-      identity: 'Booking',
-      contract: 'Contract',
+      identity: 'Booking details',
+      contract: 'Contract & room',
       deposit: 'Deposit',
+      handover: 'Check-in & check-out',
       checkin: 'Check-in',
       checkout: 'Check-out',
-      other: 'Other',
+      other: 'Documents & notes',
+    },
+    groupDescriptions: {
+      identity: 'Choose the tenant and the initial booking state.',
+      contract: 'Dates determine room availability and pricing.',
     },
     fields: {
       status: 'Booking status',
@@ -70,6 +75,7 @@ export const BOOKINGS_COPY = {
     placeholders: {
       tenant: 'Select a tenant',
       room: 'Select a room',
+      roomDatesFirst: 'Select the contract period first',
       staff: 'Select staff',
       drive: 'Paste a Google Drive link',
       otherLength: 'For example 9 months',
@@ -94,7 +100,7 @@ export const BOOKINGS_COPY = {
       returnedDate: 'Add the date the deposit was paid back.',
       otherLength: 'Describe the contract length, for example 9 months.',
     },
-    save: 'Save booking',
+    save: 'Create booking',
     update: 'Update booking',
     history: 'Revisions are on. Every save can be undone from WordPress revisions.',
     noDelete: 'Bookings are never deleted. Set Booking status to Cancelled instead.',

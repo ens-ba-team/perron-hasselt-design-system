@@ -1,13 +1,14 @@
 'use client'
 
 import * as React from 'react'
-import { InfoCircle, Plus, UploadCloud01, XClose } from '@untitledui/icons'
+import { File02, InfoCircle, Plus, XClose } from '@untitledui/icons'
 import { DatePicker } from '@/components/ui/date-picker'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { cn } from '@/lib/utils'
 import { COPY } from '@/app/prototype/perron/_shared/copy'
 import { STAFF, dateToIso, isoToDate } from '@/app/prototype/perron/_shared/format'
 
@@ -137,50 +138,116 @@ export function DateField({ id, value, onChange, placeholder, className }: {
 // those stay as a private Drive link in the "Other" section.
 // Prototype only: file names are kept in the record, previews come from object URLs.
 
-export function ImageField({ id, value, onChange }: { id: string; value: string; onChange: (v: string) => void }) {
+const MAX_INSPECTION_IMAGES = 8
+const MAX_INSPECTION_IMAGE_BYTES = 10 * 1024 * 1024
+const INSPECTION_IMAGE_TYPES = new Set(['image/jpeg', 'image/png'])
+
+export function ImageField({
+  id,
+  label,
+  value,
+  onChange,
+  className,
+}: {
+  id: string
+  label: string
+  value: string
+  onChange: (v: string) => void
+  className?: string
+}) {
   const names = value ? value.split('|').filter(Boolean) : []
   const [previews, setPreviews] = React.useState<Record<string, string>>({})
+  const [metadata, setMetadata] = React.useState<Record<string, string>>({})
+  const [error, setError] = React.useState('')
   const inputRef = React.useRef<HTMLInputElement>(null)
 
   const add = (files: FileList | null) => {
     if (!files?.length) return
     const picked = Array.from(files)
-    setPreviews((p) => ({ ...p, ...Object.fromEntries(picked.map((f) => [f.name, URL.createObjectURL(f)])) }))
-    onChange([...names, ...picked.map((f) => f.name)].join('|'))
+    const available = Math.max(0, MAX_INSPECTION_IMAGES - names.length)
+    const accepted = picked
+      .filter((file) => INSPECTION_IMAGE_TYPES.has(file.type) && file.size <= MAX_INSPECTION_IMAGE_BYTES)
+      .slice(0, available)
+
+    setError(accepted.length === picked.length ? '' : COPY.common.invalidInspectionImages)
+    if (accepted.length === 0) return
+
+    setPreviews((p) => ({ ...p, ...Object.fromEntries(accepted.map((f) => [f.name, URL.createObjectURL(f)])) }))
+    setMetadata((m) => ({
+      ...m,
+      ...Object.fromEntries(accepted.map((f) => [f.name, `${formatImageType(f.name, f.type)} · ${formatFileSize(f.size)} · Uploaded just now`])),
+    }))
+    onChange([...names, ...accepted.map((f) => f.name)].join('|'))
   }
-  const remove = (name: string) => onChange(names.filter((n) => n !== name).join('|'))
+  const remove = (name: string) => {
+    if (previews[name]) URL.revokeObjectURL(previews[name])
+    setPreviews((current) => Object.fromEntries(Object.entries(current).filter(([key]) => key !== name)))
+    setMetadata((current) => Object.fromEntries(Object.entries(current).filter(([key]) => key !== name)))
+    onChange(names.filter((n) => n !== name).join('|'))
+  }
 
   return (
-    <div className="flex flex-col gap-2">
-      <input ref={inputRef} id={id} type="file" accept="image/*" multiple className="sr-only"
+    <div className={cn('flex flex-col gap-2', className)}>
+      <div className="flex items-center justify-between gap-[var(--spacing-component-md)]">
+        <Label htmlFor={id}>{label}</Label>
+        <span className="text-xs text-[var(--color-text-secondary)]" aria-live="polite">
+          {names.length} / {MAX_INSPECTION_IMAGES}
+        </span>
+      </div>
+      <input ref={inputRef} id={id} type="file" accept="image/jpeg,image/png" multiple className="sr-only"
         onChange={(e) => { add(e.target.files); e.target.value = '' }} />
-      {names.length > 0 && (
-        <ul className="flex flex-wrap gap-2">
+      {names.length === 0 ? (
+        <div className="flex min-h-28 flex-col items-center justify-center gap-1 rounded-[var(--radius-lg)] border border-dashed border-[var(--color-border-default)] bg-[var(--color-surface-overlay)] p-[var(--spacing-component-lg)] text-center">
+          <p className="text-sm font-medium text-[var(--color-surface-default-foreground)]">{COPY.common.noInspectionImages}</p>
+          <p className="text-xs text-[var(--color-text-secondary)]">{COPY.common.inspectionImagesHint}</p>
+          <Button type="button" variant="outline" size="sm" className="mt-2" onClick={() => inputRef.current?.click()}>
+            {COPY.common.browseImages}
+          </Button>
+        </div>
+      ) : (
+        <ul className="flex flex-col gap-2">
           {names.map((name) => (
-            <li key={name} className="group/photo relative">
-              <span className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border-default)] bg-[var(--color-background-muted)]">
+            <li key={name} className="flex items-center gap-[var(--spacing-component-md)] rounded-[var(--radius-lg)] border border-[var(--color-border-default)] bg-[var(--color-surface-overlay)] p-[var(--spacing-component-md)]">
+              <span className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-[var(--radius-md)] bg-[var(--color-background-muted)]">
                 {previews[name] ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={previews[name]} alt={name} className="h-full w-full object-cover" />
                 ) : (
-                  <span className="px-1 text-center text-[10px] leading-tight text-[var(--color-background-muted-foreground)] break-all">{name}</span>
+                  <File02 className="size-4 text-[var(--color-icon-muted)]" aria-hidden="true" />
                 )}
               </span>
-              <Button type="button" size="icon-sm" variant="outline" aria-label={`${COPY.common.remove} ${name}`}
-                onClick={() => remove(name)}
-                className="absolute -right-2 -top-2 h-5 w-5 rounded-full opacity-0 group-hover/photo:opacity-100 focus-visible:opacity-100">
-                <XClose className="h-3 w-3" />
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-sm font-medium text-[var(--color-surface-default-foreground)]">{name}</span>
+                <span className="block text-xs text-[var(--color-text-secondary)]">
+                  {metadata[name] ?? `${formatImageType(name)} · ${COPY.common.storedImage}`}
+                </span>
+              </span>
+              <Button type="button" size="sm" variant="outline" aria-label={`${COPY.common.remove} ${name}`}
+                onClick={() => remove(name)}>
+                {COPY.common.remove}
               </Button>
             </li>
           ))}
         </ul>
       )}
-      <Button type="button" variant="outline" size="sm" className="w-fit" onClick={() => inputRef.current?.click()}>
-        <UploadCloud01 />
-        {names.length ? COPY.common.addPhotos : COPY.common.selectPhotos}
-      </Button>
+      {names.length > 0 && (
+        <Button type="button" variant="outline" size="sm" className="w-fit" disabled={names.length >= MAX_INSPECTION_IMAGES} onClick={() => inputRef.current?.click()}>
+          {COPY.common.addPhotos}
+        </Button>
+      )}
+      {error && <p className="text-xs text-[var(--color-text-invalid)]">{error}</p>}
     </div>
   )
+}
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
+function formatImageType(name: string, mimeType?: string): string {
+  if (mimeType === 'image/png' || name.toLowerCase().endsWith('.png')) return 'PNG'
+  return 'JPG'
 }
 
 // ─── Creatable select ─────────────────────────────────────────────────────────

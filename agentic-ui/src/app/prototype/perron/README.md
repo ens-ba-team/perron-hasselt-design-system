@@ -14,12 +14,13 @@ perron/
     scenarios.ts              Cross-module seed + hard cases, maps seed keys to RM-/TN-/PH-/MT- IDs
     store.tsx                 One Provider composed from module slices
     components/
-      record-drawer.tsx       Shared CRUD pattern: DS Sheet size="wide" (560px, Figma 2070:6175), opened by ?record=<id>|new
+      record-drawer.tsx       Shared CRUD Sheet plus the RecordMetaCard used for read-only record IDs
       record-accordion.tsx    Related records inside a drawer: ID + title + one meta line, expand for details
       list-parts.tsx          IdLink, ViewLinks, SortHead, PageHeader, TableFrame, DevNote
       list-pagination.tsx     ListPagination + usePaged: Total · pages · rows per page (10 / 20 / 50, default 10)
       status-badge.tsx        Shared colour mapping for read-only room, booking, deposit, task and maintenance states
       money-value.tsx         Shared semibold foreground treatment for read-only monetary values
+      form-section.tsx        Token-mapped form section with requirement label and optional disclosure
       form-fields.tsx         Field (hint = info icon), ChoiceSelect, DateField, ImageField, CreatableSelect
       brand.tsx               PerronMark (logo + watermark, from Figma)
   <module>/                   rooms | bookings | tenants | maintenance
@@ -60,6 +61,8 @@ Every list ends with `<ListPagination {...usePaged(visible, resetKey)} />`. `res
 - Tables: `TABLE` on the `<Table>`, plus `ROW` + `CELL` / `CELL_STRONG` / `CELL_ID` / `CELL_ACTIONS` and `HEAD` / `HEAD_ID` / `HEAD_ACTIONS` from `list-parts`. 64px rows, zebra, sticky header, sticky ID column, row actions on hover. Two rules the classes cannot enforce for you: **every** header cell needs `HEAD` (or `HEAD_ID` / `HEAD_ACTIONS`) — one without it is not sticky and the rows scroll through it — and the `<Table>` needs `TABLE`, which keeps the borders separated so `z-index` on the sticky cells works at all. `list-parts` explains why in place.
 - A list page fills the viewport (`h-full min-h-0`). `TableFrame` hugs the header + rows on short result sets, then shrinks to the remaining viewport height when the rows no longer fit. The table keeps `wrapperClassName="h-full"`, so overflow scrolls inside the frame and the header stays pinned.
 - Helper text goes in `Field`'s `hint` (info icon on hover). Only use `hintBelow` when it must not be missed.
+- Booking creation keeps required-now sections open. Optional and required-later sections use `FormSection` disclosures; an edit opens any section that already contains data, and validation opens the section containing an error. Rooms uses the same section language for Room details, Availability, optional Notes and related records.
+- A drawer action that opens a child record keeps the current list URL and parent drawer mounted. Save, Cancel and Close on the child return to that parent context. Use `RecordAccordionItem.onOpen` for related records; do not route to another module from inside a drawer. A clearly labelled **History** list action is the exception: it intentionally opens the related module with a bookmarkable `?room=<Room ID>` filter.
 - Dates: always `DateField` (DS DatePicker), stored as ISO `YYYY-MM-DD`, shown as `MMM d, yyyy`. Never `<Input type="date">`.
 - Read-only status values use `StatusBadge`. The shared mapping is categorical: it makes states easier to scan and does not rank urgency. Editable status fields stay as Select controls.
 - Read-only monetary values use `MoneyValue`: semibold text in the default foreground colour. Editable money fields stay as Input controls; computed read-only inputs use the same text treatment.

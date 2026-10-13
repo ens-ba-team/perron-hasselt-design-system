@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Plus, SearchLg } from '@untitledui/icons'
 import { Button } from '@/components/ui/button'
 import { Empty } from '@/components/ui/empty'
@@ -15,7 +15,7 @@ import { type Booking, type BookingStatus } from '@/app/prototype/perron/_shared
 import { BOOKING_STATUSES, contractTotal, myTask, taskDue } from '@/app/prototype/perron/bookings/data'
 import { usePerron } from '@/app/prototype/perron/_shared/store'
 import { BookingDrawer } from '@/app/prototype/perron/bookings/_components/booking-drawer'
-import { NEW, recordHref } from '@/app/prototype/perron/_shared/components/record-drawer'
+import { NEW, listHref, recordHref } from '@/app/prototype/perron/_shared/components/record-drawer'
 import { CELL, CELL_ACTIONS, CELL_ID, CELL_STRONG, HEAD, HEAD_ACTIONS, HEAD_ID, IdLink, PageHeader, ROW, RowActions, SortHead, TABLE, TableFrame, ViewLinks, compareValues, type SortState } from '@/app/prototype/perron/_shared/components/list-parts'
 import { StatusBadge } from '@/app/prototype/perron/_shared/components/status-badge'
 import { MoneyValue } from '@/app/prototype/perron/_shared/components/money-value'
@@ -46,23 +46,29 @@ const DEFAULT_SORT: Record<TabKey, SortState<BookingSortKey>> = {
 
 export default function BookingsPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const store = usePerron()
   const { bookings, currentStaffId } = store
+  const roomFilter = searchParams.get('room') ?? ''
+  const filteredRoom = store.room(roomFilter)
+  const historyQuery = filteredRoom?.name ?? roomFilter
   const [tab, setTab] = React.useState<TabKey>('all')
   const [sort, setSort] = React.useState(DEFAULT_SORT.all)
-  const [query, setQuery] = React.useState('')
+  const [querySelection, setQuerySelection] = React.useState({ room: roomFilter, value: historyQuery })
+  const query = querySelection.room === roomFilter ? querySelection.value : historyQuery
+  const setQuery = (value: string) => setQuerySelection({ room: roomFilter, value })
 
   const [weekFrom, weekTo] = weekRange(TODAY)
 
   const matchesQuery = (b: Booking) => {
     if (!query) return true
     const q = query.toLowerCase()
-    return b.id.toLowerCase().includes(q) || (store.tenant(b.tenantId)?.name.toLowerCase().includes(q) ?? false) || (store.room(b.roomId)?.name.toLowerCase().includes(q) ?? false)
+    return b.id.toLowerCase().includes(q) || b.roomId.toLowerCase().includes(q) || (store.tenant(b.tenantId)?.name.toLowerCase().includes(q) ?? false) || (store.room(b.roomId)?.name.toLowerCase().includes(q) ?? false)
   }
 
   const inTab = (b: Booking, key: TabKey): boolean => {
     switch (key) {
-      case 'all': return b.status !== 'Cancelled'
+      case 'all': return roomFilter ? true : b.status !== 'Cancelled'
       case 'myTask': return myTask(b, currentStaffId, weekTo) !== ''
       case 'thisWeek': return taskDue(b, weekTo) !== ''
       default: return b.status === key
@@ -80,7 +86,7 @@ export default function BookingsPage() {
   ]
 
   const tabHint: Record<TabKey, string> = {
-    all: BOOKINGS_COPY.tabHints.all,
+    all: roomFilter ? BOOKINGS_COPY.tabHints.roomHistory : BOOKINGS_COPY.tabHints.all,
     Upcoming: '', Active: '', Ended: '', Cancelled: '',
     myTask: BOOKINGS_COPY.tabHints.myTask(formatDate(weekFrom), formatDate(weekTo)),
     thisWeek: BOOKINGS_COPY.tabHints.thisWeek(formatDate(weekFrom), formatDate(weekTo)),
@@ -101,7 +107,7 @@ export default function BookingsPage() {
   const visible = searched
     .filter((b) => inTab(b, tab))
     .sort((a, b) => compareValues(sortValue(a, sort.key), sortValue(b, sort.key), sort.dir))
-  const paged = usePaged(visible, `${tab}|${query}|${sort.key}-${sort.dir}`)
+  const paged = usePaged(visible, `${roomFilter}|${tab}|${query}|${sort.key}-${sort.dir}`)
 
   const changeTab = (key: string) => {
     setTab(key as TabKey)
@@ -141,7 +147,11 @@ export default function BookingsPage() {
         <Empty
           title={COPY.common.noResults}
           description={COPY.common.noResultsHint}
-          primaryAction={<Button onClick={() => { setQuery(''); changeTab('all') }}>{COPY.common.clearFilters}</Button>}
+          primaryAction={<Button onClick={() => {
+            setQuery('')
+            changeTab('all')
+            if (roomFilter) router.push(listHref('bookings'))
+          }}>{COPY.common.clearFilters}</Button>}
         />
       ) : (
         <TableFrame>

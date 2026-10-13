@@ -210,6 +210,7 @@ Rule numbers match the *Business Rules* section of the FigJam board.
 | FR-B5 | Booking fields: tenant, room, contract type, other contract length (only for *Others*), contract start, contract end, monthly rent, total (read-only), deposit amount, deposit status, deposit returned date (only when *Returned*), check-in date, check-in done, check-in staff, check-in photos, check-in tenant confirmed, check-out date, check-out done, check-out staff, check-out photos, check-out tenant confirmed, document link, notes |
 | FR-B6 | Check-in and check-out dates are **entered by the admin**. They are not pre-filled from contract dates |
 | FR-B7 | Check-in photos become available once check-in done is set to *Yes* |
+| FR-B7a | Check-in and check-out inspection uploads accept JPG or PNG files, maximum 10 MB each and maximum 8 images per inspection |
 | FR-B8 | Bookings are never deleted. Cancelled bookings keep status *Cancelled* |
 
 **My task (Bookings)**: a read-only task column. It shows only the logged-in staff member's tasks:
@@ -236,9 +237,9 @@ The 7-day trigger uses the **check-out date**, not the contract end, because ten
 
 | ID | Requirement |
 |---|---|
-| FR-M1 | List columns: Room, Issue, Reported date, Assigned staff, Status, Actions |
-| FR-M2 | Status values: **Open · In progress · Done**. Tabs per status, with counts |
-| FR-M3 | **Actions** column, shown only when the assigned staff member is the logged-in user: Open → *Received* · In progress → *Fixing* · Done → no longer in My tasks |
+| FR-M1 | List columns: Room, Issue, Reported date, Assigned staff, Status, My task, Actions |
+| FR-M2 | Status values: **Open · In progress · Done**. Tabs per status plus **My task**, with counts. My task contains Open and In progress records assigned to the logged-in user; default remains Open |
+| FR-M3 | **My task** column, shown only when the assigned staff member is the logged-in user: Open → *Received* · In progress → *Fixing* · Done → no longer in My tasks. This is separate from the final **Actions** column containing Edit and View controls |
 | FR-M4 | Create and edit maintenance tickets |
 
 ### 8.5 General interface
@@ -248,7 +249,8 @@ The 7-day trigger uses the **check-out date**, not the contract end, because ten
 | FR-G1 | Lists are the main screens. There is no separate dashboard |
 | FR-G1b | Lists show an **ID column first** (stays visible while scrolling sideways) and an **Actions column last** (Edit, View). Rows are paginated: 10 / 20 / 50 per page, default 10 |
 | FR-G2 | ~~Inline editing~~ **Changed 2026-10-12:** records are edited in a side panel over the list, not in a pop-up that hides it. Needs client confirmation |
-| FR-G3 | Nothing is hidden behind tabs or accordions inside a record. Horizontal scrolling is preferred |
+| FR-G3 | Required-now fields remain visible inside a record. In Booking creation, optional and required-later groups may collapse; editing opens groups that contain data, and validation opens the group containing an error |
+| FR-G3b | A child record action launched inside a record side panel keeps the current list and parent panel as its navigation context. Saving, cancelling or closing the child returns to the parent without changing module path. A labelled History action may intentionally navigate to a prefiltered related-module list |
 | FR-G4 | Read-only status values use coloured Badge pills for faster scanning. Colours identify states consistently; they do not rank urgency |
 | FR-G4b | Read-only monetary values, including monthly rent and contract total, use semibold default-foreground text for easier scanning. Editable money fields remain standard inputs |
 | FR-G5 | Nothing happens in the background: no scheduled jobs, automatic emails or automatic status changes |

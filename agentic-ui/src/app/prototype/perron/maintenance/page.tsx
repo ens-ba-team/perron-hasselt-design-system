@@ -17,6 +17,7 @@ import { usePerron } from '@/app/prototype/perron/_shared/store'
 import { MaintenanceDrawer } from '@/app/prototype/perron/maintenance/_components/maintenance-drawer'
 import { NEW, recordHref } from '@/app/prototype/perron/_shared/components/record-drawer'
 import { CELL, CELL_ACTIONS, CELL_ID, CELL_STRONG, HEAD, HEAD_ACTIONS, HEAD_ID, IdLink, PageHeader, ROW, RowActions, TABLE, TableFrame, ViewLinks } from '@/app/prototype/perron/_shared/components/list-parts'
+import { StatusBadge } from '@/app/prototype/perron/_shared/components/status-badge'
 
 // Maintenance — Functional Spec §3.4, §4.4
 // Tabs Open · In progress · Done with counts, default Open.
@@ -92,7 +93,7 @@ export default function MaintenancePage() {
                   <TableCell className={CELL_STRONG}>{m.issue}</TableCell>
                   <TableCell className={CELL}>{formatDate(m.reportedDate)}</TableCell>
                   <TableCell className={CELL}>{store.staffName(m.assignedStaff) || COPY.common.none}</TableCell>
-                  <TableCell className={CELL}>{m.status}</TableCell>
+                  <TableCell className={CELL}><StatusBadge value={m.status} /></TableCell>
                   <TableCell className={CELL}>{m.assignedStaff === currentStaffId ? MAINTENANCE_COPY.actions[m.status] ?? '' : ''}</TableCell>
                 <TableCell className={CELL_ACTIONS}>
                       <RowActions onView={() => router.push(recordHref('maintenance', m.id))} onEdit={() => router.push(recordHref('maintenance', m.id))} />

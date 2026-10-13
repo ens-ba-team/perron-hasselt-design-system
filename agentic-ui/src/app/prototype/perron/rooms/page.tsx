@@ -11,12 +11,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { COPY } from '@/app/prototype/perron/_shared/copy'
 import { ListPagination, usePaged } from '@/app/prototype/perron/_shared/components/list-pagination'
 import { ROOMS_COPY } from '@/app/prototype/perron/rooms/copy'
-import { formatDate, formatMoney } from '@/app/prototype/perron/_shared/format'
+import { formatDate } from '@/app/prototype/perron/_shared/format'
 import { BUILDINGS, ROOM_STATUSES, ROOM_TYPES } from '@/app/prototype/perron/rooms/data'
 import { usePerron } from '@/app/prototype/perron/_shared/store'
 import { NEW, recordHref } from '@/app/prototype/perron/_shared/components/record-drawer'
 import { RoomDrawer } from '@/app/prototype/perron/rooms/_components/room-drawer'
 import { CELL, CELL_ACTIONS, CELL_ID, CELL_STRONG, HEAD, HEAD_ACTIONS, HEAD_ID, IdLink, PageHeader, ROW, RowActions, SortHead, TABLE, TableFrame, ViewLinks, compareValues, type SortState } from '@/app/prototype/perron/_shared/components/list-parts'
+import { StatusBadge } from '@/app/prototype/perron/_shared/components/status-badge'
+import { MoneyValue } from '@/app/prototype/perron/_shared/components/money-value'
 
 // Rooms — Functional Spec §3.1
 // Default: all rooms, sorted by Available from ascending. No status filter by default:
@@ -154,9 +156,9 @@ export default function RoomsPage() {
                   <TableCell className={CELL}>{String(r.floor)}</TableCell>
                   <TableCell className={CELL}>{r.type}</TableCell>
                   <TableCell className={CELL}>{String(r.maxOccupancy)}</TableCell>
-                  <TableCell className={CELL}>{r.status}</TableCell>
+                  <TableCell className={CELL}><StatusBadge value={r.status} /></TableCell>
                   <TableCell className={CELL}>{formatDate(r.availableFrom)}</TableCell>
-                  <TableCell className={CELL}>{formatMoney(r.monthlyRent)}</TableCell>
+                  <TableCell className={CELL}><MoneyValue value={r.monthlyRent} /></TableCell>
                   {/* No open tickets shows the shared empty token, not 0 (designer, 2026-10-13):
                       a count only matters when there is something to fix. */}
                   <TableCell className={CELL}>{openCount.get(r.id) || COPY.common.none}</TableCell>

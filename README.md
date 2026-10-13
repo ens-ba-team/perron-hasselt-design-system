@@ -158,7 +158,8 @@ Read this before designing or building any Room Management screen. Details: [`do
 - **Column order is a design tool:** *Room status* sits next to *Available from*; *Contract end* sits next to *Check-out date*.
 - **Rooms list sorts by Available from by default.** Do not default to a status filter.
 - **Tabs on lists** (saved views): status links with counts, plus *My task* and *This week* on Bookings.
-- **No urgency colours.** Status labels are neutral.
+- **Status colours are categorical.** Read-only room, booking, deposit, task and maintenance states use the DS Badge pill variants for faster scanning. Colour identifies the state; it does not rank urgency.
+- **Money is visually emphasised.** Read-only rent and contract totals use semibold text in the default foreground colour. Editable monetary fields remain standard inputs.
 - **Warn, don't hide.** For example, rooms that overlap a new booking are marked and moved down, never removed from the list.
 
 ### How the design system applies
@@ -170,7 +171,7 @@ When a design-system default conflicts with a product rule, **the product rule w
 | `Table` | The main screen. **Read-only** — no inline edit. Row actions (Edit / View) open the record |
 | `Tabs`, `Accordion` | Only for list tabs (saved views). Never to hide fields or columns |
 | `Dialog`, `Sheet`, `Drawer` | `Sheet` (wide, 560px) is where every record is created, viewed and edited, so the list stays visible behind it. Never a `Dialog` that hides the list — `AlertDialog` only for heavy confirmations (cancelling a booking) |
-| `Badge` | A neutral status label. **Don't use success/warning/danger colours to rank urgency** |
+| `Badge` | Use a coloured Pill for read-only status values. Keep one shared mapping per state and use colour to identify the state, not to rank urgency |
 | `Toast` | Only to confirm an action the user just took. Never for reminders |
 | Date range picker | Only when creating a booking, to check for overlapping dates. Not on the Rooms list |
 | Dashboard card grid (`layout-patterns.md`) | Not used. Lists are the main screens |

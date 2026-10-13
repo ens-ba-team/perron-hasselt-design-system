@@ -18,6 +18,8 @@ perron/
       record-accordion.tsx    Related records inside a drawer: ID + title + one meta line, expand for details
       list-parts.tsx          IdLink, ViewLinks, SortHead, PageHeader, TableFrame, DevNote
       list-pagination.tsx     ListPagination + usePaged: Total · pages · rows per page (10 / 20 / 50, default 10)
+      status-badge.tsx        Shared colour mapping for read-only room, booking, deposit, task and maintenance states
+      money-value.tsx         Shared semibold foreground treatment for read-only monetary values
       form-fields.tsx         Field (hint = info icon), ChoiceSelect, DateField, ImageField, CreatableSelect
       brand.tsx               PerronMark (logo + watermark, from Figma)
   <module>/                   rooms | bookings | tenants | maintenance
@@ -59,6 +61,8 @@ Every list ends with `<ListPagination {...usePaged(visible, resetKey)} />`. `res
 - A list page fills the viewport (`h-full min-h-0`). `TableFrame` hugs the header + rows on short result sets, then shrinks to the remaining viewport height when the rows no longer fit. The table keeps `wrapperClassName="h-full"`, so overflow scrolls inside the frame and the header stays pinned.
 - Helper text goes in `Field`'s `hint` (info icon on hover). Only use `hintBelow` when it must not be missed.
 - Dates: always `DateField` (DS DatePicker), stored as ISO `YYYY-MM-DD`, shown as `MMM d, yyyy`. Never `<Input type="date">`.
+- Read-only status values use `StatusBadge`. The shared mapping is categorical: it makes states easier to scan and does not rank urgency. Editable status fields stay as Select controls.
+- Read-only monetary values use `MoneyValue`: semibold text in the default foreground colour. Editable money fields stay as Input controls; computed read-only inputs use the same text treatment.
 - Confirmed decisions Q27–Q30 stay implemented but their decision markers do not appear in the product UI. `DevNote` is only for a still-unresolved implementation note.
 
 ## Changelog

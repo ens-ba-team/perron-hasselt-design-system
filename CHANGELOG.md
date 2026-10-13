@@ -10,6 +10,50 @@ Format: newest first. Each entry includes what changed, the migration path, and 
 
 ---
 
+## 2026-10-13 (Perron) — monetary values emphasised
+
+### Changed
+- Added one shared `MoneyValue` treatment for read-only monetary content: semibold text in the existing default foreground colour.
+- Applied it to monthly rent and contract totals in Rooms, Bookings, and booking history inside Room and Tenant drawers.
+- The computed contract total input uses the same text emphasis. Editable rent and deposit inputs keep their normal form-control styling.
+
+### Files
+`_shared/components/money-value.tsx` · `rooms/page.tsx` · `bookings/page.tsx` · `bookings/_components/booking-drawer.tsx` · `rooms/_components/room-drawer.tsx` · `tenants/_components/tenant-drawer.tsx` · prototype `README.md` · repo `README.md` · BRD
+
+### Decisions (designer, 2026-10-13)
+27. Read-only monetary values use semibold default-foreground text consistently across modules.
+
+### Open
+- None.
+
+---
+
+## 2026-10-13 (Perron) — coloured status pills across modules
+
+### Changed
+- Added one shared `StatusBadge` mapping built only from existing DS Badge variants. Room, booking, deposit, task and maintenance states now have consistent categorical colours.
+- Applied status pills to the Rooms, Bookings and Maintenance lists, plus booking and maintenance summaries inside Room and Tenant drawers.
+- `RecordAccordion` now accepts React content for metadata and detail values so related-record statuses use the same Badge component.
+- Editable status fields remain Select controls. Colours identify the state and do not imply urgency or automatic behaviour.
+
+### Mapping
+- Success: Available, Active, Returned, Done, Yes, Confirmed.
+- Info blue: Reserved, Upcoming, In progress.
+- Warning: Partially occupied, Held, Open, Checkin Awaiting, Checkout Awaiting, Not confirmed.
+- Error: Cancelled.
+- Neutral/outline: Occupied, Ended, No, None.
+
+### Files
+`_shared/components/status-badge.tsx` · `_shared/components/record-accordion.tsx` · `rooms/page.tsx` · `rooms/_components/room-drawer.tsx` · `bookings/page.tsx` · `tenants/_components/tenant-drawer.tsx` · `maintenance/page.tsx` · prototype `README.md` · repo `README.md` · BRD
+
+### Decisions (designer, 2026-10-13)
+26. Read-only status values use coloured DS Badge pills consistently across modules.
+
+### Open
+- None.
+
+---
+
 ## 2026-10-13 (Perron) — short tables hug their rows; resolved Q markers removed
 
 ### Changed

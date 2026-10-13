@@ -10,13 +10,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { COPY } from '@/app/prototype/perron/_shared/copy'
 import { ListPagination, usePaged } from '@/app/prototype/perron/_shared/components/list-pagination'
 import { BOOKINGS_COPY } from '@/app/prototype/perron/bookings/copy'
-import { TODAY, formatDate, formatMoney, weekRange } from '@/app/prototype/perron/_shared/format'
+import { TODAY, formatDate, weekRange } from '@/app/prototype/perron/_shared/format'
 import { type Booking, type BookingStatus } from '@/app/prototype/perron/_shared/types'
 import { BOOKING_STATUSES, contractTotal, myTask, taskDue } from '@/app/prototype/perron/bookings/data'
 import { usePerron } from '@/app/prototype/perron/_shared/store'
 import { BookingDrawer } from '@/app/prototype/perron/bookings/_components/booking-drawer'
 import { NEW, recordHref } from '@/app/prototype/perron/_shared/components/record-drawer'
 import { CELL, CELL_ACTIONS, CELL_ID, CELL_STRONG, HEAD, HEAD_ACTIONS, HEAD_ID, IdLink, PageHeader, ROW, RowActions, SortHead, TABLE, TableFrame, ViewLinks, compareValues, type SortState } from '@/app/prototype/perron/_shared/components/list-parts'
+import { StatusBadge } from '@/app/prototype/perron/_shared/components/status-badge'
+import { MoneyValue } from '@/app/prototype/perron/_shared/components/money-value'
 
 // Bookings — Functional Spec §3.2
 // Contract end sits directly next to Check-out date so early move-out and overstay are visible.
@@ -167,6 +169,7 @@ export default function BookingsPage() {
               {paged.pageItems.map((b) => {
                 const tenant = store.tenant(b.tenantId)
                 const room = store.room(b.roomId)
+                const task = myTask(b, currentStaffId, weekTo)
                 return (
                   <TableRow key={b.id} className={ROW}>
                     <TableCell className={CELL_ID}>
@@ -177,14 +180,14 @@ export default function BookingsPage() {
                     <TableCell className={CELL}>{formatDate(b.contractStart)}</TableCell>
                     <TableCell className={CELL}>{formatDate(b.contractEnd)}</TableCell>
                     <TableCell className={CELL}>{formatDate(b.checkoutDate) || COPY.common.none}</TableCell>
-                    <TableCell className={CELL}>{b.status}</TableCell>
+                    <TableCell className={CELL}><StatusBadge value={b.status} /></TableCell>
                     <TableCell className={CELL}>{formatDate(b.checkinDate) || COPY.common.none}</TableCell>
                     <TableCell className={CELL}>{store.staffName(b.checkinStaff) || COPY.common.none}</TableCell>
                     <TableCell className={CELL}>{store.staffName(b.checkoutStaff) || COPY.common.none}</TableCell>
-                    <TableCell className={CELL}>{formatMoney(b.monthlyRent)}</TableCell>
-                    <TableCell className={CELL}>{formatMoney(contractTotal(b))}</TableCell>
-                    <TableCell className={CELL}>{b.depositStatus}</TableCell>
-                    <TableCell className={CELL}>{myTask(b, currentStaffId, weekTo)}</TableCell>
+                    <TableCell className={CELL}><MoneyValue value={b.monthlyRent} /></TableCell>
+                    <TableCell className={CELL}><MoneyValue value={contractTotal(b)} /></TableCell>
+                    <TableCell className={CELL}><StatusBadge value={b.depositStatus} /></TableCell>
+                    <TableCell className={CELL}>{task ? <StatusBadge value={task} /> : null}</TableCell>
                     <TableCell className={CELL_ACTIONS}>
                       <RowActions onView={() => router.push(recordHref('bookings', b.id))} onEdit={b.status === 'Ended' || b.status === 'Cancelled' ? undefined : () => router.push(recordHref('bookings', b.id))} />
                     </TableCell>

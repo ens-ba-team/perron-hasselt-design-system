@@ -8,11 +8,13 @@ import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { COPY } from '@/app/prototype/perron/_shared/copy'
 import { TENANTS_COPY } from '@/app/prototype/perron/tenants/copy'
-import { formatDate, formatMoney, withoutId } from '@/app/prototype/perron/_shared/format'
+import { formatDate, withoutId } from '@/app/prototype/perron/_shared/format'
 import { type Tenant } from '@/app/prototype/perron/_shared/types'
 import { usePerron } from '@/app/prototype/perron/_shared/store'
 import { RecordAccordion } from '@/app/prototype/perron/_shared/components/record-accordion'
 import { DrawerSection, RecordDrawer, recordHref, useRecordParam } from '@/app/prototype/perron/_shared/components/record-drawer'
+import { StatusBadge } from '@/app/prototype/perron/_shared/components/status-badge'
+import { MoneyValue } from '@/app/prototype/perron/_shared/components/money-value'
 
 // Tenant record — Functional Spec §2.2, §3.3.
 // Booking history is read from the bookings (reverse relationship), never stored on the tenant.
@@ -91,12 +93,17 @@ function TenantForm({ tenantId, initial, onDone }: { tenantId?: string; initial:
                 id: b.id,
                 href: recordHref('bookings', b.id),
                 title: store.room(b.roomId)?.name ?? '',
-                meta: `${b.status} · ${COPY.labels.booking.contractEnd} ${formatDate(b.contractEnd)}`,
+                meta: (
+                  <>
+                    <StatusBadge value={b.status} />
+                    <span>{COPY.labels.booking.contractEnd} {formatDate(b.contractEnd)}</span>
+                  </>
+                ),
                 details: [
                   [COPY.labels.booking.contractStart, formatDate(b.contractStart)],
                   [COPY.labels.booking.contractEnd, formatDate(b.contractEnd)],
-                  [COPY.labels.booking.depositStatus, b.depositStatus],
-                  [COPY.labels.booking.monthlyRent, formatMoney(b.monthlyRent)],
+                  [COPY.labels.booking.depositStatus, <StatusBadge key="deposit" value={b.depositStatus} />],
+                  [COPY.labels.booking.monthlyRent, <MoneyValue key="rent" value={b.monthlyRent} />],
                 ],
               }))}
             />

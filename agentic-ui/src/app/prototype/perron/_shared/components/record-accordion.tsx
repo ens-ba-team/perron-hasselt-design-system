@@ -1,5 +1,6 @@
 'use client'
 
+import type { ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { IdLink } from '@/app/prototype/perron/_shared/components/list-parts'
@@ -15,8 +16,8 @@ export interface RecordAccordionItem {
   id: string
   href: string
   title: string
-  meta: string
-  details: [label: string, value: string][]
+  meta: ReactNode
+  details: [label: string, value: ReactNode][]
 }
 
 export function RecordAccordion({ items }: { items: RecordAccordionItem[] }) {
@@ -30,7 +31,7 @@ export function RecordAccordion({ items }: { items: RecordAccordionItem[] }) {
             <AccordionTrigger className="min-w-0 flex-1 py-[var(--spacing-component-md)]">
               <span className="flex min-w-0 flex-1 flex-col items-start gap-0.5 text-left">
                 <span className="truncate">{item.title}</span>
-                <span className="truncate text-xs font-normal text-[var(--color-text-secondary)]">{item.meta}</span>
+                <span className="flex min-w-0 flex-wrap items-center gap-1.5 text-xs font-normal text-[var(--color-text-secondary)]">{item.meta}</span>
               </span>
             </AccordionTrigger>
           </div>
@@ -39,7 +40,7 @@ export function RecordAccordion({ items }: { items: RecordAccordionItem[] }) {
               {item.details.map(([label, value]) => (
                 <div key={label} className="flex flex-col gap-0.5">
                   <dt className="text-xs text-[var(--color-text-secondary)]">{label}</dt>
-                  <dd className="text-sm text-[var(--color-surface-default-foreground)]">{value}</dd>
+                  <dd className="flex min-h-5 items-center text-sm text-[var(--color-surface-default-foreground)]">{value}</dd>
                 </div>
               ))}
             </dl>

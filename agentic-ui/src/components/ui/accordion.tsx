@@ -42,7 +42,7 @@ const AccordionTrigger = React.forwardRef<
         // Disabled — color/text/disabled on label + chevron
         "disabled:text-[var(--color-text-disabled)] disabled:cursor-not-allowed",
         // Chevron rotation when open
-        "[&[data-state=open]_svg]:rotate-180",
+        "[&[data-state=open]_[data-slot=accordion-chevron]]:rotate-180",
         className
       )}
       {...props}
@@ -50,6 +50,7 @@ const AccordionTrigger = React.forwardRef<
       {children}
       <ChevronDown
         aria-hidden="true"
+        data-slot="accordion-chevron"
         className="h-4 w-4 shrink-0 transition-transform duration-200"
       />
     </AccordionPrimitive.Trigger>

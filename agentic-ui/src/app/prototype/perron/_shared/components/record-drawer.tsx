@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet'
+import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
 // ─── Record drawer: the shared CRUD pattern ───────────────────────────────────
@@ -20,11 +21,18 @@ import { cn } from '@/lib/utils'
 
 export const NEW = 'new'
 
+type PerronList = 'rooms' | 'bookings' | 'tenants' | 'maintenance'
+
 const noop = () => () => {}
 
-export function recordHref(list: 'rooms' | 'bookings' | 'tenants' | 'maintenance', id: string, extra?: Record<string, string>) {
+export function listHref(list: PerronList, filters?: Record<string, string>) {
+  const query = filters ? `?${new URLSearchParams(filters).toString()}` : ''
+  return `/prototype/perron/${list}${query}`
+}
+
+export function recordHref(list: PerronList, id: string, extra?: Record<string, string>) {
   const params = new URLSearchParams({ record: id, ...extra })
-  return `/prototype/perron/${list}?${params.toString()}`
+  return listHref(list, Object.fromEntries(params))
 }
 
 // Reads and writes ?record= on the current list page.
@@ -77,7 +85,25 @@ export function RecordDrawer({ open, onClose, title, description, footer, childr
   )
 }
 
-// Visual group inside a drawer. Groups are never collapsible: nothing hidden (FR-G1).
+export function RecordMetaCard({ label, description, value }: {
+  label: React.ReactNode
+  description?: React.ReactNode
+  value: React.ReactNode
+}) {
+  return (
+    <Card className="mb-[var(--spacing-component-lg)] gap-[var(--spacing-component-sm)] bg-[var(--color-background-muted)] p-[var(--spacing-component-md)]">
+      <div className="flex items-center justify-between gap-[var(--spacing-component-lg)]">
+        <div className="min-w-0">
+          <p className="text-xs font-medium text-[var(--color-surface-default-foreground)]">{label}</p>
+          {description && <p className="text-xs text-[var(--color-text-secondary)]">{description}</p>}
+        </div>
+        <p className="shrink-0 font-mono text-xs text-[var(--color-text-secondary)]">{value}</p>
+      </div>
+    </Card>
+  )
+}
+
+// Permanent visual group inside a drawer. Booking optional/later disclosures use FormSection.
 export function DrawerSection({ title, description, children, className }: {
   title: string
   description?: React.ReactNode

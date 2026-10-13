@@ -81,7 +81,7 @@ No photo or ID document fields (client confirmed). ID documents live on Google D
 
 ### 2.3 Booking
 
-Fields are grouped **visually only** (ACF *Group* or *Message* separators). **Do not use ACF Tabs or Accordions.** Nothing may be hidden behind a tab.
+The field definitions and conditional rules below do not change. In the prototype presentation, *Room* sits in **Contract & room** because it depends on the contract period. Required-now groups remain visible. Optional and required-later groups may use an Accordion disclosure in the Booking drawer; on edit, groups that contain data open by default, and validation opens the group containing the error. Do not use tabs for these fields.
 
 **Identity**
 
@@ -117,7 +117,7 @@ Fields are grouped **visually only** (ACF *Group* or *Message* separators). **Do
 | Check-in date | `checkin_date` | Date picker | No | **No default. Do not pre-fill from contract start** | |
 | Check-in done | `checkin_done` | Select | Yes | No · Yes. Default: No | |
 | Check-in staff | `checkin_staff` | User | No | Single | |
-| Check-in photos | `checkin_photos` | **Gallery** (image upload) | No | | Show if `checkin_done` = Yes. Photos of the room, uploaded to the media library. See the privacy note below |
+| Check-in photos | `checkin_photos` | **Gallery** (image upload) | No | JPG or PNG · maximum 10 MB each · maximum 8 images | Show if `checkin_done` = Yes. Photos of the room, uploaded to the media library. See the privacy note below |
 | Check-in tenant confirmed | `checkin_tenant_confirmed` | Select | No | Not confirmed · Confirmed. Default: Not confirmed | Show if `checkin_done` = Yes. **Select, not checkbox** (BR21) |
 
 **Check-out**
@@ -127,7 +127,7 @@ Fields are grouped **visually only** (ACF *Group* or *Message* separators). **Do
 | Check-out date | `checkout_date` | Date picker | No | **No default. Do not pre-fill from contract end** | |
 | Check-out done | `checkout_done` | Select | Yes | No · Yes. Default: No | |
 | Check-out staff | `checkout_staff` | User | No | Single | |
-| Check-out photos | `checkout_photos` | **Gallery** (image upload) | No | | Show if `checkout_done` = Yes |
+| Check-out photos | `checkout_photos` | **Gallery** (image upload) | No | JPG or PNG · maximum 10 MB each · maximum 8 images | Show if `checkout_done` = Yes |
 | Check-out tenant confirmed | `checkout_tenant_confirmed` | Select | No | Not confirmed · Confirmed | Show if `checkout_done` = Yes |
 
 **Other**
@@ -164,6 +164,7 @@ General settings for every list:
 - **ID column first**, and it stays visible while the table scrolls sideways
 - **Actions column last**, header label **Actions**: **Edit** and **View** icons, revealed when the row is hovered or focused, in a raised container so they are not mistaken for row content. Read-only records (Ended / Cancelled bookings) show **View** only
 - Opening a record (ID link, Edit or View) opens a **side panel (560px)** over the list, not a new page. Fields are editable there too
+- An action launched **inside a record panel** opens its child record in another side panel while keeping the current list URL and parent panel mounted. Saving, cancelling or closing the child returns to the parent panel; it never changes the underlying module screen. A labelled **History** action is the explicit exception: it navigates to the related module list with a bookmarkable room filter
 - **Header row stays visible** while the rows scroll; the ID and Actions columns stay visible while the table scrolls sideways
 - Row height **64px**. Alternating row background. Values use secondary text colour; the ID and the record name carry the emphasis
 - **Pagination** under every list: total count, page numbers, and rows per page **10 / 20 / 50, default 10**
@@ -172,6 +173,8 @@ General settings for every list:
 - Tabs are implemented as **Admin Columns Pro saved segments / list screen views**, or as WordPress `views` links where noted
 
 ### 3.1 Rooms
+
+The Room panel shows compact current Booking and Maintenance summaries. Each section has a **History** link on the right of its title. Booking History opens `/bookings?room=<Room ID>` and Maintenance History opens `/maintenance?room=<Room ID>`; both destination lists prefill their existing search field with the room name instead of rendering a separate filter control. Their initial **All** view includes every status so ended, cancelled and completed records remain part of history.
 
 | # | Column | Source | Editable (panel) | Sortable | Filter |
 |---|---|---|---|---|---|
@@ -252,9 +255,10 @@ Tenant edit screen: show the tenant's **booking history** read-only, from the re
 | 3 | Reported date | `reported_date` | Yes |
 | 4 | Assigned staff | `assigned_staff` | Yes |
 | 5 | Status | `maintenance_status` | Yes |
-| 6 | Actions | Computed, read-only (section 4.4) | No |
+| 6 | My task | Computed, read-only (section 4.4) | No |
+| 7 | Actions | Edit and View controls | No |
 
-**Tabs:** Open · In progress · Done, **with counts**. Default tab: Open.
+**Tabs:** Open · In progress · Done · My task, **with counts**. Default tab: Open. **My task** combines Open and In progress records assigned to the logged-in user; Done records are excluded. Search and room-history search apply inside the active tab.
 
 ---
 
@@ -302,11 +306,11 @@ Both answer the same question — **what has to happen this week** — one for t
   never be reachable, and the status is entered by hand. The comparison with today's date still probably
   needs a custom column or query filter; if that proves expensive, the developer proposes the change then.
 
-### 4.4 Actions (Maintenance)
+### 4.4 My task (Maintenance)
 
-Shown only when `assigned_staff` = logged-in user.
+The **My task** value is shown only when `assigned_staff` = logged-in user. It is distinct from the final **Actions** column, which contains the Edit and View controls.
 
-| `maintenance_status` | Actions shows |
+| `maintenance_status` | My task shows |
 |---|---|
 | Open | Received |
 | In progress | Fixing |

@@ -12,9 +12,10 @@ import { formatDate, withoutId } from '@/app/prototype/perron/_shared/format'
 import { type Tenant } from '@/app/prototype/perron/_shared/types'
 import { usePerron } from '@/app/prototype/perron/_shared/store'
 import { RecordAccordion } from '@/app/prototype/perron/_shared/components/record-accordion'
-import { DrawerSection, RecordDrawer, recordHref, useRecordParam } from '@/app/prototype/perron/_shared/components/record-drawer'
+import { DrawerSection, RecordDrawer, useRecordParam } from '@/app/prototype/perron/_shared/components/record-drawer'
 import { StatusBadge } from '@/app/prototype/perron/_shared/components/status-badge'
 import { MoneyValue } from '@/app/prototype/perron/_shared/components/money-value'
+import { BookingForm } from '@/app/prototype/perron/bookings/_components/booking-drawer'
 
 // Tenant record — Functional Spec §2.2, §3.3.
 // Booking history is read from the bookings (reverse relationship), never stored on the tenant.
@@ -26,12 +27,16 @@ function TenantForm({ tenantId, initial, onDone }: { tenantId?: string; initial:
   const store = usePerron()
   const [draft, setDraft] = React.useState(initial)
   const [touched, setTouched] = React.useState(false)
+  const [childBookingId, setChildBookingId] = React.useState<string | null>(null)
   const set = <K extends keyof typeof draft>(k: K, v: (typeof draft)[K]) => setDraft((d) => ({ ...d, [k]: v }))
   const nameError = touched && !draft.name.trim() ? COPY.common.required(C.name) : undefined
 
   const history = tenantId
     ? store.bookings.filter((b) => b.tenantId === tenantId).sort((a, b) => b.contractStart.localeCompare(a.contractStart))
     : []
+  const childBooking = childBookingId
+    ? store.bookings.find((booking) => booking.id === childBookingId)
+    : undefined
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -44,6 +49,7 @@ function TenantForm({ tenantId, initial, onDone }: { tenantId?: string; initial:
   }
 
   return (
+    <>
     <RecordDrawer
       open
       onClose={onDone}
@@ -91,14 +97,10 @@ function TenantForm({ tenantId, initial, onDone }: { tenantId?: string; initial:
             <RecordAccordion
               items={history.map((b) => ({
                 id: b.id,
-                href: recordHref('bookings', b.id),
+                onOpen: () => setChildBookingId(b.id),
                 title: store.room(b.roomId)?.name ?? '',
-                meta: (
-                  <>
-                    <StatusBadge value={b.status} />
-                    <span>{COPY.labels.booking.contractEnd} {formatDate(b.contractEnd)}</span>
-                  </>
-                ),
+                status: <StatusBadge value={b.status} />,
+                secondary: <span>{COPY.labels.booking.contractEnd} {formatDate(b.contractEnd)}</span>,
                 details: [
                   [COPY.labels.booking.contractStart, formatDate(b.contractStart)],
                   [COPY.labels.booking.contractEnd, formatDate(b.contractEnd)],
@@ -111,6 +113,15 @@ function TenantForm({ tenantId, initial, onDone }: { tenantId?: string; initial:
         </DrawerSection>
       )}
     </RecordDrawer>
+    {childBooking && (
+      <BookingForm
+        key={childBooking.id}
+        bookingId={childBooking.id}
+        initial={withoutId(childBooking)}
+        onDone={() => setChildBookingId(null)}
+      />
+    )}
+    </>
   )
 }
 

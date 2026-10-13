@@ -208,7 +208,8 @@ export const HEAD = cn(
 export const HEAD_ID = cn(HEAD, 'left-0 z-30', STICKY_SHADOW)
 // Not pinned sideways (designer, 2026-10-12): the label scrolls away with the other headers,
 // only the action buttons themselves stay docked to the right edge.
-export const HEAD_ACTIONS = cn(HEAD, 'text-right')
+const ACTIONS_COLUMN = 'w-[6.5rem] min-w-[6.5rem] max-w-[6.5rem]'
+export const HEAD_ACTIONS = cn(HEAD, ACTIONS_COLUMN, 'text-right')
 
 // ─── Table row and cell classes ───────────────────────────────────────────────
 // Row: 48px, zebra striping, `group/row` so the sticky Actions cell can react to hover.
@@ -245,7 +246,7 @@ export function RowActions({ onView, onEdit }: { onView: () => void; onEdit?: ()
   return (
     <div
       className={cn(
-        'flex items-center gap-1 rounded-[var(--radius-md)] p-1',
+        'ml-auto flex w-fit items-center gap-1 rounded-[var(--radius-md)] p-1',
         // Elevated pill: shadow/md plus its own surface, so the buttons never blend into the row.
         'border border-[var(--color-border-default)] bg-[var(--color-surface-default)]',
         'shadow-[var(--shadow-md)]',
@@ -275,6 +276,7 @@ export function RowActions({ onView, onEdit }: { onView: () => void; onEdit?: ()
 // sliding underneath it until the row is actually hovered or focused.
 export const CELL_ACTIONS = cn(
   CELL,
+  ACTIONS_COLUMN,
   'sticky right-0 z-10 bg-transparent',
   'group-hover/row:bg-inherit [&:has(:focus-visible)]:bg-inherit',
 )

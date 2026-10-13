@@ -22,11 +22,17 @@ export const COPY = {
     cancel: 'Cancel',
     edit: 'Edit',
     view: 'View',
+    history: 'History',
     actions: 'Actions',
     moreInfo: 'More information',
     remove: 'Remove',
     selectPhotos: 'Select photos',
-    addPhotos: 'Add more photos',
+    addPhotos: 'Add another image',
+    browseImages: 'Browse images',
+    noInspectionImages: 'No inspection images attached',
+    inspectionImagesHint: 'JPG or PNG · up to 10 MB each · max 8 images',
+    storedImage: 'Stored with booking',
+    invalidInspectionImages: 'Use JPG or PNG files up to 10 MB each. A booking can have up to 8 images per inspection.',
     back: 'Back',
     search: 'Search',
     none: '—',
@@ -49,7 +55,6 @@ export const COPY = {
   dev: {
     label: (q: string) => `⚙️ ${q}`,
     cancelDialog: 'Confirmation dialog needs a small admin JS snippet. Fallback: SOP P7.',
-    autoTitle: 'Booking title: typed by admin, or a small save_post hook. Dev to decide.',
   },
   // Field labels = data-model vocabulary (Functional Spec §2). Shared because a module
   // shows other modules' fields (Room drawer lists bookings, Tenant drawer lists bookings).
@@ -98,7 +103,7 @@ export const COPY = {
       reportedDate: 'Reported date',
       assignedStaff: 'Assigned staff',
       status: 'Status',
-      actions: 'Actions',
+      myTask: 'My task',
     },
   },
   pagination: {

@@ -144,9 +144,33 @@ export function PageHeader({
 // Bounded box for the table. The DS Table's own wrapper does the scrolling (pass
 // wrapperClassName="h-full"), because sticky headers and columns position against it.
 // Never drop columns to fit (FR-G1).
+// It also marks the scroll container with data-scrolled-x once the table is scrolled
+// sideways, so the sticky ID column can show its edge only when there is something
+// sliding underneath it.
 export function TableFrame({ children }: { children: React.ReactNode }) {
+  const frame = React.useRef<HTMLDivElement>(null)
+
+  React.useEffect(() => {
+    const scroller = frame.current?.querySelector<HTMLElement>('.overflow-auto')
+    if (!scroller) return
+    const sync = () => {
+      scroller.toggleAttribute('data-scrolled-x', scroller.scrollLeft > 0)
+    }
+    sync()
+    scroller.addEventListener('scroll', sync, { passive: true })
+    const resize = new ResizeObserver(sync)
+    resize.observe(scroller)
+    return () => {
+      scroller.removeEventListener('scroll', sync)
+      resize.disconnect()
+    }
+  }, [])
+
   return (
-    <div className="min-h-0 flex-1 overflow-hidden rounded-[var(--radius-base)] border border-[var(--color-border-default)] bg-[var(--color-surface-default)]">
+    <div
+      ref={frame}
+      className="min-h-0 flex-1 overflow-hidden rounded-[var(--radius-base)] border border-[var(--color-border-default)] bg-[var(--color-surface-default)]"
+    >
       {children}
     </div>
   )
@@ -158,7 +182,14 @@ export function TableFrame({ children }: { children: React.ReactNode }) {
 
 // First column: stays visible while the table scrolls sideways, and casts shadow/md
 // sideways so it reads as sitting above the columns sliding underneath it.
-const STICKY_SHADOW = 'shadow-[4px_0_6px_-1px_rgb(0_0_0/0.1),2px_0_4px_-2px_rgb(0_0_0/0.1)]'
+// The border is the hard edge the eye needs; the shadow only adds depth under it. Both
+// appear only once the table is actually scrolled sideways (data-scrolled-x on the
+// scroll container, set by TableFrame) — at rest the column is just the first column.
+const STICKY_SHADOW = cn(
+  'border-r border-transparent transition-shadow',
+  '[[data-scrolled-x]_&]:border-[var(--color-border-default)]',
+  '[[data-scrolled-x]_&]:shadow-[4px_0_6px_-1px_rgb(0_0_0/0.1),2px_0_4px_-2px_rgb(0_0_0/0.1)]',
+)
 
 export const HEAD = 'sticky top-0 z-20 whitespace-nowrap px-3 bg-[var(--color-surface-raised)]'
 export const HEAD_ID = cn(HEAD, 'left-0 z-30', STICKY_SHADOW)
@@ -212,7 +243,14 @@ export function RowActions({ onView, onEdit }: { onView: () => void; onEdit?: ()
   )
 }
 
-export const CELL_ACTIONS = cn(CELL, 'sticky right-0 z-20 bg-inherit')
+// Transparent until the row is hovered or focused: the cell keeps its place in the
+// column order (so at full right scroll the buttons land at the end of the row), but
+// it never paints over the cells sliding underneath it while idle.
+export const CELL_ACTIONS = cn(
+  CELL,
+  'sticky right-0 z-20 bg-transparent',
+  'group-hover/row:bg-inherit [&:has(:focus-visible)]:bg-inherit',
+)
 
 // ─── Record ID link ───────────────────────────────────────────────────────────
 // The ONE way to open a record: its ID, in the first column. Names are plain text,

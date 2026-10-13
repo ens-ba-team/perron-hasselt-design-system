@@ -16,7 +16,7 @@ import { BOOKING_STATUSES, contractTotal, myTask, taskDue } from '@/app/prototyp
 import { usePerron } from '@/app/prototype/perron/_shared/store'
 import { BookingDrawer } from '@/app/prototype/perron/bookings/_components/booking-drawer'
 import { NEW, recordHref } from '@/app/prototype/perron/_shared/components/record-drawer'
-import { CELL, CELL_ACTIONS, CELL_ID, CELL_STRONG, DevNote, HEAD, HEAD_ACTIONS, HEAD_ID, IdLink, PageHeader, ROW, RowActions, SortHead, TABLE, TableFrame, ViewLinks, compareValues, type SortState } from '@/app/prototype/perron/_shared/components/list-parts'
+import { CELL, CELL_ACTIONS, CELL_ID, CELL_STRONG, HEAD, HEAD_ACTIONS, HEAD_ID, IdLink, PageHeader, ROW, RowActions, SortHead, TABLE, TableFrame, ViewLinks, compareValues, type SortState } from '@/app/prototype/perron/_shared/components/list-parts'
 
 // Bookings — Functional Spec §3.2
 // Contract end sits directly next to Check-out date so early move-out and overstay are visible.
@@ -73,7 +73,7 @@ export default function BookingsPage() {
   const views = [
     { key: 'all', label: T.all, count: count('all') },
     ...BOOKING_STATUSES.map((s) => ({ key: s, label: s, count: count(s) })),
-    { key: 'myTask', label: T.myTask, count: count('myTask'), note: <DevNote q="Q28" text={COPY.dev.q28} /> },
+    { key: 'myTask', label: T.myTask, count: count('myTask') },
     { key: 'thisWeek', label: T.thisWeek, count: count('thisWeek') },
   ]
 
@@ -157,10 +157,10 @@ export default function BookingsPage() {
                 <SortHead label={C.checkinStaff} sortKey="checkinStaff" {...head} />
                 <SortHead label={C.checkoutStaff} sortKey="checkoutStaff" {...head} />
                 <SortHead label={C.monthlyRent} sortKey="monthlyRent" {...head} />
-                <HeadWithNote label={C.total} q="Q29" text={COPY.dev.q29} />
+                <TableHead className={HEAD}>{C.total}</TableHead>
                 <SortHead label={C.depositStatus} sortKey="depositStatus" {...head} />
-                <HeadWithNote label={C.myTask} q="Q28" text={COPY.dev.q28} />
-              <TableHead className={HEAD_ACTIONS}>{COPY.common.actions}</TableHead>
+                <TableHead className={HEAD}>{C.myTask}</TableHead>
+                <TableHead className={HEAD_ACTIONS}>{COPY.common.actions}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -185,7 +185,7 @@ export default function BookingsPage() {
                     <TableCell className={CELL}>{formatMoney(contractTotal(b))}</TableCell>
                     <TableCell className={CELL}>{b.depositStatus}</TableCell>
                     <TableCell className={CELL}>{myTask(b, currentStaffId, weekTo)}</TableCell>
-                  <TableCell className={CELL_ACTIONS}>
+                    <TableCell className={CELL_ACTIONS}>
                       <RowActions onView={() => router.push(recordHref('bookings', b.id))} onEdit={b.status === 'Ended' || b.status === 'Cancelled' ? undefined : () => router.push(recordHref('bookings', b.id))} />
                     </TableCell>
                   </TableRow>
@@ -199,20 +199,7 @@ export default function BookingsPage() {
       {visible.length > 0 && <ListPagination {...paged} />}
 
       <BookingDrawer />
-
-
     </div>
-  )
-}
-
-function HeadWithNote({ label, q, text }: { label: string; q: string; text: string }) {
-  return (
-    <TableHead className={HEAD}>
-      <span className="inline-flex items-center gap-1.5">
-        {label}
-        <DevNote q={q} text={text} />
-      </span>
-    </TableHead>
   )
 }
 

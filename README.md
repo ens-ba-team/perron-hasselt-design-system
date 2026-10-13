@@ -33,7 +33,7 @@ The design system for **Perron Hasselt Room Management**, a back office for mana
 | `next build` | ✅ Passes (fixed 2026-10-08) |
 | Product docs | ✅ **BRD, Functional Spec and SOP all v0.2 (2026-10-12)**, in sync with the prototype. **Canonical here in [`docs/product/`](docs/product/)** (decided 2026-10-13) — the only copies; edit them in this repo. Vietnamese digest: [`docs/discovery/onboarding-vi.md`](docs/discovery/onboarding-vi.md) |
 | Perron prototype | ✅ v1 built: Rooms, Bookings, Tenants, Maintenance + record drawers + pagination on every list. `agentic-ui/src/app/prototype/perron/` (structure and rules in its `README.md`). Merged to `main` |
-| Open questions for dev | ✅ **None open.** Q27 confirmed in scope 2026-10-12; Q28 (rule unchanged), Q29 (display only, not stored) and Q30 (relational count) closed 2026-10-13 — see Functional Spec §9. The ⚙️ markers stay: they flag code WordPress will not give us by configuration, not undecided behaviour. No Q31 — prototype IDs are mock values, dev maps them to WordPress post IDs |
+| Open questions for dev | ✅ **None open.** Q27 confirmed in scope 2026-10-12; Q28 (rule unchanged), Q29 (display only, not stored) and Q30 (relational count) closed 2026-10-13 — see Functional Spec §9. Their decision markers are removed from the product UI; the confirmed behaviour remains. No Q31 — prototype IDs are mock values, dev maps them to WordPress post IDs |
 
 The designer's Obsidian vault is **the learning space only** (`product-knowledge.md`, `session-log.md`) —
 it holds no product documents and nothing in it is an input here. Its old copies are stubs pointing back.
@@ -192,7 +192,7 @@ When a design-system default conflicts with a product rule, **the product rule w
 | Structure | One folder per module (`page.tsx`, `copy.ts`, `data.ts`, `store.ts`, `_components/`) + `_shared/`. See the prototype's `README.md` |
 | CRUD | Lists are read-only. Record drawer = DS **Sheet** `size="wide"` (560px, Figma `Side=Horizontal, Size=560px` 2070:6175) opened by `?record=<ID>`. Sheet = desktop side panel, Drawer = mobile bottom panel. Related records inside a drawer use `RecordAccordion` (collapsed row, expand for details) instead of wide tables. The record ID (`RM-`, `TN-`, `PH-`, `MT-`) in the first column is the only link to a record |
 | Look | WordPress list table: status links with counts above the table, filters above the table. Cells are read-only; the Actions column (Edit / View) appears on row hover |
-| ⚙️ marker | Mark anything that may need custom code in WordPress: **Q27** overlap marker when creating a booking · **Q28** *My task* column on Bookings · **Q29** contract total · **Q30** open maintenance count on Rooms |
+| Resolved developer questions | **Q27** overlap marker · **Q28** *My task* · **Q29** contract total · **Q30** open maintenance count remain implemented. Their decision IDs are not shown in the product UI |
 | Nothing automatic | Never animate or simulate a status changing on its own |
 | Mock data | Must include the hard cases: 2-person room with one tenant, back-to-back bookings on a 1-person room, early move-out, overstay, cancelled booking, renewal |
 | Language | **English** UI copy. Dutch will follow later, so never hard-code display strings inside components |

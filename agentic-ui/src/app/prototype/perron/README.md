@@ -56,10 +56,10 @@ Every list ends with `<ListPagination {...usePaged(visible, resetKey)} />`. `res
 - Every record has one ID (`RM-`, `PH-`, `TN-`, `MT-`) in the first column. The ID is the only link that opens a record.
 - Tables are **read-only**: no inline editing. Editing happens in the record drawer, opened from the ID link or the Edit action.
 - Tables: `TABLE` on the `<Table>`, plus `ROW` + `CELL` / `CELL_STRONG` / `CELL_ID` / `CELL_ACTIONS` and `HEAD` / `HEAD_ID` / `HEAD_ACTIONS` from `list-parts`. 64px rows, zebra, sticky header, sticky ID column, row actions on hover. Two rules the classes cannot enforce for you: **every** header cell needs `HEAD` (or `HEAD_ID` / `HEAD_ACTIONS`) — one without it is not sticky and the rows scroll through it — and the `<Table>` needs `TABLE`, which keeps the borders separated so `z-index` on the sticky cells works at all. `list-parts` explains why in place.
-- A list page fills the viewport (`h-full min-h-0`) and passes `wrapperClassName="h-full"` to `Table`, so the table scrolls inside its frame and the header can stay pinned.
+- A list page fills the viewport (`h-full min-h-0`). `TableFrame` hugs the header + rows on short result sets, then shrinks to the remaining viewport height when the rows no longer fit. The table keeps `wrapperClassName="h-full"`, so overflow scrolls inside the frame and the header stays pinned.
 - Helper text goes in `Field`'s `hint` (info icon on hover). Only use `hintBelow` when it must not be missed.
 - Dates: always `DateField` (DS DatePicker), stored as ISO `YYYY-MM-DD`, shown as `MMM d, yyyy`. Never `<Input type="date">`.
-- Mark anything that may need WordPress code with `<DevNote q="Q27" …>` (⚙️).
+- Confirmed decisions Q27–Q30 stay implemented but their decision markers do not appear in the product UI. `DevNote` is only for a still-unresolved implementation note.
 
 ## Changelog
 

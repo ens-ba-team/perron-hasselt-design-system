@@ -22,7 +22,7 @@ import { DrawerSection, RecordDrawer, recordHref, useRecordParam } from '@/app/p
 
 // Booking edit screen — Functional Spec §2.3, §5, §7
 // Groups are visual only. No tabs, no accordions: nothing hidden.
-// Contract dates sit ABOVE the Room field so the overlap marker can work (BR04, ⚙️ Q27).
+// Contract dates sit ABOVE the Room field so the confirmed overlap marker can work (BR04).
 // Check-in / Check-out dates are never pre-filled from the contract.
 
 const F = BOOKINGS_COPY.form.fields
@@ -293,7 +293,7 @@ export function BookingForm({ bookingId, initial, onDone }: { bookingId?: string
             onChange={(e) => set('monthlyRent', Number(e.target.value))} onBlur={() => touch('monthlyRent')}
             aria-invalid={!!err('monthlyRent') || undefined} />
         </Field>
-        <Field id="total" label={<span className="flex items-center gap-2">{F.total}<DevNote q="Q29" text={COPY.dev.q29} /></span>} hint={H.total}>
+        <Field id="total" label={F.total} hint={H.total}>
           <Input id="total" readOnly value={formatMoney(contractTotal(draft)) || ''} className="bg-[var(--color-background-muted)]" />
         </Field>
       </Group>

@@ -7,7 +7,7 @@
 | **Prepared by** | Enosta Product Design |
 | **Version** | 0.2 (draft) |
 | **Date** | 2026-10-12 |
-| **Related** | BRD v0.1 (business rules BR01–BR29) · SOP v0.1 (admin procedures P1–P11) · FigJam https://www.figma.com/board/RnN40RUrCANewi4MBP60yU |
+| **Related** | BRD v0.2 (business rules BR01–BR29) · SOP v0.2 (admin procedures P1–P11) · FigJam https://www.figma.com/board/RnN40RUrCANewi4MBP60yU |
 
 ---
 
@@ -183,9 +183,17 @@ General settings for every list:
 | 6 | **Room status** | `room_status` | Yes | Yes | **Yes** |
 | 7 | **Available from** | `available_from` | Yes | Yes, **default sort ascending** | |
 | 8 | Monthly rent | `monthly_rent` | Yes | Yes | |
-| 9 | Open maintenance | Count of `maintenance` where `room` = this and status ≠ Done | No | — | ⚙️ Q30 |
+| 9 | Open maintenance | Count of `maintenance` where `room` = this and status ≠ Done. **Zero shows as “—”, not “0”** | No | — | ⚙️ Q30 |
 
 **Column order rule:** *Room status* (6) must sit **directly left of** *Available from* (7). They answer different questions and must be read together (BR03, overstay risk).
+
+**On column 9 (Open maintenance).** The client brief specifies seven columns for this list and does not
+include this one; it also puts *Open issues* as a saved view on the Maintenance list. The column was added
+by the designer and **confirmed as wanted on 2026-10-13**: staff scanning the Rooms list need to see what
+needs fixing without opening another screen. It stays **non-blocking** — per BR25 maintenance never changes
+*Room status* and never affects *Available from*, so the number informs, it does not gate anything. A room
+with open tickets is still offered. Zero open tickets shows “—” so the eye only stops on rooms that need
+attention.
 
 **Default view:** all rooms, sorted by `available_from` ascending. **Do not** default to a status filter. Filtering hides rows, sorting does not.
 
@@ -267,7 +275,11 @@ total = booking.monthly_rent × months(contract_start, contract_end)
 - Months are whole months. Contracts have no partial months (BR10)
 - For *Others* contracts, use the same calculation
 - Shown on the Booking list (column 11) and on the Booking edit screen
-- ⚙️ **Q29:** ACF and Admin Columns Pro do not calculate across fields out of the box. It probably needs a small custom column or display-only snippet.
+- ⚙️ **Q29 — closed 2026-10-13.** ACF and Admin Columns Pro do not calculate across fields out of the box,
+  but the developer confirmed they can supply the total as a **disabled field**. One detail is still open:
+  whether that field stores the value. BR10 says the total is **not stored** — if it is, BR10 and section 10
+  need updating, and a `save_post`-style hook has to recalculate it whenever `monthly_rent`, `contract_start`
+  or `contract_end` changes. Without that, a stored total goes stale and silently disagrees with rent × months.
 
 ### 4.3 My task and This week (Bookings)
 
@@ -374,8 +386,8 @@ Any of these violates BR01 or was deferred in the BRD:
 |---|---|---|---|
 | ~~Q27~~ | Overlap marker in the Room selector (section 5) | ACF PHP filters | **Confirmed in scope 2026-10-12.** Build it |
 | **Q28** | *My task* / *This week* value and tabs with the this-week condition (4.3) | Custom column + query filter | Tabs filter only on staff = me and done = No, without the week rule |
-| **Q29** | Contract total column (4.2) | Display-only custom column | Admin calculates by hand. Not recommended |
-| **Q30** | Open maintenance count on Rooms (3.1) | Custom column, or ACP relational count if supported | Admin checks the Maintenance list filtered by room |
+| ~~Q29~~ | Contract total column (4.2) | ~~Display-only custom column~~ | **Closed 2026-10-13: the developer can provide it as a disabled field.** Remaining detail: does that field **store** the value? BR10 and section 10 say the total is not stored, so if it is stored both need updating and something must recalculate it when the rent or the contract dates change |
+| **Q30** | Open maintenance count on Rooms (3.1) | ACP relational count if supported, otherwise a custom column | Admin checks the Maintenance list filtered by room, one room at a time. **Confirmed wanted 2026-10-13, so dropping the column is not the fallback** — but it is non-blocking (BR25), so it is the first thing to cut if the cost is high |
 | — | Auto booking title (section 1) | `save_post` title hook | Admin types the title by convention |
 | — | New building added by the admin (section 2.1) | ACF Taxonomy field with *Create Terms* | — |
 | — | Cancel confirmation dialog (section 7) | Small admin JS | SOP P7 |

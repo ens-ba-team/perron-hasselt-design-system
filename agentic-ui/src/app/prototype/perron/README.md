@@ -17,7 +17,7 @@ perron/
       record-drawer.tsx       Shared CRUD pattern: DS Sheet size="wide" (560px, Figma 2070:6175), opened by ?record=<id>|new
       record-accordion.tsx    Related records inside a drawer: ID + title + one meta line, expand for details
       list-parts.tsx          IdLink, ViewLinks, SortHead, PageHeader, TableFrame, DevNote
-      list-pagination.tsx     ListPagination + usePaged: Total · pages · rows per page (10 / 20 / 50, default 50)
+      list-pagination.tsx     ListPagination + usePaged: Total · pages · rows per page (10 / 20 / 50, default 10)
       form-fields.tsx         Field (hint = info icon), ChoiceSelect, DateField, ImageField, CreatableSelect
       brand.tsx               PerronMark (logo + watermark, from Figma)
   <module>/                   rooms | bookings | tenants | maintenance
@@ -42,7 +42,7 @@ perron/
 
 ## Lists
 
-Every list ends with `<ListPagination {...usePaged(visible, resetKey)} />`. `resetKey` must include every tab, filter, search and sort value so the list goes back to page 1 when they change. Rows per page 10 / 20 / 50, default 50, so the 41 rooms fit on one page.
+Every list ends with `<ListPagination {...usePaged(visible, resetKey)} />`. `resetKey` must include every tab, filter, search and sort value so the list goes back to page 1 when they change. Rows per page 10 / 20 / 50, default 10 (`DEFAULT_PAGE_SIZE` in `list-pagination.tsx`).
 
 ## Rules
 
@@ -55,7 +55,7 @@ Every list ends with `<ListPagination {...usePaged(visible, resetKey)} />`. `res
 - `_` folders are private to Next.js routing: they never become URLs.
 - Every record has one ID (`RM-`, `PH-`, `TN-`, `MT-`) in the first column. The ID is the only link that opens a record.
 - Tables are **read-only**: no inline editing. Editing happens in the record drawer, opened from the ID link or the Edit action.
-- Tables: `ROW` + `CELL` / `CELL_STRONG` / `CELL_ID` / `CELL_ACTIONS` and `HEAD` / `HEAD_ID` / `HEAD_ACTIONS` from `list-parts`. 64px rows, zebra, sticky header, sticky ID column (with a sideways shadow), `RowActions` pill on hover.
+- Tables: `ROW` + `CELL` / `CELL_STRONG` / `CELL_ID` / `CELL_ACTIONS` and `HEAD` / `HEAD_ID` / `HEAD_ACTIONS` from `list-parts`. 64px rows, zebra, sticky header, sticky ID column (border + sideways shadow, shown only once the table is scrolled sideways, so the pinned column reads as separate from the columns sliding under it), `RowActions` pill on hover. The Actions cell is sticky right but transparent while idle — it only paints over the row on hover/focus, and at full right scroll it sits at the end of the row, overlapping nothing.
 - A list page fills the viewport (`h-full min-h-0`) and passes `wrapperClassName="h-full"` to `Table`, so the table scrolls inside its frame and the header can stay pinned.
 - Helper text goes in `Field`'s `hint` (info icon on hover). Only use `hintBelow` when it must not be missed.
 - Dates: always `DateField` (DS DatePicker), stored as ISO `YYYY-MM-DD`, shown as `MMM d, yyyy`. Never `<Input type="date">`.

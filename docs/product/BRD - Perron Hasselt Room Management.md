@@ -8,7 +8,7 @@
 | **Version** | 0.2 (draft for client review) |
 | **Date** | 2026-10-12 |
 | **Status** | Draft. Awaiting client sign-off |
-| **Source of truth** | FigJam board: https://www.figma.com/board/RnN40RUrCANewi4MBP60yU |
+| **Source of truth** | Business rules, scope and definitions: **this document**. Wireframes, sitemap and the BR numbering: FigJam board https://www.figma.com/board/RnN40RUrCANewi4MBP60yU |
 
 ---
 
@@ -58,7 +58,7 @@ Everything else in the system (tenants, contracts, check-in and check-out, maint
 |---|---|---|
 | Reminders and notifications before a contract ends | The system does not act on its own. Automatic emails are exactly what the operators said they cannot control | Someone asks for it directly and accepts that the system will send something on its own |
 | Colour-coded warnings by urgency | Every event would need an urgency level. Too much effort for 41 units and 3 people | Rooms get stuck in the wrong status because nobody noticed |
-| "Available until" (empty gap between two contracts) | Deferred | Development confirms the overlap check (Q27) |
+| "Available until" (empty gap between two contracts) | Deferred. The gap cannot be let: contracts run 6 or 12 months, so a 2–3 month gap has no buyer. Marking overlapping rooms when a booking is created (BR04) answers the same need without a second hand-kept field | Perron starts letting short term. *(The earlier condition named Q27, which was confirmed in scope on 2026-10-12, so it no longer gates this.)* |
 | Partial deposit refunds | Damage costs are settled outside the system | Perron wants to deduct damages item by item inside the system |
 | Payment tracking | Out of scope from the original specification | Already listed as a future upgrade |
 | Tenant accounts, online booking | Tenants never use the system | — |
@@ -288,15 +288,17 @@ Keeping the three apart is what makes early move-out and overstay visible.
 | RK1 | Admin forgets to update *Available from* after a cancellation | Room looks unavailable, rent is lost | Rule BR15. Recalculation step listed in the cancellation procedure |
 | RK2 | A multi-step action is left half done (for example status updated but date not), because nothing is automated | Lists show outdated status | Related fields placed side by side. Status counts on each list |
 | RK3 | Overstaying tenant appears in an "offerable" filter | Room offered while still occupied | Room status shown next to *Available from* |
-| RK4 | Some requirements may need custom code (Q27, Q28) | Cost or scope change | Development to confirm before build |
+| RK4 | Some requirements may need custom code (Q28, Q29, Q30) | Cost or scope change | Development to confirm before build. Q27 confirmed in scope 2026-10-12 |
 | RK5 | No log of who changed what (3 equal accounts) | Hard to trace mistakes | WordPress revisions switched on |
 
 ## 11. Open questions
 
 | # | Question | Owner |
 |---|---|---|
-| Q27 | Can the overlap check when creating a booking (BR04) be built without custom code? If not, what is the cost? | Development |
+| ~~Q27~~ | ~~Can the overlap check when creating a booking (BR04) be built without custom code?~~ **Closed 2026-10-12: confirmed in scope.** It needs ACF PHP filters and the design assumes it is built | — |
 | Q28 | Can the *My task* and *This week* columns on Bookings change with the date (due this week) in Admin Columns Pro, or do they need custom code? | Development |
+| ~~Q29~~ | ~~Can the contract *Total* column be computed without custom code?~~ **Closed 2026-10-13: the developer can provide it as a disabled field.** One detail still to confirm: whether that field **stores** the value. BR10 says the total is not stored, so if it is stored, BR10 and section 10 need updating and something must recalculate it when the rent or the contract dates change | Development (detail only) |
+| Q30 | Can the *Open maintenance* count on the Rooms list (one count of related maintenance records per room) be computed in Admin Columns Pro, or does it need a custom column? The column is wanted (confirmed 2026-10-13) so staff can see what needs fixing while scanning the list. It is **non-blocking**: per BR25 maintenance never changes *Room status* or *Available from*, so if the cost is high this is the first thing to cut | Development |
 
 ## 12. Glossary
 

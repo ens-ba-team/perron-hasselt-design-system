@@ -1,7 +1,7 @@
 # Perron Hasselt Design System
 
 > **Read this first.** For designers and developers alike, before opening Figma or writing any UI code.
-> Updated: 2026-10-08 · Owner: Enosta Product Design
+> Updated: 2026-10-13 · Owner: Enosta Product Design
 
 The design system for **Perron Hasselt Room Management**, a back office for managing student rental rooms. It is forked from [Agentic Design System](https://github.com/afineavocado/agentic-design-system) (shadcn/ui + Tailwind v4) and re-themed for the Perron brand.
 
@@ -11,6 +11,7 @@ The design system for **Perron Hasselt Room Management**, a back office for mana
 | **Code** | `agentic-ui/`: Next.js + Tailwind v4 + shadcn/ui + Storybook |
 | **Tokens** | `Tokens/`: DTCG format, 3 tiers |
 | **Product docs** | [`docs/product/`](docs/product/): BRD, Functional Spec, SOP |
+| **Discovery (vi)** | [`docs/discovery/`](docs/discovery/): reasoning, learning journal, archive. Not a source of truth |
 | **Product FigJam** | [Business rules, sitemap, data model, lifecycle](https://www.figma.com/board/RnN40RUrCANewi4MBP60yU): source of truth for product rules |
 | **Index for AI agents** | [`llms.txt`](llms.txt) |
 
@@ -18,21 +19,28 @@ The design system for **Perron Hasselt Room Management**, a back office for mana
 
 ## 1. Current status
 
-> **Last checked: 2026-10-12.** This table is the single place that says where things stand. Any change that moves a row must update it in the same commit (see `CHANGELOG.md` for the history).
+> **Last checked: 2026-10-13.** This table is the single place that says where things stand. Any change that moves a row must update it in the same commit (see `CHANGELOG.md` for the history).
 
 | Area | Status |
 |---|---|
 | Brand theme (color) | ✅ Synced Figma ↔ code (Light), incl. sidebar tokens (background `navy/50`, accent `zinc/50`) |
 | Typography | ✅ `font-family/sans` = **Poppins** (Figma ↔ code ↔ Storybook). Mono = Roboto Mono |
-| Components in the Perron Figma file | 🟡 All component pages are in the Perron file. **Synced to code: Button, Sidebar, Sheet, Drawer.** The other 33 are not audited yet; their `meta.json` node IDs still point to the Agentic file |
+| Components in the Perron Figma file | 🟡 All component pages are in the Perron file. **Synced to code: Button, Sidebar, Sheet, Drawer.** The other **32** (36 − 4) are not audited yet; their `meta.json` node IDs still point to the Agentic file |
 | Components in code | ✅ All 36 components (inherited from Agentic) |
 | **Dark mode** | ⏸ **Out of scope for now.** Don't audit, sync, or design for Dark |
 | Token build (`sd.build.mjs`) | 🔴 Broken upstream. CSS is being patched by hand, see [section 8](#8-technical-notes) |
 | Install | 🟡 Works with `npm ci --legacy-peer-deps` (upstream lockfile conflict) |
 | `next build` | ✅ Passes (fixed 2026-10-08) |
-| Product docs | ✅ **BRD, Functional Spec and SOP all v0.2 (2026-10-12)**, in sync with the prototype. Vault is the original; `docs/product/` holds the copies |
+| Product docs | ✅ **BRD, Functional Spec and SOP all v0.2 (2026-10-12)**, in sync with the prototype. **Canonical here in [`docs/product/`](docs/product/)** (decided 2026-10-13) — the only copies; edit them in this repo. Vietnamese digest: [`docs/discovery/onboarding-vi.md`](docs/discovery/onboarding-vi.md) |
 | Perron prototype | ✅ v1 built: Rooms, Bookings, Tenants, Maintenance + record drawers + pagination on every list. `agentic-ui/src/app/prototype/perron/` (structure and rules in its `README.md`). Merged to `main` |
 | Open questions for dev | 🟡 Q28–Q30 (Functional Spec §9). Q27 confirmed in scope 2026-10-12; no Q31 — prototype IDs are mock values, dev maps them to WordPress post IDs |
+
+The designer's Obsidian vault is **the learning space only** (`product-knowledge.md`, `session-log.md`) —
+it holds no product documents and nothing in it is an input here. Its old copies are stubs pointing back.
+
+Mutable facts (component count, doc versions, pagination default, open-question status) live once in
+[`Machine Readable/project-state.json`](Machine%20Readable/project-state.json) and are enforced against the
+prose by `node "Machine Readable/drift-check.mjs"`. Change the JSON first, then whatever the check names.
 
 **New here (human or AI)?** Read [`docs/handoff/2026-10-12-handoff.md`](docs/handoff/2026-10-12-handoff.md) first.
 
@@ -159,9 +167,9 @@ When a design-system default conflicts with a product rule, **the product rule w
 
 | Component | How to use it in Perron |
 |---|---|
-| `Table` | The main screen. Prefer inline edit |
+| `Table` | The main screen. **Read-only** — no inline edit. Row actions (Edit / View) open the record |
 | `Tabs`, `Accordion` | Only for list tabs (saved views). Never to hide fields or columns |
-| `Dialog`, `Sheet`, `Drawer` | Not for editing data. Use `AlertDialog` only for heavy confirmations (cancelling a booking) |
+| `Dialog`, `Sheet`, `Drawer` | `Sheet` (wide, 560px) is where every record is created, viewed and edited, so the list stays visible behind it. Never a `Dialog` that hides the list — `AlertDialog` only for heavy confirmations (cancelling a booking) |
 | `Badge` | A neutral status label. **Don't use success/warning/danger colours to rank urgency** |
 | `Toast` | Only to confirm an action the user just took. Never for reminders |
 | Date range picker | Only when creating a booking, to check for overlapping dates. Not on the Rooms list |
@@ -182,8 +190,8 @@ When a design-system default conflicts with a product rule, **the product rule w
 | Read first | `docs/product/Functional Spec …md` (fields, columns, tabs), then [`Prototype-build/prototype-build-skill.md`](Prototype-build/prototype-build-skill.md) |
 | Plan before code | Screen list, component map per screen, mock data in the module's `data.ts`. Then shell → screens → self-audit |
 | Structure | One folder per module (`page.tsx`, `copy.ts`, `data.ts`, `store.ts`, `_components/`) + `_shared/`. See the prototype's `README.md` |
-| CRUD | Lists are read-only. Record drawer = DS **Sheet** `size="wide"` (560px, Figma `Side=Horizontal, Size=560px` 2070:6175) opened by `?record=<ID>`. Sheet = desktop side panel, Drawer = mobile bottom panel. Related records inside a drawer use `RecordAccordion` (collapsed row, expand for details) instead of wide tables. Inline edit stays on list cells. The record ID (`RM-`, `TN-`, `PH-`, `MT-`) in the first column is the only link to a record |
-| Look | WordPress list table: status links with counts above the table, filters above the table, inline edit in cells |
+| CRUD | Lists are read-only. Record drawer = DS **Sheet** `size="wide"` (560px, Figma `Side=Horizontal, Size=560px` 2070:6175) opened by `?record=<ID>`. Sheet = desktop side panel, Drawer = mobile bottom panel. Related records inside a drawer use `RecordAccordion` (collapsed row, expand for details) instead of wide tables. The record ID (`RM-`, `TN-`, `PH-`, `MT-`) in the first column is the only link to a record |
+| Look | WordPress list table: status links with counts above the table, filters above the table. Cells are read-only; the Actions column (Edit / View) appears on row hover |
 | ⚙️ marker | Mark anything that may need custom code in WordPress: **Q27** overlap marker when creating a booking · **Q28** *My task* column on Bookings · **Q29** contract total · **Q30** open maintenance count on Rooms |
 | Nothing automatic | Never animate or simulate a status changing on its own |
 | Mock data | Must include the hard cases: 2-person room with one tenant, back-to-back bookings on a 1-person room, early move-out, overstay, cancelled booking, renewal |

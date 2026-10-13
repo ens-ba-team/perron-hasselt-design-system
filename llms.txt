@@ -14,6 +14,9 @@
 - `docs/product/Functional Spec - Perron Hasselt Room Management.md`: **Read before building any Room Management screen.** Fields, list columns, tabs, computed values, overlap check, items needing custom code (Q27–Q30).
 - `docs/product/BRD - Perron Hasselt Room Management.md`: Business rules BR01–BR29, scope, data model, glossary.
 - `docs/product/SOP - Perron Hasselt Room Management.md`: How admins operate the system step by step. Useful for flows and mock data.
+- `Machine Readable/project-state.json`: **the single place mutable facts live** — component count, doc versions, pagination default, open-question status, editing model, forbidden (superseded) phrases. `drift-check.mjs` checks prose against it. Change a value here first, then the prose it names.
+- `docs/product/rule-number-map.md`: maps `R0`–`R26` (discovery) to `BR01`–`BR29` (canonical). Read it before citing any rule number, and note R19 / BR22 have no counterpart.
+- `docs/discovery/README.md`: Vietnamese rule digest (`onboarding-vi.md`), archived snapshots, and the client's original brief. **Not a source of truth**: cite the BRD and the Functional Spec instead. The designer's `product-knowledge.md` and `session-log.md` are training material and live only in the Obsidian vault.
 
 ## Perron prototype
 

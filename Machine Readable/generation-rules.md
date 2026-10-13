@@ -94,21 +94,21 @@ Existing project documents remain read-only unless the user approves a specific 
 All generated artifacts must live under:
 
 ```txt
-codex plan/artifacts/
+Machine Readable/artifacts/
 ```
 
 Required output files for each component:
 
 ```txt
-codex plan/artifacts/components/[component].meta.json
-codex plan/artifacts/examples/[component].examples.tsx
+Machine Readable/artifacts/components/[component].meta.json
+Machine Readable/artifacts/examples/[component].examples.tsx
 ```
 
 Shared support files:
 
 ```txt
-codex plan/artifacts/schema/component-meta.schema.json
-codex plan/artifacts/review-report.md
+Machine Readable/artifacts/schema/component-meta.schema.json
+Machine Readable/artifacts/review-report.md
 ```
 
 ## Artifact Status
@@ -364,7 +364,7 @@ Example files define intended API contracts before the real React package exists
 After generating artifacts, run:
 
 ```sh
-node "codex plan/validate-artifacts.mjs"
+node "Machine Readable/validate-artifacts.mjs"
 ```
 
 The artifact batch is not complete until validation passes.

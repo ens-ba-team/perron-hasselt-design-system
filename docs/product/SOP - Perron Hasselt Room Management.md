@@ -7,7 +7,7 @@
 | **Prepared by** | Enosta Product Design |
 | **Version** | 0.2 (draft) |
 | **Date** | 2026-10-12 |
-| **Related** | BRD v0.1 · FigJam board https://www.figma.com/board/RnN40RUrCANewi4MBP60yU |
+| **Related** | BRD v0.2 · FigJam board https://www.figma.com/board/RnN40RUrCANewi4MBP60yU |
 
 ---
 

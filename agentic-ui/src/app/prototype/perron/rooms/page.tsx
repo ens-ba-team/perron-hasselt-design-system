@@ -162,7 +162,9 @@ export default function RoomsPage() {
                   <TableCell className={CELL}>{r.status}</TableCell>
                   <TableCell className={CELL}>{formatDate(r.availableFrom)}</TableCell>
                   <TableCell className={CELL}>{formatMoney(r.monthlyRent)}</TableCell>
-                  <TableCell className={CELL}>{openCount.get(r.id) ?? 0}</TableCell>
+                  {/* No open tickets shows the shared empty token, not 0 (designer, 2026-10-13):
+                      a count only matters when there is something to fix. */}
+                  <TableCell className={CELL}>{openCount.get(r.id) || COPY.common.none}</TableCell>
                 <TableCell className={CELL_ACTIONS}>
                       <RowActions onView={() => router.push(recordHref('rooms', r.id))} onEdit={() => router.push(recordHref('rooms', r.id))} />
                     </TableCell>

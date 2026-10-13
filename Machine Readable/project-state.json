@@ -1,0 +1,135 @@
+{
+  "_comment": "Mutable facts for Perron. Prose must agree with this file, and drift-check.mjs enforces it. Change a value HERE first, then update the prose the check names. Added 2026-10-13 after nine prose drifts got past the path/count/hex checks.",
+  "updated": "2026-10-13",
+  "canonicalSource": {
+    "productDocText": "docs/product/",
+    "wireframesAndBrNumbering": "FigJam board RnN40RUrCANewi4MBP60yU",
+    "currentStatus": "README.md section 1",
+    "ruleNumberMap": "docs/product/rule-number-map.md",
+    "notAnInput": [
+      "product-knowledge.md (Obsidian vault only, training material)",
+      "session-log.md (Obsidian vault only, learning journal)"
+    ],
+    "vaultRole": "Learning space only (product-knowledge.md, session-log.md). Holds no product documents; its old copies are stubs. Never edit product docs there, never sync from there."
+  },
+  "components": {
+    "total": 36,
+    "syncedToPerronFigma": [
+      "Button",
+      "Sidebar",
+      "Sheet",
+      "Drawer"
+    ],
+    "_remaining": "derived: total - syncedToPerronFigma.length. Never type this number in prose without updating it here."
+  },
+  "docVersions": {
+    "expected": "0.2",
+    "date": "2026-10-12",
+    "files": [
+      "docs/product/BRD - Perron Hasselt Room Management.md",
+      "docs/product/Functional Spec - Perron Hasselt Room Management.md",
+      "docs/product/SOP - Perron Hasselt Room Management.md"
+    ]
+  },
+  "openQuestions": {
+    "Q27": "confirmed-in-scope-2026-10-12",
+    "Q28": "open",
+    "Q29": "closed-2026-10-13-disabled-field-storage-detail-open",
+    "Q30": "open",
+    "Q31": "does-not-exist"
+  },
+  "prototype": {
+    "listsReadOnly": true,
+    "editingSurface": "Sheet size=wide (560px)",
+    "defaultPageSize": 10,
+    "pageSizes": [
+      10,
+      20,
+      50
+    ],
+    "rowHeightPx": 64,
+    "frozenToday": "2026-10-08",
+    "_frozenTodayNote": "Deliberate freeze so mock data and the week tabs stay stable. Not a bug."
+  },
+  "outOfScope": [
+    "dark mode"
+  ],
+  "forbiddenPhrases": [
+    {
+      "phrase": "Prefer inline edit",
+      "why": "lists are read-only since 2026-10-12"
+    },
+    {
+      "phrase": "tables with inline editing",
+      "why": "lists are read-only since 2026-10-12"
+    },
+    {
+      "phrase": "inline edit in cells",
+      "why": "lists are read-only since 2026-10-12"
+    },
+    {
+      "phrase": "Inline edit stays on list cells",
+      "why": "lists are read-only since 2026-10-12"
+    },
+    {
+      "phrase": "Not for editing data",
+      "why": "Sheet 560px IS the editing surface"
+    },
+    {
+      "phrase": "default 50",
+      "why": "pagination default is 10"
+    },
+    {
+      "phrase": "Vault is the original",
+      "why": "the repo is canonical since 2026-10-13"
+    },
+    {
+      "phrase": "master copies live",
+      "why": "the repo is canonical since 2026-10-13"
+    },
+    {
+      "phrase": "Edit the vault first",
+      "why": "the repo is canonical since 2026-10-13"
+    },
+    {
+      "phrase": "The vault is the original",
+      "why": "the repo is canonical since 2026-10-13"
+    },
+    {
+      "phrase": "Only Button",
+      "why": "four components are synced, see components.syncedToPerronFigma"
+    },
+    {
+      "phrase": "Not started",
+      "why": "the prototype is built and merged"
+    },
+    {
+      "phrase": "codex plan/",
+      "why": "that folder does not exist; scripts live in Machine Readable/"
+    },
+    {
+      "phrase": "copy here",
+      "why": "the repo is the only copy; nothing is copied from the vault"
+    },
+    {
+      "phrase": "script the copy from the vault",
+      "why": "dropped 2026-10-13 — there is no vault copy left to sync"
+    },
+    {
+      "phrase": "Vietnamese reading copy",
+      "why": "the vault no longer holds product docs; the digest is docs/discovery/onboarding-vi.md"
+    }
+  ],
+  "_exemptPaths": [
+    "CHANGELOG.md",
+    "docs/discovery/archive/",
+    "Machine Readable/project-state.json",
+    "Machine Readable/drift-check.mjs"
+  ],
+  "dates": {
+    "docsUpdated": "2026-10-13",
+    "_docsUpdatedNote": "README.md must show this on both its 'Updated:' line and the 'Last checked:' line in section 1.",
+    "figmaLastChecked": "2026-10-12",
+    "_figmaNote": "When the Perron Figma file was last compared to code. A different fact from docsUpdated: perron-figma-sync.md shows this one."
+  }
+}

@@ -18,7 +18,7 @@ Before writing or modifying any UI code:
 
 ### Product rules that win over the design system
 - **No automation in the real product (WordPress + Admin Columns Pro).** The prototype must not show anything changing on its own: no automatic status changes, reminders or notifications.
-- **Lists are the product.** Main screens are tables with inline editing. No dashboard, no editing in modals.
+- **Lists are the product.** Main screens are **read-only** tables. No dashboard. Every record is created, viewed and edited in a `Sheet` (wide, 560px) over its list, never inline and never in a `Dialog` that hides the list. (Changed 2026-10-12; BRD FR-G2 / FR-R5 — needs client confirmation.)
 - **No urgency colours.** Badges are neutral status labels.
 - **Mark anything WordPress may not do without custom code** (overlap check, My task column, contract total, open maintenance count: Q27–Q30 in the functional spec) with a visible ⚙️ marker, so the WordPress developer who inspects the prototype knows.
 
@@ -26,3 +26,4 @@ Before writing or modifying any UI code:
 - Logo (for dark backgrounds): `public/brand/perron-hasselt-logo-on-dark.svg`
 - `src/app/prototype/simon` is an upstream Agentic demo, kept only as a structural reference (routes + `mock-data.ts`). Not Perron.
 - Icons: **`@untitledui/icons` only** (Untitled UI, same set as the Figma Icon page). Do not import from `lucide-react`. Check the export exists before importing, e.g. `SearchLg` not `Search`, `Trash01` not `Trash2`.
+  - `lucide-react` was removed from `package.json` on 2026-10-13. **`components.json` still says `"iconLibrary": "lucide"`** because shadcn accepts only `lucide` or `radix` — there is no option for Untitled UI. So `npx shadcn add <component>` will still generate `lucide-react` imports: swap them for `@untitledui/icons` in the same commit. `drift-check.mjs` check 9 fails if any slip through.

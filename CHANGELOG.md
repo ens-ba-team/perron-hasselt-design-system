@@ -10,6 +10,78 @@ Format: newest first. Each entry includes what changed, the migration path, and 
 
 ---
 
+## 2026-10-13 (Perron) — repo is the single source; drift checks now read prose
+
+A review found **nine documentation drifts that every existing check passed**, because all five checks read
+structured data (paths, counts, hexes, story ownership) and none read prose. Seven more surfaced while fixing
+those. This entry covers the fixes and the guard that now prevents the class.
+
+### Decisions (do not re-open without the designer)
+- **The repo is the single source of truth.** Product docs are canonical in `docs/product/`; edit them here.
+- **The Obsidian vault is the learning space only.** It holds `product-knowledge.md` and `session-log.md`,
+  neither of which is an input to anything in this repo. Its four product-doc copies were replaced with stubs
+  pointing here. There is no mirror and no sync script — hand-copying is dropped, not deferred.
+- **`product-knowledge.md` is training material.** Nothing is carried over from it. Its §8 argument that the
+  `Available until` reopen condition has been met is set aside; no fact is lost, because `Others` and its
+  free-text length are already canonical in BR09.
+- **Open maintenance column stays** on the Rooms list, and **zero shows as "—", not "0"**. The client brief
+  does not ask for this column; it was added by the designer and confirmed wanted. Non-blocking per BR25.
+- **Sheet 380px keeps the code's rounding** — only the exposed edges, not all four corners as in Figma.
+
+### Documentation drift fixed
+- **Lists are read-only** (decided 2026-10-12) was still contradicted in **five** places: `README.md` ×4
+  (including one cell that said "Lists are read-only" and "Inline edit stays on list cells" together, and a
+  row claiming `Dialog`/`Sheet`/`Drawer` are "not for editing data") and `agentic-ui/CLAUDE.md`.
+- **Pagination default 10** was written as 50 in **two** places in the prototype README.
+- **Component count:** `33` / `34` → **32**, now written as "32 (36 − 4)" so the arithmetic is visible.
+- **Canonical direction** was stated backwards in `README.md` §1, `docs/product/README.md`, the BRD metadata
+  row, and a `handoff` section whose heading still read "The vault is the original" after its body was fixed.
+- **Doc versions:** `docs/product/README.md` said v0.1; the Functional Spec and SOP cross-referenced
+  "BRD v0.1 / SOP v0.1". All now v0.2.
+- **`codex plan/`** — the old name of `Machine Readable/` — appeared in **six** places in
+  `generation-rules.md`, including a `node` command pointing at a path that does not exist.
+- **Q27** (confirmed in scope 2026-10-12) was still an open-questions row in the BRD, and risk RK4 still
+  named it. **Q29 and Q30 were missing from the BRD entirely**, while the BRD promises both features in
+  FR-R1, FR-B1, FR-B5 and section 10.
+- **BRD `Available until`** listed its reopen condition as "Development confirms the overlap check (Q27)".
+  Q27 is confirmed, so the condition read as already met. Restated to the real reason: the gap cannot be let
+  under 6- or 12-month contracts; revisit when Perron starts letting short term.
+
+### Open questions
+- **Q27 closed** 2026-10-12 — confirmed in scope, needs ACF PHP filters.
+- **Q29 closed** 2026-10-13 — the developer can supply the contract total as a disabled field. **One detail
+  open:** does that field *store* the value? BR10 and section 10 say it is not stored. If it is, both need
+  updating and a `save_post`-style hook must recalculate on `monthly_rent`, `contract_start`, `contract_end`
+  changes — otherwise a stored total goes stale and silently disagrees with rent × months.
+- **Q28, Q30 still open** for the developer.
+
+### New files
+- **`Machine Readable/project-state.json`** — the single home for mutable facts: component total and synced
+  list (remaining is *derived*, never typed), doc versions, open-question status, pagination default, row
+  height, frozen `TODAY`, canonical-source map, and a forbidden-phrase list.
+- **`docs/product/rule-number-map.md`** — maps `R0`–`R26` (the discovery numbering, vault-only) to
+  `BR01`–`BR29`. The two sets were written independently: 21 are 1:1, R7 splits into BR12 + BR13, BR15 is fed
+  by R6 + R11 + R23, BR10 by R17 + R24, R22 is a design rule (FR-G4) and not a BR, **R19 has no BR** and
+  **BR22 has no R**.
+- **`docs/discovery/`** — the Vietnamese rule digest (`onboarding-vi.md`, trimmed from 197 to 117 lines by
+  dropping the DS, status and file-index sections that duplicate other owners) plus `archive/` holding the
+  client's original brief and three dated snapshots.
+
+### `drift-check.mjs`
+- **Fixed: a skipped check counted as a pass.** It printed `✅ No drift detected` while the Figma dark-mode
+  check was skipped. It now reports `(1 check skipped — not verified)`.
+- **New check 6** — prose against `project-state.json`: components left to audit, doc versions and
+  cross-references, pagination default in **both** prose and `DEFAULT_PAGE_SIZE`, and resolved questions that
+  are still rows in an open-questions table.
+- **New check 7** — every path inside a ```sh``` block resolves.
+- **New check 8** — 16 superseded phrases appear nowhere.
+- Checks 6 and 8 ignore phrases wrapped in `code`, "quotes" or ~~strikethrough~~. Without that they fire on
+  the handoff section that lists stale phrases to grep for, and on lines already struck through — a check
+  that cries wolf gets ignored, which is how the first five checks ended up missing nine real drifts.
+- Verified by mutating each stored value and confirming the check fires.
+
+---
+
 ## 2026-10-12 (Perron) — product docs back in sync
 
 Full pass over the client-facing documents, so they describe the prototype as it is now. Vault first, then copied to `docs/product/`.

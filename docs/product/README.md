@@ -1,8 +1,11 @@
 # Product documents
 
-Copies of the product documents for Perron Hasselt Room Management (English, v0.1, 2026-10-08).
+The product documents for Perron Hasselt Room Management (English, **v0.2, 2026-10-12**).
 
-**The master copies live in the product designer's Obsidian vault.** Update the vault first, then copy here. Do not edit these files directly.
+**These are the only copies** (decided 2026-10-13). Edit them here. The Obsidian vault no longer holds
+product documents — its old files are stubs pointing back to this folder.
+
+To translate a rule number from an older note, see [`rule-number-map.md`](rule-number-map.md).
 
 | File | For |
 |---|---|

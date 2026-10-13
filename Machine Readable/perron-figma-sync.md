@@ -1,6 +1,22 @@
 # Perron Hasselt Figma ↔ repo sync
 
-Last checked: 2026-10-08 · Figma account: design2@enosta.com
+Figma account: design2@enosta.com
+
+> [!IMPORTANT]
+> **Status lives here and nowhere else in this file.** Everything below the first `---` is a dated log:
+> append to it, never rewrite it, and never read a status claim out of it. Entries older than the line
+> below are superseded by definition.
+>
+> | | |
+> |---|---|
+> | **Last checked** | 2026-10-12 |
+> | **Synced to code** | Button · Sidebar · Sheet · Drawer (**4** of 36) |
+> | **Left to audit** | **32** — their `component-directory.md` / `meta.json` node IDs still point at the Agentic file |
+> | **Dark mode** | ⏸ Out of scope. Do not audit, sync or design for it |
+> | **Token build** | 🔴 Broken upstream; `tokens.css` is patched by hand |
+>
+> The component numbers are derived from `project-state.json` (`components.total` minus
+> `components.syncedToPerronFigma`). Change them there, not here — `drift-check.mjs` enforces it.
 
 **Perron Figma file:** `7Gn5GiMiQh1SAaTp9FiwNQ` — [Perron Hasselt] Design System
 **Upstream Agentic file (still referenced everywhere in this repo):** `YWfTOUTpFZ0BNxHobfUqme`
@@ -17,7 +33,7 @@ The Perron file is a **duplicate of the Agentic file**, re-themed. Node IDs are 
 | -->Icon | `15:741` | Icon set (not inspected yet) |
 | -->Buttons | `12:35` | Section `Button` (`410:4045`) → component set `12:2893` + `_best-practice` (`410:3780`) |
 
-~~Only Button exists as a component.~~ **Update 2026-10-08:** all component pages now exist in the Perron file (Display, Actions, Feedback, Navigation, Layout, Forms, Overlay). Synced and verified against code: **Button, Sidebar**. The rest are not audited yet, so `component-directory.md` / `meta.json` node IDs still point to the Agentic file.
+~~Only Button exists as a component.~~ **Update 2026-10-08:** all component pages now exist in the Perron file (Display, Actions, Feedback, Navigation, Layout, Forms, Overlay). ~~Synced and verified against code: **Button, Sidebar**. The rest are not audited yet…~~ **Superseded — see the status block at the top of this file.**
 
 ### Button — structure matches repo ✅
 - Type: Default, Secondary, Destructive, Outline, Ghost, Link
@@ -63,6 +79,35 @@ Dark mode (Figma): brand primary and link resolve to the **blue** ramp, secondar
 ### ⚠️ Build is broken upstream
 `node Tokens/sd.build.mjs` failed **before** this sync too: 7 references to `*.foreground` tokens can't resolve, because `foreground` is nested inside a token that already has `$value`, and Style Dictionary ignores it. So `output/css/*.css` and `agentic-ui/src/app/tokens.css` were **patched directly** with the Figma values. Fix the JSON structure before relying on the build again.
 
+**Root cause found 2026-10-13 (not yet fixed — needs Figma).** The build runs with `usesDtcg: true`. Under
+strict DTCG a node carrying `$value` *is* a token, so Style Dictionary does not walk into its children.
+`semantics.tokens.json` has **24 nodes that are both a token and a group** — `color.background.default`,
+`color.brand.primary`, every `color.status.*`, etc. — each with a nested `foreground` child. Those 24
+children are unreachable, and **7 references point at them**, which is exactly the "7 references could not
+be found" error:
+
+| Reference from | Points at |
+|---|---|
+| `color.icon.default` | `{color.background.default.foreground}` |
+| `color.sidebar.active.foreground` | `{color.sidebar.accent.foreground}` |
+| `button.primary.fg.fg` | `{color.brand.primary.foreground}` |
+| `button.secondary.fg.fg` | `{color.brand.secondary.foreground}` |
+| `button.destructive.fg.fg` | `{color.brand.destructive.foreground}` |
+| `button.outline.fg.fg` · `button.ghost.fg.fg` | `{color.background.default.foreground}` |
+
+**The fix** is to make the structure DTCG-legal: move each nested `foreground` out of its parent token into a
+sibling key, `default` + `default-foreground`. That keeps the emitted CSS variable name identical
+(`--color-background-default-foreground`), so no consumer changes. It touches 24 nodes, the 7 references and
+the `$description` lines that spell the old path.
+
+**Why it is not done yet:** renaming token structure changes the token *path*, and Figma variable names use
+those paths (`color/background/default/foreground`). The project rule is that Figma is the source of truth for
+token names, so this must be checked against Figma first — `figma-cli` is not connected. Do not guess.
+
+**Not urgent:** nothing consumes `Tokens/output/`. The prototype reads `agentic-ui/src/app/tokens.css`, which
+is patched by hand and correct; `tsc` and `next build` pass. This blocks a clean token pipeline, not any
+product work.
+
 ### Full audit 2026-10-08 (every Figma variable vs `tokens.css`, Light + Dark)
 Fixed in CSS: `color/border/focus` + `button/outline/border/focus` (Light navy/500, Dark navy/400; were stale blue), `opacity/overlay` Dark = 20 (was missing), navy/gold primitives added as CSS vars.
 Remaining, all expected:
@@ -72,7 +117,10 @@ Remaining, all expected:
 - `output/js/tokens.mjs` not updated (build broken)
 
 ### Still open
-- File key swap: replace `YWfTOUTpFZ0BNxHobfUqme` once the other 35 components exist in the Perron file.
+- ~~File key swap: replace `YWfTOUTpFZ0BNxHobfUqme` once the other 35 components exist in the Perron file.~~
+  **Condition met 2026-10-08** — all component pages exist in the Perron file. The remaining blocker is the
+  node IDs in `component-directory.md` / `meta.json`, which still point at the Agentic file for the 32
+  components that have not been audited.
 - Page `-->Icon` (`15:741`) not inspected yet.
 
 ## Sync 2026-10-08 — sidebar background
@@ -94,12 +142,16 @@ Follow-up same day: `color/sidebar/accent` → `color/navy/100` (#bfcdda), was `
 
 ## Sync 2026-10-12 — Drawer
 
-Perron `74:691` now has `Direction=560px` (`2068:93`): 560px, right-anchored, close button, horizontal footer. All variants: title Poppins Medium 14 (code had 18 SemiBold). Synced to `drawer.tsx` (`variant`, `showClose`, footer `layout`). **Synced components so far: Button, Sidebar, Drawer.**
+Perron `74:691` now has `Direction=560px` (`2068:93`): 560px, right-anchored, close button, horizontal footer. All variants: title Poppins Medium 14 (code had 18 SemiBold). Synced to `drawer.tsx` (`variant`, `showClose`, footer `layout`). ~~Synced components so far: Button, Sidebar, Drawer.~~ **Superseded — see the status block at the top.**
 
 ## Sync 2026-10-12 (2) — Sheet 560, Drawer back to 3 variants
 
-Sheet `98:57748`: new `Side=Horizontal, Direction=560px` (2070:6175); text-block gap 8 -> 4 (`spacing/component/xs`). Drawer `74:691`: 560px variant removed, back to Bottom / Right / Responsive. Synced to `sheet.tsx` (`size="wide"`, header gap) and `drawer.tsx`. **Synced components so far: Button, Sidebar, Sheet, Drawer.**
+Sheet `98:57748`: new `Side=Horizontal, Direction=560px` (2070:6175); text-block gap 8 -> 4 (`spacing/component/xs`). Drawer `74:691`: 560px variant removed, back to Bottom / Right / Responsive. Synced to `sheet.tsx` (`size="wide"`, header gap) and `drawer.tsx`.
 
 ## Sync 2026-10-12 (3) — Sheet property rename
 
 Sheet `98:57748`: property `Direction` renamed to `Size` (380px | 560px | 1200px). Values unchanged. Variant names: `Side=Horizontal, Size=380px`, `Side=Horizontal, Size=560px` (2070:6175), `Side=Vertical, Size=1200px`.
+
+## Decision 2026-10-13 — Sheet 380px corner radius
+
+Figma rounds **all four corners** of the 380px Sheet; the code rounds **only the exposed edges**. **The code wins — keep two-edge rounding.** A panel anchored to the viewport edge has two corners flush against it, so rounding those draws a seam against the window. Not a Figma bug to fix in code: the Figma variant is drawn free-floating on canvas, which is why all four read as rounded there. No code change.
